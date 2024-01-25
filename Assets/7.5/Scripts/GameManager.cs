@@ -27,10 +27,6 @@ public class GameManager : MonoBehaviour
 
     private Button button;
 
-    public int countGoldWorker { get; private set; }
-    public int countMeatWorker { get; private set; }
-    public int countWoodWorker { get; private set; }
-
     [Header("Цена найма юнитов")]
     [SerializeField] private int _goldUnitTrainigPrice;
     [SerializeField] private int _meatUnitTrainigPrice;
@@ -179,15 +175,15 @@ public class GameManager : MonoBehaviour
         switch(tag)
         {
             case "GoldMine":
-                mining = GetGoldMiningPerCycle() * countGoldWorker;
+                mining = GetGoldMiningPerCycle() *_playerBase.countGoldWorker;
                 UpdateGold(mining);
                 break;
             case "MeatMine":
-                mining = GetMeatMiningPerCycle() * countMeatWorker;
+                mining = GetMeatMiningPerCycle() * _playerBase.countMeatWorker;
                 UpdateMeat(mining);
                 break;
             case "WoodMine":
-                mining = GetWoodMiningPerCycle() * countWoodWorker;
+                mining = GetWoodMiningPerCycle() * _playerBase.countWoodWorker;
                 UpdateWood(mining);
                 break;
         }
@@ -232,27 +228,9 @@ public class GameManager : MonoBehaviour
         else
             _workingCamps.Training(type);
 
-        AddUnitToBase(type);
+        _playerBase.AddUnitToBase(type);
     }
 
-    private void AddUnitToBase(Enums.UnitType type)
-    {
-        switch (type)
-        {
-            case Enums.UnitType.Gold:
-                _playerBase.AddOneWorker();
-                break;
-            case Enums.UnitType.Meat:
-                _playerBase.AddOneWorker();
-                break;
-            case Enums.UnitType.Wood:
-                _playerBase.AddOneWorker();
-                break;
-            case Enums.UnitType.Knight:
-                _playerBase.AddOneWarrior();
-                break;
-        };
-    }
 
     private void OnWorking(GameObject workMan, Collider2D collider)
     {
@@ -260,18 +238,18 @@ public class GameManager : MonoBehaviour
         switch (tag)
         {
             case "GoldMine":
-                countGoldWorker++;
-                StartMining(collider, _goldMiningPerCycle * countGoldWorker);
+                _playerBase.countGoldWorker++;
+                StartMining(collider, _goldMiningPerCycle * _playerBase.countGoldWorker);
                 Destroy(workMan);
                 break;
             case "MeatMine":
-                countMeatWorker++;
-                StartMining(collider, _meatMiningPerCycle * countMeatWorker);
+                _playerBase.countMeatWorker++;
+                StartMining(collider, _meatMiningPerCycle * _playerBase.countMeatWorker);
                 Destroy(workMan);
                 break;
             case "WoodMine":
-                countWoodWorker++;
-                StartMining(collider, _woodMiningPerCycle * countWoodWorker);
+                _playerBase.countWoodWorker++;
+                StartMining(collider, _woodMiningPerCycle * _playerBase.countWoodWorker);
                 Destroy(workMan);
                 break;
         }

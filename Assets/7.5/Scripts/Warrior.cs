@@ -25,7 +25,7 @@ public class Warrior : MonoBehaviour
     [SerializeField] private int _defence = 1;
     [SerializeField] private bool _isRun = true;
     private float _speedWarrior;
-    private float _stepWarrior=2;
+    private float _stepWarrior = 2;
     public bool firstWarrior { get; set; }
 
     private void Awake()
@@ -34,18 +34,6 @@ public class Warrior : MonoBehaviour
         SetupNavMeshAgent();
         MoveTo();
         SetCountStek();
-    }
-    
-    private void FindNavMeshAgent()
-    {
-        _agent = GetComponent<NavMeshAgent>();
-    }
-
-    private void SetupNavMeshAgent()
-    {
-        if (_agent == null) return;
-        _agent.updateRotation = false;
-        _agent.updateUpAxis = false;
     }
 
     private void Update()
@@ -63,6 +51,33 @@ public class Warrior : MonoBehaviour
         AttackEnemy();
     }
 
+    private void OnValidate()
+    {
+        SetCountStek();
+        GetAniamtion();
+    }
+    private void OnDrawGizmos()
+    {
+        if (_attackPoint == null || !IsDrawGizmo()) return;
+        DrawAttackRange();
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        UpdateStek(collision);
+    }
+
+    private void FindNavMeshAgent()
+    {
+        _agent = GetComponent<NavMeshAgent>();
+    }
+
+    private void SetupNavMeshAgent()
+    {
+        if (_agent == null) return;
+        _agent.updateRotation = false;
+        _agent.updateUpAxis = false;
+    }
+
     private void MoveToEnemy(Enemy enemy)
     {
         float dist = GetDistanceToEnmy(enemy);
@@ -71,17 +86,21 @@ public class Warrior : MonoBehaviour
             GoToEnemy(enemy);
         }
     }
+
     private bool CheckDistanceToEnemy(float currentDistance, float distance)
     {
         if (currentDistance <= distance) return true;
         else return false;
     }
+
     private Enemy FindEnemy()=> GameObject.FindObjectOfType<Enemy>();
+
     private void GoToEnemy(Enemy enemy)
     {
         _speedWarrior = _stepWarrior * Time.deltaTime;
         gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, enemy.gameObject.transform.position, _speedWarrior);
     }
+
     private float GetDistanceToEnmy(Enemy enemy)
     {
         return Vector2.Distance(gameObject.transform.position, enemy.gameObject.transform.position);
@@ -92,16 +111,16 @@ public class Warrior : MonoBehaviour
 
     private void AttackEnemy()
     {
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_attackPoint.position, _attackRange, _layerMask);
-
-        RunAgent(hitEnemies);
-
+        RunAgent();
+        Collider2D[] hitEnemies = HitEnemys();
         foreach (Collider2D enemy in hitEnemies)
         {
             StopAgent();
             Attack(enemy);
         }
     }
+
+    private Collider2D[] HitEnemys() => Physics2D.OverlapCircleAll(_attackPoint.position, _attackRange, _layerMask);
 
     private void StopAgent()
     {
@@ -113,16 +132,13 @@ public class Warrior : MonoBehaviour
         }
     }
     
-    private void RunAgent(Collider2D[] hitEnemies)
+    private void RunAgent()
     {
-        if (hitEnemies.Length == 0)
+        if (!_isRun)
         {
-            if (!_isRun)
-            {
-                _agent.enabled = true;
-                _agent.isStopped = false;
-                _isRun = true;
-            }
+         _agent.enabled = true;
+         _agent.isStopped = false;
+         _isRun = true;
         }
     }
 
@@ -136,24 +152,10 @@ public class Warrior : MonoBehaviour
             _nextAttackTime = 0;
         }
     }
-
-    public void NewStartPosition(Transform newSpawnPosition)
-    {
-        
-    }
-
-    private void OnValidate()
-    {
-        SetCountStek();
-        _animator ??= GetComponent<Animator>();
-        
-    }
     
-    private void OnDrawGizmos()
-    {
-        if (_attackPoint == null || !_drawGizmo) return;
-        DrawAttackRange();
-    }
+    private void GetAniamtion()=> _animator ??= GetComponent<Animator>();
+
+    private bool IsDrawGizmo() => _drawGizmo;
 
     public void IncrementStek()
     {
@@ -161,7 +163,7 @@ public class Warrior : MonoBehaviour
         _countKnightText.text = _countInStek.ToString("#");
     }
 
-    public void InitEnemy(int hp, int def, int atk, int countStek)
+    public void UpdateCharater(int hp, int def, int atk, int countStek)
     {
         _countInStek = countStek;
         _health = hp;
@@ -190,14 +192,8 @@ public class Warrior : MonoBehaviour
     public void TakeDamage(float damage)
     {
         SetTriggerAnimation("Hit");
-
         if (damage <= 0) return;
-
-        if (damage > _defence * _countInStek)
-            _countInStek -= (damage - (_defence * _countInStek)) / _health;
-        else
-            _countInStek -= ((_defence * _countInStek) - damage) / _health;
-        Debug.Log(_countInStek);
+        _countInStek -= CalculateDamage(damage);
         SetCountStek();
         if (_countInStek <= 0)
         {
@@ -205,20 +201,33 @@ public class Warrior : MonoBehaviour
         }
     }
     
-    public void DestroyEnemy() => Destroy(gameObject);
-    public int GetDefence() => _defence;
-    private void DrawAttackRange() => Gizmos.DrawWireSphere(_attackPoint.position, _attackRange);
-    private void DisableScript() => this.enabled = false;
-    public void SetTriggerAnimation(string animation)=> _animator.SetTrigger(animation);
-    private void SetBoolAnimation(string animation, bool value) => _animator.SetBool(animation, value);
+    private float CalculateDamage(float damage)
+    {
+        if (damage > _defence * _countInStek)
+           return (damage - (_defence * _countInStek)) / _health;
+        else
+           return ((_defence * _countInStek) - damage) / _health;
+    }
 
+    public void DestroyEnemy() => Destroy(gameObject);
+
+    public int GetDefence() => _defence;
+
+    private void DrawAttackRange() => Gizmos.DrawWireSphere(_attackPoint.position, _attackRange);
+
+    private void DisableScript() => this.enabled = false;
+
+    public void SetTriggerAnimation(string animation)=> _animator.SetTrigger(animation);
+
+    private void SetBoolAnimation(string animation, bool value) => _animator.SetBool(animation, value);
+    
     private void MoveTo()
     {
         if(_isRun && _tagetPosition!=null)
             _agent.destination = _tagetPosition.position;
     }
 
-    public void SetTargetPosition(Transform newPosition)
+    public void GoToNewTargetPosition(Transform newPosition)
     {
         _tagetPosition = newPosition;
         MoveTo();
@@ -231,17 +240,14 @@ public class Warrior : MonoBehaviour
             _agent.destination = enemy.gameObject.transform.position;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void UpdateStek(Collider2D collision)
     {
-        
         if (collision.gameObject.tag == "Player")
         {
             collision.gameObject.GetComponent<Warrior>().IncrementStek();
-            
-           if(!firstWarrior)
+
+            if (!firstWarrior)
                 Destroy(gameObject);
         }
-
     }
-
 }

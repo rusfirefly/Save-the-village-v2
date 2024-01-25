@@ -42,11 +42,11 @@ public class WarriorCamp : MonoBehaviour,ICamp
         GameObject newWarrior = Instantiate(_prefKnight, _spawnPosition.transform.position, Quaternion.identity);
         _warrior = newWarrior.GetComponent<Warrior>();
         SetCharacteristicsWarrior(2,2,4);
-        _warrior.SetTargetPosition(_targetPosition);
+        _warrior.GoToNewTargetPosition(_targetPosition);
 
     }
 
-    private void SetCharacteristicsWarrior(int hp, int def, int atk)=>_warrior.InitEnemy(hp, def, atk, 1);
+    private void SetCharacteristicsWarrior(int hp, int def, int atk)=>_warrior.UpdateCharater(hp, def, atk, 1);
     
     public void SetFirstWarrior() => _warrior.firstWarrior = true;
 

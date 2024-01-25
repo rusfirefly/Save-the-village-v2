@@ -11,6 +11,10 @@ public class PlayerBase: IStorage
     public int workersCount { get; private set; }
     public int warriorsCount { get; private set; }
 
+    public int countGoldWorker { get;  set; }
+    public int countMeatWorker { get;  set; }
+    public int countWoodWorker { get;  set; }
+
     public PlayerBase(int initGoldCount, int initMeatCount, int initWoodCount)
     {
         _gold = initGoldCount;
@@ -53,4 +57,23 @@ public class PlayerBase: IStorage
     {
         return _wood;
     }
+    public void AddUnitToBase(Enums.UnitType type)
+    {
+        switch (type)
+        {
+            case Enums.UnitType.Gold:
+                AddOneWorker();
+                break;
+            case Enums.UnitType.Meat:
+                AddOneWorker();
+                break;
+            case Enums.UnitType.Wood:
+                AddOneWorker();
+                break;
+            case Enums.UnitType.Knight:
+                AddOneWarrior();
+                break;
+        };
+    }
+
 }
