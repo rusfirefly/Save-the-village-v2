@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerBase: IStorage
 {
-    private int _gold;
+    public static int gold { get; private set; }
     private int _meat;
     private int _wood;
 
@@ -17,7 +17,7 @@ public class PlayerBase: IStorage
 
     public PlayerBase(int initGoldCount, int initMeatCount, int initWoodCount)
     {
-        _gold = initGoldCount;
+        gold = initGoldCount;
         _meat = initMeatCount;
         _wood = initWoodCount;
 
@@ -30,7 +30,7 @@ public class PlayerBase: IStorage
 
     public void UpdateGold(int newGoldCount1)
     {
-        _gold += newGoldCount1;
+        gold += newGoldCount1;
     }
 
     public void UpdateMeat(int newMeatCount)
@@ -43,10 +43,6 @@ public class PlayerBase: IStorage
         _wood += newWoodCount;
     }
 
-    public int GetGold()
-    {
-        return _gold;
-    }
 
     public int GetMeat()
     {
@@ -57,6 +53,7 @@ public class PlayerBase: IStorage
     {
         return _wood;
     }
+
     public void AddUnitToBase(Enums.UnitType type)
     {
         switch (type)

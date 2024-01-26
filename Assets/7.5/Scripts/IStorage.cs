@@ -10,8 +10,6 @@ public interface IStorage
 
     void UpdateWood(int newWoodCount);
 
-    int GetGold();
-
     int GetMeat();
 
     int GetWood();

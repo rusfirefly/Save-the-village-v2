@@ -181,7 +181,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: 1
 --- !u!1 &4336357256126849910
 GameObject:
   m_ObjectHideFlags: 0
@@ -304,9 +304,10 @@ GameObject:
   - component: {fileID: 6256880210999915732}
   - component: {fileID: 4336357256726893453}
   - component: {fileID: -279326353978029256}
+  - component: {fileID: -1096895461991541115}
   m_Layer: 6
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -467,7 +468,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6648696227479114440}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c84770758f7ae514595498c13f96eb50, type: 3}
   m_Name: 
@@ -483,7 +484,35 @@ MonoBehaviour:
   _attackSpeed: 0.5
   _drawGizmo: 1
   _tagetPosition: {fileID: 0}
-  _countInStek: 0
+  _countInStek: 1
+  _health: 1
+  _attack: 1
+  _defence: 1
+  _isRun: 1
+--- !u!114 &-1096895461991541115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6648696227479114440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d2abca02faf1a54b8bd7a225dd0fe17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 6648696227479114441}
+  _agent: {fileID: 0}
+  _countKnightText: {fileID: 3663062640086994306}
+  _attackPoint: {fileID: 4336357256126849905}
+  _attackRange: 0.5
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  _attackSpeed: 0.5
+  _drawGizmo: 0
+  _tagetPosition: {fileID: 0}
+  _countInStek: 1
   _health: 1
   _attack: 1
   _defence: 1

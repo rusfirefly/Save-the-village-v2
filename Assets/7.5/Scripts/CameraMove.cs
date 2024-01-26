@@ -12,7 +12,7 @@ public class CameraMove : MonoBehaviour
     private Vector3 _newPosition;
     private void Start()
     {
-        _newPosition = transform.position;
+        SetNewPosition(transform.position);
     }
 
     private void Update()
@@ -41,5 +41,9 @@ public class CameraMove : MonoBehaviour
     {
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - scroll * _zoomSpeed, _minZoom, _maxZoom);
+    }
+    private void SetNewPosition(Vector3 newPosition)
+    {
+        _newPosition = newPosition;
     }
 }

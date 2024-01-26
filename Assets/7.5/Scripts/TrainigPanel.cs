@@ -22,13 +22,12 @@ public class TrainigPanel : MonoBehaviour
     private float _workTrainingTimer;
     private float _workProgress;
 
-    private GameManager _gameManager;
+    [SerializeField] private PlayerData _playerData;
     private int countResource = 0;
     private bool isBought { get; set; }
 
     private void Start()
     {
-        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         UpdatePanelInfo(_priceText);
     }
 
@@ -49,25 +48,25 @@ public class TrainigPanel : MonoBehaviour
         switch (_unitType)
         {
             case Enums.UnitType.Gold:
-                SetTrainingTime(_gameManager.GetGoldWorkTrainingTimer());
-                SetTrainingPrice(_gameManager.GetGoldTriningPrice());
+                SetTrainingTime(_playerData.goldWorkTrainingTimer);
+                SetTrainingPrice(_playerData.goldUnitTrainigPrice);
                 break;
             case Enums.UnitType.Meat:
-                SetTrainingTime(_gameManager.GetMeatWorkTrainingTimer());
-                SetTrainingPrice(_gameManager.GetMeatTriningPrice());
+                SetTrainingTime(_playerData.meatWorkTrainingTimer);
+                SetTrainingPrice(_playerData.meatUnitTrainigPrice);
                 break;
             case Enums.UnitType.Wood:
-                SetTrainingTime(_gameManager.GetWoodWorkTrainingTimer());
-                SetTrainingPrice(_gameManager.GetWoodTriningPrice());
+                SetTrainingTime(_playerData.woodWorkTrainingTimer);
+                SetTrainingPrice(_playerData.woodUnitTrainigPrice);
                 break;
             case Enums.UnitType.Knight:
-                SetTrainingTime(_gameManager.GetKnightTrainingTimer());
-                SetTrainingPrice(_gameManager.GetKnightTriningPrice());
+                SetTrainingTime(_playerData.knightTrainingTimer);
+                SetTrainingPrice(_playerData.knightTrainigPrice);
                 break;
 
         }
 
-        countResource = _gameManager.GetCountGold();
+        countResource = PlayerBase.gold;
         trainigPriceText.text = _trainigPrice.ToString();
 
         if (countResource >= _trainigPrice)

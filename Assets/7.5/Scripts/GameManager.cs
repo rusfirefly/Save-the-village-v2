@@ -23,38 +23,11 @@ public class GameManager : MonoBehaviour
     private GameObject _trainigMessageText;
     [SerializeField] private GameObject _workerPanel;
     [SerializeField] private GameObject _warriorPanel;
-    
-
+    [SerializeField] private Text _powerPlayerText;
     private Button button;
-
-    [Header("Цена найма юнитов")]
-    [SerializeField] private int _goldUnitTrainigPrice;
-    [SerializeField] private int _meatUnitTrainigPrice;
-    [SerializeField] private int _woodUnitTrainigPrice;
-    [SerializeField] private int _knightTrainigPrice;
-
-    [Header("Время найма рабочих")]
-    [SerializeField] private float _goldWorkTrainingTimer;
-    [SerializeField] private float _meatWorkTrainingTimer;
-    [SerializeField] private float _woodWorkTrainingTimer;
-
-    [Header("Время найма воинов")]
-    [SerializeField] private float _knightTrainingTimer;
-    [SerializeField] private float _archerTrainingTimer;
-    [Header("Цикл потребляемой еды юнита")]
-    [SerializeField] private float _knightEatTimer;
-    [SerializeField] private float _archerEatTimer;
-
-
-    [Header("Количество добываемого ресурса за цикл")]
-    [SerializeField] private int _goldMiningPerCycle;
-    [SerializeField] private int _meatMiningPerCycle;
-    [SerializeField] private int _woodMiningPerCycle;
-
-    [Header("Время сбора ресурсов")]
-    [SerializeField] private float _timeGoldMine;
-    [SerializeField] private float _timeMeatMine;
-    [SerializeField] private float _timeWoodMine;
+    [Header("Настройки для игры")]
+    [SerializeField] private PlayerData _playerData;
+    
 
     [Header("Позиции объектов")]
     [SerializeField] private Transform _castlePosition;
@@ -64,6 +37,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform _warriorPosition;
     [SerializeField] private Transform _archerPosition;
 
+    
     private void Awake()
     {
         CreatePlayerBase();
@@ -72,6 +46,8 @@ public class GameManager : MonoBehaviour
         FindCamps();
         CreateEventsCamp();
         FindMessageText();
+        _playerData.powerWarriors = 0;
+        _playerData.powerEnemys = 0;
     }
 
     private void Start()
@@ -79,9 +55,9 @@ public class GameManager : MonoBehaviour
         UpdateStoragePanel();
 
         SetPositionResources();
-        SetMiningCycleTime<GoldMine>(_timeGoldMine);
-        SetMiningCycleTime<Miratorg>(_timeMeatMine);
-        SetMiningCycleTime<SawMill>(_timeWoodMine);
+        SetMiningCycleTime<GoldMine>(_playerData.timeGoldMine);
+        SetMiningCycleTime<Miratorg>(_playerData.timeMeatMine);
+        SetMiningCycleTime<SawMill>(_playerData.timeWoodMine);
     }
 
     private void FixedUpdate() => UpdateStoragePanel();
@@ -163,8 +139,9 @@ public class GameManager : MonoBehaviour
     private void UpdateStoragePanel()
     {
         _workerText.text = _playerBase.workersCount.ToString();
+        _powerPlayerText.text = $"Сила игрока: {_playerData.powerWarriors}";
         _wariorText.text = _playerBase.warriorsCount.ToString();
-        _goldText.text = _playerBase.GetGold().ToString();
+        _goldText.text = PlayerBase.gold.ToString();
         _meatText.text = _playerBase.GetMeat().ToString();
         _woodText.text = _playerBase.GetWood().ToString();
     }
@@ -175,15 +152,15 @@ public class GameManager : MonoBehaviour
         switch(tag)
         {
             case "GoldMine":
-                mining = GetGoldMiningPerCycle() *_playerBase.countGoldWorker;
+                mining = _playerData.goldMiningPerCycle *_playerBase.countGoldWorker;
                 UpdateGold(mining);
                 break;
             case "MeatMine":
-                mining = GetMeatMiningPerCycle() * _playerBase.countMeatWorker;
+                mining = _playerData.meatMiningPerCycle * _playerBase.countMeatWorker;
                 UpdateMeat(mining);
                 break;
             case "WoodMine":
-                mining = GetWoodMiningPerCycle() * _playerBase.countWoodWorker;
+                mining = _playerData.woodMiningPerCycle * _playerBase.countWoodWorker;
                 UpdateWood(mining);
                 break;
         }
@@ -199,35 +176,30 @@ public class GameManager : MonoBehaviour
     {
         return type switch
         {
-            Enums.UnitType.Gold => _goldUnitTrainigPrice,
-            Enums.UnitType.Meat => _meatUnitTrainigPrice,
-            Enums.UnitType.Wood => _woodUnitTrainigPrice,
-            Enums.UnitType.Knight => _knightTrainigPrice,
+            Enums.UnitType.Gold => _playerData.goldUnitTrainigPrice,
+            Enums.UnitType.Meat => _playerData.meatUnitTrainigPrice,
+            Enums.UnitType.Wood => _playerData.woodUnitTrainigPrice,
+            Enums.UnitType.Knight => _playerData.knightTrainigPrice,
             _ => 0
         };
     }
 
-    public int GetCountGold() =>_playerBase?.GetGold() ?? 0;
-    public int GetCountMeat() => _playerBase?.GetMeat() ?? 0;
-    public int GetCountwood() => _playerBase?.GetWood() ?? 0;
-
-    public int GetGoldMiningPerCycle() => _goldMiningPerCycle;
-    public int GetMeatMiningPerCycle() => _meatMiningPerCycle;
-    public int GetWoodMiningPerCycle() => _woodMiningPerCycle;
-    
-
-    public void OnTarianigFinish(Enums.UnitType type)
+    private void OnTarianigFinish(Enums.UnitType type)
     {
-        if (type == Enums.UnitType.Knight)
-        {
-            _warriorCamp.Training(type);
-            Warrior[] warriors = GameObject.FindObjectsOfType<Warrior>();
-            if (warriors.Length == 1)
-                warriors[0].firstWarrior = true;
-        }
-        else
-            _workingCamps.Training(type);
 
+        switch(type)
+        {
+            case Enums.UnitType.Knight:
+                _warriorCamp.Training(type);
+                Warrior[] warriors = GameObject.FindObjectsOfType<Warrior>();
+                if (warriors.Length == 1)
+                    warriors[0].firstWarrior = true;
+                break;
+            default:
+                _workingCamps.Training(type);
+
+                break;
+        }
         _playerBase.AddUnitToBase(type);
     }
 
@@ -239,17 +211,17 @@ public class GameManager : MonoBehaviour
         {
             case "GoldMine":
                 _playerBase.countGoldWorker++;
-                StartMining(collider, _goldMiningPerCycle * _playerBase.countGoldWorker);
+                StartMining(collider, _playerData.goldMiningPerCycle * _playerBase.countGoldWorker);
                 Destroy(workMan);
                 break;
             case "MeatMine":
                 _playerBase.countMeatWorker++;
-                StartMining(collider, _meatMiningPerCycle * _playerBase.countMeatWorker);
+                StartMining(collider, _playerData.meatMiningPerCycle * _playerBase.countMeatWorker);
                 Destroy(workMan);
                 break;
             case "WoodMine":
                 _playerBase.countWoodWorker++;
-                StartMining(collider, _woodMiningPerCycle * _playerBase.countWoodWorker);
+                StartMining(collider, _playerData.woodMiningPerCycle * _playerBase.countWoodWorker);
                 Destroy(workMan);
                 break;
         }
@@ -263,19 +235,9 @@ public class GameManager : MonoBehaviour
         mining.MineCanvas(true);
     }
 
-    public int GetGoldTriningPrice() =>_goldUnitTrainigPrice;
-    public int GetMeatTriningPrice() => _meatUnitTrainigPrice;
-    public int GetWoodTriningPrice() => _woodUnitTrainigPrice;
-    public int GetKnightTriningPrice() => _knightTrainigPrice;
-
-    public float GetGoldWorkTrainingTimer() =>_goldWorkTrainingTimer;
-    public float GetMeatWorkTrainingTimer() => _meatWorkTrainingTimer;
-    public float GetWoodWorkTrainingTimer() => _woodWorkTrainingTimer;
-    public float GetKnightTrainingTimer() => _knightTrainingTimer;
-
-    public void UpdateGold(int price) => _playerBase.UpdateGold(price);
-    public void UpdateMeat(int price) => _playerBase.UpdateMeat(price);
-    public void UpdateWood(int price) => _playerBase.UpdateWood(price);
+    private void UpdateGold(int price) => _playerBase.UpdateGold(price);
+    private void UpdateMeat(int price) => _playerBase.UpdateMeat(price);
+    private void UpdateWood(int price) => _playerBase.UpdateWood(price);
 
     public void DefaultStatePanel()
     {

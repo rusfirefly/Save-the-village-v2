@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WarriorCamp : MonoBehaviour,ICamp
 {
@@ -16,7 +17,8 @@ public class WarriorCamp : MonoBehaviour,ICamp
     [SerializeField] private GameObject _prefArch;
     [SerializeField] private Material _outlineMaterial;
     [SerializeField] private Transform _targetPosition;
-
+    [SerializeField] private PlayerData _playerData;
+  
     private SpriteRenderer _spriteRender;
     private Material _default;
     private Warrior _warrior;
@@ -43,10 +45,13 @@ public class WarriorCamp : MonoBehaviour,ICamp
         _warrior = newWarrior.GetComponent<Warrior>();
         SetCharacteristicsWarrior(2,2,4);
         _warrior.GoToNewTargetPosition(_targetPosition);
-
     }
 
-    private void SetCharacteristicsWarrior(int hp, int def, int atk)=>_warrior.UpdateCharater(hp, def, atk, 1);
+    private void SetCharacteristicsWarrior(int hp, int def, int atk)
+    {
+        _warrior.UpdateCharater(hp, def, atk, 1);
+        _playerData.powerWarriors += _warrior.GetPowerWarror();
+    }
     
     public void SetFirstWarrior() => _warrior.firstWarrior = true;
 

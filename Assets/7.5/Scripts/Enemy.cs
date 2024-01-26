@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Animator))]
 public class Enemy : MonoBehaviour
 {
+
     [SerializeField] private Animator _animator;
     [SerializeField] private NavMeshAgent _agent;
     [SerializeField] private Text _countKnightText;
@@ -23,40 +25,117 @@ public class Enemy : MonoBehaviour
     [SerializeField] private int _attack = 1;
     [SerializeField] private int _defence = 1;
     [SerializeField] private bool _isRun = true;
-
+    private float _speedEnemy;
+    private float _stepEnemy = 2;
+    public bool firstEnemy;
+    private int _distance = 2;
     private void Awake()
     {
-        _countStekHealth = _countInStek * _health;
-        
+        FindNavMeshAgent();
+        SetupNavMeshAgent();
     }
 
-    private void Start()
+    private void Update()
+    {
+        Warrior playerWarrior = FindWarrior();
+
+        if (playerWarrior != null)
+        {
+            MoveToWarrior(playerWarrior);
+        }
+        else
+        {
+            if(GetDistanceTo(_tagetPosition)>2)
+                GoBackPosition();
+        }
+
+        AttackWarrior();
+    }
+
+    private void OnValidate()
+    {
+        SetCountStek();
+        GetAniamtion();
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (_attackPoint == null || !IsDrawGizmo()) return;
+        DrawAttackRange();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        UpdateStek(collision);
+    }
+
+    private void FindNavMeshAgent()
     {
         _agent = GetComponent<NavMeshAgent>();
+    }
+
+    private void SetupNavMeshAgent()
+    {
         if (_agent == null) return;
         _agent.updateRotation = false;
         _agent.updateUpAxis = false;
-
-        MoveTo();
-    }
-    private void Update()
-    {
-
-        AttackEnemy();
     }
 
-    private void AttackEnemy()
+    private void MoveToWarrior(Warrior warrior)
     {
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(_attackPoint.position, _attackRange, _layerMask);
-
-        RunAgent(hitEnemies);
-
-        foreach (Collider2D enemy in hitEnemies)
+        float dist = GetDistanceToWarrior(warrior);
+        if (CheckDistanceToWarrior(dist, _distance))
         {
-            StopAgent();
-            Attack(enemy);
+            GoToWarrior(warrior);
         }
     }
+
+    private bool CheckDistanceToWarrior(float currentDistance, float distance)
+    {
+        if (currentDistance <= distance) return true;
+        else return false;
+    }
+
+    private Warrior FindWarrior() => GameObject.FindObjectOfType<Warrior>();
+
+    private void GoToWarrior(Warrior warrior)
+    {
+        _speedEnemy = _stepEnemy * Time.deltaTime;
+        gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, warrior.gameObject.transform.position, _speedEnemy);
+    }
+
+    private float GetDistanceToWarrior(Warrior warrior)
+    {
+        return Vector2.Distance(gameObject.transform.position, warrior.gameObject.transform.position);
+    }
+    private float GetDistanceTo(Transform tagetPosition)
+    {
+        return Vector2.Distance(gameObject.transform.position, tagetPosition.gameObject.transform.position);
+    }
+
+
+    private void GoBackPosition()
+    {
+         _agent.destination = _tagetPosition.position;
+    }
+
+
+    private void AttackWarrior()
+    {
+        
+        Collider2D[] hitWarriors = HitWarriors();
+
+        if(hitWarriors.Length==0)
+            RunAgent();
+
+        foreach (Collider2D warrior in hitWarriors)
+        {
+            StopAgent();
+            Attack(warrior);
+        }
+    }
+
+    private Collider2D[] HitWarriors() => Physics2D.OverlapCircleAll(_attackPoint.position, _attackRange, _layerMask);
 
     private void StopAgent()
     {
@@ -68,48 +147,69 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void RunAgent(Collider2D[] hitEnemies)
+    private void RunAgent()
     {
-        if (hitEnemies.Length == 0)
+        if (!_isRun)
         {
-            if (!_isRun)
-            {
-                _agent.enabled = true;
-                _agent.destination = _tagetPosition.position;
-                _agent.isStopped = false;
-                _isRun = true;
-            }
+            _agent.enabled = true;
+            _agent.isStopped = false;
+            _isRun = true;
         }
     }
 
-    private void Attack(Collider2D enemy)
+    private void Attack(Collider2D warrior)
     {
         _nextAttackTime += Time.deltaTime;
         if (_nextAttackTime >= _attackSpeed)
         {
             SetTriggerAnimation("Attack1");
 
-            if (enemy.gameObject.tag == "Castle")
-                enemy.GetComponent<Castle>().TakeDamage(_attack * _countInStek);
+            if (warrior.gameObject.tag == "Castle")
+                warrior.GetComponent<Castle>().TakeDamage(_attack * _countInStek);
             else
-                enemy.GetComponent<Warrior>().TakeDamage(_attack * _countInStek);
+                warrior.GetComponent<Warrior>().TakeDamage(_attack * _countInStek);
 
             _nextAttackTime = 0;
         }
     }
 
-    private void OnValidate()
+    private void GetAniamtion() => _animator ??= GetComponent<Animator>();
+
+    private bool IsDrawGizmo() => _drawGizmo;
+
+    public void IncrementStek(float value)
     {
+        _countInStek+= value;
+        _countKnightText.text = _countInStek.ToString("#");
+    }
+
+    private void SetCountStek()
+    {
+        if (_countKnightText == null) return;
+        _countStekHealth = _countInStek * _health;
+        if (_countInStek < 0) _countKnightText.text = "0";
+        _countKnightText.text = _countInStek.ToString("#");
+    }
+
+    private void Die()
+    {
+        SetBoolAnimation("IsDie", true);
+        GetComponent<Collider2D>().enabled = false;
+        GetComponent<NavMeshAgent>().enabled = false;
+        DisableScript();
+    }
+
+    public void TakeDamage(float damage)
+    {
+        SetTriggerAnimation("Hit");
+        if (damage <= 0) return;
+        _countInStek -= CalculateDamage(damage);
         SetCountStek();
-        _animator ??= GetComponent<Animator>();
+        if (_countInStek <= 0)
+        {
+            Die();
+        }
     }
-
-    private void OnDrawGizmos()
-    {
-        if (_attackPoint == null || !_drawGizmo) return;
-        DrawAttackRange();
-    }
-
     public void InitEnemy(int hp, int def, int atk, int countStek)
     {
         _countInStek = countStek;
@@ -118,55 +218,60 @@ public class Enemy : MonoBehaviour
         _defence = def;
 
         SetCountStek();
-        
+        MoveTo();
     }
 
-    private void SetCountStek()
+    private float CalculateDamage(float damage)
     {
-        if (_countKnightText == null) return;
-        if (_countInStek < 0) _countInStek = 0;
-        _countKnightText.text = _countInStek.ToString("#");
-    }
-
-    private void Die()
-    {
-        SetBoolAnimation("IsDie", true);
-        GetComponent<Collider2D>().enabled = false;
-        DisableScript();
-        //event bonus, сундук, различные плючшки
-    }
-
-    public void TakeDamage(float damage)
-    {
-        SetTriggerAnimation("Hit");
-        
-        if (damage <= 0) return;
-
         if (damage > _defence * _countInStek)
-            _countInStek -= (damage - (_defence * _countInStek)) / _health;
+            return (damage - (_defence * _countInStek)) / _health;
         else
-            _countInStek -= ((_defence * _countInStek) - damage) / _health;
-
-        SetCountStek();
-        if (_countInStek <= 0)
-        {
-            Die();
-        }
+            return ((_defence * _countInStek) - damage) / _health;
     }
 
     public void DestroyEnemy() => Destroy(gameObject);
+
     public int GetDefence() => _defence;
+
     private void DrawAttackRange() => Gizmos.DrawWireSphere(_attackPoint.position, _attackRange);
+
     private void DisableScript() => this.enabled = false;
+
     public void SetTriggerAnimation(string animation) => _animator.SetTrigger(animation);
+
     private void SetBoolAnimation(string animation, bool value) => _animator.SetBool(animation, value);
 
     private void MoveTo()
     {
-        if (_isRun)
+        if (_isRun && _tagetPosition != null)
             _agent.destination = _tagetPosition.position;
     }
 
+    public void GoToNewTargetPosition(Transform newPosition)
+    {
+        _tagetPosition = newPosition;
+        MoveTo();
+    }
+
+    public void FindEnemyPosition()
+    {
+        Enemy[] enemys = GameObject.FindObjectsOfType<Enemy>();
+        foreach (Enemy enemy in enemys)
+            _agent.destination = enemy.gameObject.transform.position;
+    }
+
+    private void UpdateStek(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Enemy")
+        {
+            Enemy collisionEnemy = collision.gameObject.GetComponent<Enemy>();
+            collisionEnemy.IncrementStek(GetStek());
+            if (!firstEnemy)
+                Destroy(gameObject);
+        }
+    }
+    private float GetStek() => _countInStek;
     public void SetTargetPosition(Transform newPosition) => _tagetPosition = newPosition;
 
+    public float GetPowerEnemy() => _countInStek * (_attack + _defence + _health);
 }

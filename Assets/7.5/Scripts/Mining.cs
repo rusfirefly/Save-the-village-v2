@@ -20,7 +20,6 @@ public class Mining : MonoBehaviour
     private float _positionText;
     private Vector3 _defaulPosition;
 
-    private GameManager _gameManager;
     [SerializeField] private int _countResources;
 
     private float _timeAnimation = 2f;
@@ -28,7 +27,6 @@ public class Mining : MonoBehaviour
 
     void Start()
     {
-        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         _inMine = false;
         _mineCountText.gameObject.SetActive(false);
         MineCanvas(false);

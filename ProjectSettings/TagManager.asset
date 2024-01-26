@@ -13,6 +13,7 @@ TagManager:
   - MeatMine
   - WoodMine
   - Castle
+  - Enemy
   layers:
   - Default
   - TransparentFX

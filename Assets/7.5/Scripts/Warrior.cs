@@ -26,6 +26,7 @@ public class Warrior : MonoBehaviour
     [SerializeField] private bool _isRun = true;
     private float _speedWarrior;
     private float _stepWarrior = 2;
+    private int _distance = 2;
     public bool firstWarrior { get; set; }
 
     private void Awake()
@@ -56,11 +57,13 @@ public class Warrior : MonoBehaviour
         SetCountStek();
         GetAniamtion();
     }
+
     private void OnDrawGizmos()
     {
         if (_attackPoint == null || !IsDrawGizmo()) return;
         DrawAttackRange();
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         UpdateStek(collision);
@@ -81,7 +84,7 @@ public class Warrior : MonoBehaviour
     private void MoveToEnemy(Enemy enemy)
     {
         float dist = GetDistanceToEnmy(enemy);
-        if (CheckDistanceToEnemy(dist, distance: 3))
+        if (CheckDistanceToEnemy(dist, _distance))
         {
             GoToEnemy(enemy);
         }
@@ -250,4 +253,5 @@ public class Warrior : MonoBehaviour
                 Destroy(gameObject);
         }
     }
+    public float GetPowerWarror() => _countInStek * (_attack + _defence + _health);
 }
