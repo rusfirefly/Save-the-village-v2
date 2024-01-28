@@ -21,10 +21,7 @@ public class GameManager : MonoBehaviour
     private WarriorCamp _warriorCamp;
 
     private GameObject _trainigMessageText;
-    [SerializeField] private GameObject _workerPanel;
-    [SerializeField] private GameObject _warriorPanel;
     [SerializeField] private Text _powerPlayerText;
-    private Button button;
     [Header("Настройки для игры")]
     [SerializeField] private PlayerData _playerData;
     
@@ -41,8 +38,6 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         CreatePlayerBase();
-        ShowUnitsPanel(_workerPanel, false);
-        ShowUnitsPanel(_warriorPanel, false);
         FindCamps();
         CreateEventsCamp();
         FindMessageText();
@@ -95,9 +90,6 @@ public class GameManager : MonoBehaviour
         TrainigPanel.Traiding -= OnTarianigFinish;
         WorkMan.Working -= OnWorking;
         Mining.Work -= OnFinishMining;
-
-        _workingCamps.Selected -= OnSelectedWorking;
-        _warriorCamp.Selected -= OnSelectedWarrior;
     }
 
     private void FindCamps()
@@ -122,8 +114,12 @@ public class GameManager : MonoBehaviour
 
     private void CreateEventsCamp()
     {
-        _workingCamps.Selected += OnSelectedWorking;
-        _warriorCamp.Selected += OnSelectedWarrior;
+        SelectedBuilding.Selected += OnSelectedCamp;
+    }
+
+    private void OnSelectedCamp(GameObject gameObject)
+    {
+        TrainingMessage(show: false);
     }
 
     private void FindMessageText()
@@ -242,16 +238,10 @@ public class GameManager : MonoBehaviour
     public void DefaultStatePanel()
     {
         TrainingMessage(show: true);
-        AllCampsDeSelect();
-        ShowUnitsPanel(_workerPanel, false);
-        ShowUnitsPanel(_warriorPanel, false);
+       SelectedBuilding.AllCampsDeSelect();
     }
 
-    private void AllCampsDeSelect()
-    {
-        _warriorCamp.DeSelectedCamp();
-        _workingCamps.DeSelectedCamp();
-    }
+   
 
     private void NewGame()
     {
@@ -263,51 +253,6 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private void OnSelectedWorking()
-    {
-        TrainingMessage(show: false);
-        DeSelectedCamp(_warriorCamp);
-        ShowUnitsPanel(_warriorPanel, false);
-        ShowUnitsPanel(_workerPanel, true);
-    }
-
-    private void OnSelectedWarrior()
-    {
-        TrainingMessage(show:false);
-        DeSelectedCamp(_workingCamps);
-        ShowUnitsPanel(_workerPanel, false);
-        ShowUnitsPanel(_warriorPanel, true);
-    }
-
     private void TrainingMessage(bool show)=>_trainigMessageText.SetActive(show);
 
-    private void DeSelectedCamp(WorkingCamp camp)
-    {
-        if (camp.IsSelectedCamp())
-        {
-            camp.DeSelectedCamp();
-        }
-    }
-
-    private void DeSelectedCamp(WarriorCamp camp)
-    {
-        if (camp.IsSelectedCamp())
-        {
-            camp.DeSelectedCamp();
-        }
-    }
-
-    private void ShowUnitsPanel(GameObject panel, bool show)
-    {
-        RectTransform panelPos=null;
-        panelPos = panel.GetComponent<RectTransform>();
-        if (show)
-        {
-            panelPos.localPosition = new Vector3(0,panelPos.localPosition.y);
-        }else
-        {
-            panelPos.localPosition = new Vector3(450, panelPos.localPosition.y);
-        }
-
-    }
 }

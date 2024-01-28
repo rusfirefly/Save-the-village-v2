@@ -15,5 +15,6 @@ public interface ICamp
     bool IsSelectedCamp();
 
     void DeSelectedCamp();
+    void SelectetCamp();
 
 }

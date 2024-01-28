@@ -9,14 +9,16 @@ public class Warrior : MonoBehaviour
 {
     [SerializeField] private Animator _animator;
     [SerializeField] private NavMeshAgent _agent;
-    [SerializeField] private Text _countKnightText;
+    [SerializeField] private Text _countStekText;
     [SerializeField] private Transform _attackPoint;
     [SerializeField] private float _attackRange = 0.5f;
+    [SerializeField] private Image _healthImage;
     [SerializeField] private LayerMask _layerMask;
     [SerializeField] private float _attackSpeed = 0.5f;
     [SerializeField] private bool _drawGizmo;
     private float _nextAttackTime;
     [SerializeField] private Transform _tagetPosition;
+    
 
     [SerializeField] private float _countInStek;
     private float _countStekHealth;
@@ -26,14 +28,14 @@ public class Warrior : MonoBehaviour
     [SerializeField] private bool _isRun = true;
     private float _speedWarrior;
     private float _stepWarrior = 2;
-    private int _distance = 2;
+    [SerializeField] private int _distanceFindEnemy = 2;
     public bool firstWarrior { get; set; }
 
     private void Awake()
     {
         FindNavMeshAgent();
         SetupNavMeshAgent();
-        MoveTo();
+        Move();
         SetCountStek();
     }
 
@@ -84,7 +86,7 @@ public class Warrior : MonoBehaviour
     private void MoveToEnemy(Enemy enemy)
     {
         float dist = GetDistanceToEnmy(enemy);
-        if (CheckDistanceToEnemy(dist, _distance))
+        if (CheckDistanceToEnemy(dist, _distanceFindEnemy))
         {
             GoToEnemy(enemy);
         }
@@ -163,7 +165,7 @@ public class Warrior : MonoBehaviour
     public void IncrementStek()
     {
         _countInStek++;
-        _countKnightText.text = _countInStek.ToString("#");
+        _countStekText.text = _countInStek.ToString("#");
     }
 
     public void UpdateCharater(int hp, int def, int atk, int countStek)
@@ -178,10 +180,10 @@ public class Warrior : MonoBehaviour
 
     private void SetCountStek()
     {
-        if (_countKnightText == null) return;
+        if (_countStekText == null) return;
         _countStekHealth = _countInStek * _health;
-        if (_countInStek < 0) _countKnightText.text = "0";
-        _countKnightText.text = _countInStek.ToString("#");
+        if (_countInStek <= 0) _countInStek = 0;
+        _countStekText.text = _countInStek.ToString("#.#");
     }
 
     private void Die()
@@ -197,6 +199,7 @@ public class Warrior : MonoBehaviour
         SetTriggerAnimation("Hit");
         if (damage <= 0) return;
         _countInStek -= CalculateDamage(damage);
+        
         SetCountStek();
         if (_countInStek <= 0)
         {
@@ -206,6 +209,7 @@ public class Warrior : MonoBehaviour
     
     private float CalculateDamage(float damage)
     {
+        Debug.Log(damage);
         if (damage > _defence * _countInStek)
            return (damage - (_defence * _countInStek)) / _health;
         else
@@ -224,7 +228,7 @@ public class Warrior : MonoBehaviour
 
     private void SetBoolAnimation(string animation, bool value) => _animator.SetBool(animation, value);
     
-    private void MoveTo()
+    private void Move()
     {
         if(_isRun && _tagetPosition!=null)
             _agent.destination = _tagetPosition.position;
@@ -233,7 +237,7 @@ public class Warrior : MonoBehaviour
     public void GoToNewTargetPosition(Transform newPosition)
     {
         _tagetPosition = newPosition;
-        MoveTo();
+        Move();
     }
 
     public void FindEnemyPosition()

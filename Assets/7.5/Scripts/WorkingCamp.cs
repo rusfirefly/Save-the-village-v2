@@ -5,27 +5,37 @@ using UnityEngine;
 
 public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints
 {
-    public event Action Selected;
     public bool isTrainig { get; set; }
 
+    [SerializeField] private GameObject _workerPanel;
+    private RectTransform _workerPanelPosition;
     [SerializeField] private Transform _spawnPosition;
     [SerializeField] private GameObject _prefWorker;
     [SerializeField] private Material _outlineMaterial;
 
     [SerializeField] private Transform _castlePoints;
-
+    
     public Transform goldPosition { get; set; }
     public Transform meatPosition { get; set; }
     public Transform woodPosition { get; set; }
     public Transform castlePosition { get; set; }
-
+    
 
     private SpriteRenderer _spriteRender;
     private Material _default;
     private bool isSelected;
     private WorkMan _working;
 
-    void Start()=>SetDefaultMaterial();
+    void Start()
+    {
+        SetDefaultMaterial();
+        GetWorkerPosition();
+    }
+
+    private void GetWorkerPosition()
+    {
+        _workerPanelPosition = _workerPanel.GetComponent<RectTransform>();
+    }
 
     public void Training(Enums.UnitType type)
     {
@@ -54,6 +64,8 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints
     {
         isSelected = false;
         _spriteRender.material = _default;
+        HideWorkerPanel();
+        SelectedBuilding.selectedObject = null;
     }
 
     public WorkMan GetWorking() => _working;
@@ -78,11 +90,23 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints
 
     private void OnMouseDown()=>SelectetCamp();
 
-    private void SelectetCamp()
+    public void SelectetCamp()
     {
         isSelected = true;
         _spriteRender.material = _outlineMaterial;
-        Selected?.Invoke();
+        ShowWorkerPanel();
+        SelectedBuilding.OnSelected(gameObject);
     }
+
+    private void ShowWorkerPanel()
+    {
+        _workerPanelPosition.localPosition = new Vector3(0, _workerPanel.transform.localPosition.y);
+        
+    }
+    private void HideWorkerPanel()
+    {
+        _workerPanelPosition.localPosition = new Vector3(450, _workerPanel.transform.localPosition.y);
+    }
+
 
 }

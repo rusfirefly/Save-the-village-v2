@@ -31,7 +31,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3036244438360882527}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -79,7 +79,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 10
+  m_Text: 8,5
 --- !u!1 &1542209329521845562
 GameObject:
   m_ObjectHideFlags: 0
@@ -143,6 +143,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 35064905908100745}
+  - {fileID: 5081241186644356817}
   - {fileID: 6542296940888955511}
   m_Father: {fileID: 8434744279981544587}
   m_RootOrder: 1
@@ -213,6 +214,82 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!1 &6749586980567657737
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5081241186644356817}
+  - component: {fileID: 821231117548897113}
+  - component: {fileID: 5193614536548544722}
+  m_Layer: 0
+  m_Name: HealthImage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5081241186644356817
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6749586980567657737}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3036244438360882527}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0.4146}
+  m_SizeDelta: {x: 0, y: -2.7516}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &821231117548897113
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6749586980567657737}
+  m_CullTransparentMesh: 1
+--- !u!114 &5193614536548544722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6749586980567657737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.22643034, g: 0.6603774, b: 0.17132434, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 66ee8749aa57d8b4b9c28f6baead6234, type: 3}
+  m_Type: 3
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 0
+  m_FillAmount: 0
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &8434744279981544580
 GameObject:
   m_ObjectHideFlags: 0
@@ -362,7 +439,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.48
+  m_Radius: 0.47
 --- !u!50 &1542209329861842369
 Rigidbody2D:
   serializedVersion: 4
@@ -398,20 +475,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animator: {fileID: 8434744279981544581}
   _agent: {fileID: 0}
-  _countKnightText: {fileID: 1990312678026005454}
+  _countStekText: {fileID: 1990312678026005454}
   _attackPoint: {fileID: 1542209329521845565}
   _attackRange: 0.49
+  _healthImage: {fileID: 5193614536548544722}
   _layerMask:
     serializedVersion: 2
     m_Bits: 64
   _attackSpeed: 0.5
   _drawGizmo: 1
   _tagetPosition: {fileID: 0}
-  _countInStek: 10
-  _health: 2
-  _attack: 6
+  _countInStek: 8.46
+  _health: 8
+  _attack: 8
   _defence: 4
   _isRun: 1
+  _distanceFindEnemy: 2
 --- !u!1 &9134505962151784182
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,14 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class WarriorCamp : MonoBehaviour,ICamp
+public class WarriorCamp : MonoBehaviour, ICamp
 {
-    public Action Selected;
     public float trainingTime { get; set; }
     public float trainingPrice { get; set; }
     public bool isTrainig { get; set; }
     private bool isSelected;
 
+    [SerializeField] private GameObject _warriorPanel;
+    private RectTransform _warriorPanelPosition;
     [SerializeField] private Transform _spawnPosition;
     [SerializeField] private GameObject _prefKnight;
     [SerializeField] private GameObject _prefArch;
@@ -26,16 +27,22 @@ public class WarriorCamp : MonoBehaviour,ICamp
     void Start()
     {
         SetDefaultMaterial();
+        GetWorkerPosition();
+    }
 
+    private void GetWorkerPosition()
+    {
+        _warriorPanelPosition = _warriorPanel.GetComponent<RectTransform>();
     }
 
     public void NewSpawnPosition(Transform newSpawnPosition)
     {
-
+        _spawnPosition = newSpawnPosition;
     }
 
     public void Training(Enums.UnitType type)
     {
+        
         CreateNewKnight();
     }
 
@@ -43,7 +50,7 @@ public class WarriorCamp : MonoBehaviour,ICamp
     {
         GameObject newWarrior = Instantiate(_prefKnight, _spawnPosition.transform.position, Quaternion.identity);
         _warrior = newWarrior.GetComponent<Warrior>();
-        SetCharacteristicsWarrior(2,2,4);
+        SetCharacteristicsWarrior(2,3,4);
         _warrior.GoToNewTargetPosition(_targetPosition);
     }
 
@@ -64,13 +71,13 @@ public class WarriorCamp : MonoBehaviour,ICamp
     {
         isSelected = false;
         _spriteRender.material = _default;
+        HideWorkerPanel();
+        SelectedBuilding.selectedObject = null;
     }
 
     private void OnMouseDown()
     {
-        isSelected = true;
-        _spriteRender.material = _outlineMaterial;
-        Selected?.Invoke();
+        SelectetCamp();
     }
 
     private void SetDefaultMaterial()
@@ -80,8 +87,22 @@ public class WarriorCamp : MonoBehaviour,ICamp
 
     }
 
-    public void Training()
+    public void SelectetCamp()
     {
-        
+        isSelected = true;
+        _spriteRender.material = _outlineMaterial;
+        ShowWorkerPanel();
+        SelectedBuilding.OnSelected(gameObject);
     }
+
+    private void ShowWorkerPanel()
+    {
+        _warriorPanelPosition.localPosition = new Vector3(0, _warriorPanel.transform.localPosition.y);
+
+    }
+    private void HideWorkerPanel()
+    {
+        _warriorPanelPosition.localPosition = new Vector3(450, _warriorPanel.transform.localPosition.y);
+    }
+
 }
