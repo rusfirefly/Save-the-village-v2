@@ -13,12 +13,13 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     [SerializeField] private GameObject _fire;
 
     [SerializeField] private Text _castleInfoText;
-    [SerializeField] private Button _repeirButton;
+    [SerializeField] private Text _repairPriceText;
+    [SerializeField] private Button _repairButton;
     [SerializeField] private Material _outlineMaterial;
     private SpriteRenderer _spriteRender;
     private Material _default;
 
-    private int _countWoodForRepairPrice = 100;
+    [SerializeField] private int _countWoodForRepairPrice = 100;
 
     private float _timeRepair = 10f;
     private float _currentTime;
@@ -29,39 +30,52 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     public void Start()
     {
         SetDefaultMaterial();
-        _repeirButton.onClick += RepearCastle;///доелатьььь!!!!
+        CreateListenerEvent();
         _fullHealth = _health;
+        SetCastleHealth();
+        SetRepairText();
     }
+    
+    private void SetCastleHealth()
+    {
+        _percentHealth = _health / _fullHealth * 100;
+        _castleInfoText.text = $"Замок:\nHP:{Math.Round(_percentHealth)}%";
+    }
+    
+    private void SetRepairText()=> _repairPriceText.text = $"Ремонт:\n{_countWoodForRepairPrice}";
+    private void CreateListenerEvent()=> _repairButton.onClick.AddListener(RepearCastle);
 
     public void TakeDamage(float damage)
     {
         OnCastleAttaking();
         _health -= damage;
-        _percentHealth = _health / _fullHealth * 100;
-        _castleInfoText.text = $"Замок:\n{_percentHealth}%";
+        SetCastleHealth();
 
         if (_percentHealth <= 80f)
             CasetleOnFire();
 
-        if (_health <= 0)
-        {
-            GameOver();
-        }
+        IsGameOver();
     }
+    
     
     private void OnCastleAttaking()=> CastleAttaking?.Invoke();
 
-    private void GameOver()
+    private void IsGameOver()
     {
-        Debug.Log("Game Over!");
-        SetBoolAnimation("IsDestroed", true);
+        if (_health <= 0)
+        {
+            Debug.Log("Game Over!");
+            SetBoolAnimation("IsDestroed", true);
+        }
     }
 
     private void OnMouseDown()
     {
         Selectet();
     }
+
     public bool IsSelected() => isSelected;
+
     private void CasetleOnFire()
     {
         _fire.gameObject.SetActive(true);
@@ -70,6 +84,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     private void OnValidate()
     {
         GetAniamtion();
+
     }
 
     private void GetAniamtion() => _animator ??= GetComponent<Animator>();
@@ -80,7 +95,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 
     private void RepearCastle()
     {
-
+        Debug.Log("ok");
     }
 
     public void Selectet()
@@ -99,12 +114,13 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 
     public void ShowRepairButton()
     {
-        _repeirButton.gameObject.SetActive(true);
+        _repairButton.gameObject.SetActive(true);
+        _repairPriceText.text = $"Ремонт:\n{_countWoodForRepairPrice}";
     }
 
     private void HideRepairButton()
     {
-        _repeirButton.gameObject.SetActive(false);
+        _repairButton.gameObject.SetActive(false);
     }
     private void SetDefaultMaterial()
     {

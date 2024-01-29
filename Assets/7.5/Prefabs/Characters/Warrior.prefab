@@ -404,7 +404,7 @@ MonoBehaviour:
   _healthImage: {fileID: 0}
   _layerMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 320
   _attackSpeed: 0.4
   _drawGizmo: 1
   _tagetPosition: {fileID: 0}

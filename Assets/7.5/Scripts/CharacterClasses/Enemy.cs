@@ -7,8 +7,8 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Animator))]
 public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
 {
-    private enum TypeEnym {Knight, TNT, Torch};
-    [SerializeField] TypeEnym _typeEnym;
+    public enum TypeEnym {Knight, TNT, Torch};
+    [SerializeField] private TypeEnym _typeEnym;
     [SerializeField] private Animator _animator;
     [SerializeField] private NavMeshAgent _agent;
     [SerializeField] private Text _countKnightText;
@@ -83,6 +83,7 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
         _agent.updateUpAxis = false;
     }
 
+    
     private void MoveToWarrior(Warrior warrior)
     {
         float dist = GetDistanceToWarrior(warrior);
@@ -91,6 +92,8 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
             RunToWarrior(warrior);
         }
     }
+
+    public TypeEnym GetTypeEnemy() => _typeEnym;
 
     private bool CheckDistanceToWarrior(float currentDistance, float distance)
     {
@@ -133,8 +136,8 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
 
         foreach (Collider2D warrior in hitWarriors)
         {
-            StopAgent();
-            Attack(warrior);
+             StopAgent();
+             Attack(warrior);
         }
     }
 
@@ -290,7 +293,7 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
 
     public void FindEnemyPosition()
     {
-        Enemy[] enemys = GameObject.FindObjectsOfType<Enemy>();
+        Enemy[] enemys = FindObjectsOfType<Enemy>();
         foreach (Enemy enemy in enemys)
             _agent.destination = enemy.gameObject.transform.position;
     }
