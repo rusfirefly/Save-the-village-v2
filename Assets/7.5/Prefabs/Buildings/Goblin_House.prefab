@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7370313384509935577}
   - component: {fileID: 7748121050106124682}
+  - component: {fileID: 1430989857}
   m_Layer: 0
   m_Name: Goblin_House
   m_TagString: Untagged
@@ -85,6 +86,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1430989857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5004120092347943914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68a0b0328ffdca04d9b6476c1d8bb8e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _prefabEnemys:
+  - {fileID: 5739161013799606382, guid: 88b17cfb1cb69dc41a42999a5015b691, type: 3}
+  - {fileID: 1866467528059338786, guid: a739c58b7a315c24885059124dd27793, type: 3}
+  - {fileID: 8326569285529444885, guid: 8674171c65bb12a449954a8593552717, type: 3}
+  _targetPosition: {fileID: 0}
+  _spawnPosition: {fileID: 8074148493118231572}
+  _playerData: {fileID: 11400000, guid: 0fe396b4a36645042aba21e9fdf365bd, type: 2}
+  _cycleWaveText: {fileID: 0}
+  _powerEnemysText: {fileID: 0}
+  _countEnemysText: {fileID: 0}
 --- !u!1 &8074148493118231571
 GameObject:
   m_ObjectHideFlags: 0

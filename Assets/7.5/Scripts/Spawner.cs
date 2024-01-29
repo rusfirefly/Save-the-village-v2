@@ -3,21 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = System.Random;
 
 public class Spawner : MonoBehaviour
 {
     private float _currentTime;
-    [SerializeField] private GameObject _prefabEnemy;
+    [SerializeField] private GameObject[] _prefabEnemys;
     [SerializeField] private Transform _targetPosition;
     [SerializeField] private Transform _spawnPosition;
     [SerializeField] private PlayerData _playerData;
     [SerializeField] private Text _cycleWaveText;
     [SerializeField] private Text _powerEnemysText;
     [SerializeField] private Text _countEnemysText;
+
     private int _countStekEnemy;
     private float _timeSpawn;
+    private Random _randomEnemy;
     private void Awake()
     {
+        _randomEnemy = new Random();
         _playerData.numberWave = 1;
         _countStekEnemy = 1;
         _countEnemysText.text = $"Колво врагов в слудующем набеге: {_countStekEnemy}";
@@ -47,9 +51,11 @@ public class Spawner : MonoBehaviour
 
     private void SpawnEnemy(int countEnemy)
     {
-        Enemy enemy  = Instantiate(_prefabEnemy, _spawnPosition.position, Quaternion.identity).GetComponent<Enemy>();
+        int countEnemys = _prefabEnemys.Length;
+        int indexEnemy = _randomEnemy.Next(0,countEnemys);
+        Enemy enemy  = Instantiate(_prefabEnemys[indexEnemy], _spawnPosition.position, Quaternion.identity).GetComponent<Enemy>();
         enemy.SetTargetPosition(_targetPosition);
-        enemy.InitEnemy(1,2,2, countEnemy);
+        enemy.InitEnemy(countEnemy);
 
         _playerData.powerEnemys = enemy.GetPowerEnemy();
         _powerEnemysText.text = $"Сила врага: {_playerData.powerEnemys}";

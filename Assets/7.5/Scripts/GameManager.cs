@@ -79,11 +79,13 @@ public class GameManager : MonoBehaviour
     
     private void OnCastleAttaking()
     {
-        Warrior[] warriors = GameObject.FindObjectsOfType<Warrior>();
+        Debug.Log("Замок атакуют!!!");
+        Warrior[] warriors = FindObjectsOfType<Warrior>();
         foreach (Warrior knight in warriors)
             knight.FindEnemyPosition();
     }
 
+    
     private void RemoveListenerEvents()
     {
         TrainigPanel.Bounten -= OnBounten;

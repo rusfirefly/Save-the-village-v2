@@ -26,11 +26,11 @@ MonoBehaviour:
   goldMiningPerCycle: 9
   meatMiningPerCycle: 6
   woodMiningPerCycle: 2
-  timeGoldMine: 15
+  timeGoldMine: 5
   timeMeatMine: 10
   timeWoodMine: 15
-  numberWave: 5
-  waveCycleTime: 10
+  numberWave: 1
+  waveCycleTime: 500
   countEnemyNextWave: 0
-  powerEnemys: 20
-  powerWarriors: 40
+  powerEnemys: 0
+  powerWarriors: 0
