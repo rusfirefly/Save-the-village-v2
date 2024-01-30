@@ -6,7 +6,7 @@ public class PlayerBase
 {
     public static int gold { get; private set; }
     public static int meat { get; private set; }
-    public static int wood { get; private set; }
+    public static int wood { get; set; }
 
     public int workersCount { get; private set; }
     public int warriorsCount { get; private set; }

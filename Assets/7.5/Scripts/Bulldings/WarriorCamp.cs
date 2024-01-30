@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
@@ -49,6 +50,7 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
     private void CreateNewKnight()
     {
         GameObject newWarrior = Instantiate(_prefKnight, _spawnPosition.transform.position, Quaternion.identity);
+        //звук- воин готов
         _warrior = newWarrior.GetComponent<Warrior>();
         SetCharacteristicsWarrior(2,3,4);
         _warrior.GoToNewTargetPosition(_targetPosition);
@@ -76,6 +78,7 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
 
     private void OnMouseDown()
     {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
         Selectet();
     }
 
@@ -83,7 +86,6 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
     {
         _spriteRender = gameObject.GetComponent<SpriteRenderer>();
         _default = _spriteRender.material;
-
     }
 
     public void Selectet()

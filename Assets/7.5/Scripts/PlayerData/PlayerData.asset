@@ -25,12 +25,10 @@ MonoBehaviour:
   archerEatTimer: 0
   goldMiningPerCycle: 9
   meatMiningPerCycle: 6
-  woodMiningPerCycle: 2
+  woodMiningPerCycle: 50
   timeGoldMine: 5
   timeMeatMine: 10
-  timeWoodMine: 15
+  timeWoodMine: 2
   numberWave: 3
-  waveCycleTime: 30
+  waveCycleTime: 15
   countEnemyNextWave: 0
-  powerEnemys: 14
-  powerWarriors: 18

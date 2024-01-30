@@ -42,6 +42,7 @@ public class CameraMove : MonoBehaviour
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - scroll * _zoomSpeed, _minZoom, _maxZoom);
     }
+
     private void SetNewPosition(Vector3 newPosition)
     {
         _newPosition = newPosition;

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
 {
@@ -88,7 +89,11 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
         _working.NewStartPosition(_spawnPosition);
     }
 
-    private void OnMouseDown()=>Selectet();
+    private void OnMouseDown()
+    {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+        Selectet();
+    }
 
     public void Selectet()
     {

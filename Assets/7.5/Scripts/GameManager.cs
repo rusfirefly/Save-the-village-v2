@@ -70,18 +70,25 @@ public class GameManager : MonoBehaviour
         WorkMan.Working += OnWorking;
         Mining.Work += OnFinishMining;
 
-        Castle.CastleAttaking += OnCastleAttaking;
+        Castle.Attacked += OnCastleAttaked;
+        Castle.Destroyed += OnCastleDestroyed;
     }
     
-    private void OnCastleAttaking()
+    private void OnCastleAttaked()
     {
         Debug.Log("Замок атакуют!!! Собрать всех воинов!");
+        //звук - замок атакуют милорд
         Warrior[] warriors = FindObjectsOfType<Warrior>();
         foreach (Warrior knight in warriors)
             knight.FindEnemyPosition();
     }
 
-    
+    private void OnCastleDestroyed()
+    {
+        //звук - музыка game over
+        GameOver();
+    }
+
     private void RemoveListenerEvents()
     {
         TrainigPanel.Bounten -= OnBounten;
@@ -179,6 +186,8 @@ public class GameManager : MonoBehaviour
 
     private void OnTarianigFinish(Enums.UnitType type)
     {
+        //звук - воин готов к защите
+        //звук - работик готов
 
         switch(type)
         {
@@ -199,6 +208,7 @@ public class GameManager : MonoBehaviour
 
     private void OnWorking(GameObject workMan, Collider2D collider)
     {
+        //звук - приступаю к работе
         string tag = collider.gameObject.tag;
         switch (tag)
         {
@@ -245,7 +255,7 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
-
+        GameMenu.menuInstance.PauseMenu();
     }
 
     private void TrainingMessage(bool show)=>_trainigMessageText.SetActive(show);
