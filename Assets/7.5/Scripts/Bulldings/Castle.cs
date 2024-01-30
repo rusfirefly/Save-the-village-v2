@@ -39,6 +39,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     private void SetCastleHealth()
     {
         _percentHealth = _health / _fullHealth * 100;
+        Debug.Log(_percentHealth);
         _castleInfoText.text = $"Замок:\nHP:{Math.Round(_percentHealth)}%";
     }
     
@@ -49,6 +50,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     {
         OnCastleAttaking();
         _health -= damage;
+        
         SetCastleHealth();
 
         if (_percentHealth <= 80f)

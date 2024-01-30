@@ -38,9 +38,4 @@ public class PlayerData : ScriptableObject
     public int numberWave;
     public float waveCycleTime;
     public int countEnemyNextWave;
-
-    [Header("“екущ€€ сила юнитов")]
-    public float powerEnemys;
-    public float powerWarriors;
-
 }

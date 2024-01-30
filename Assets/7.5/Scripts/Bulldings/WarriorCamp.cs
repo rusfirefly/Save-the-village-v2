@@ -57,7 +57,6 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
     private void SetCharacteristicsWarrior(int hp, int def, int atk)
     {
         _warrior.UpdateCharater(hp, def, atk, 1);
-        _playerData.powerWarriors += _warrior.GetPowerWarror();
     }
     
     public void SetFirstWarrior() => _warrior.firstWarrior = true;

@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerBase: IStorage
+public class PlayerBase 
 {
     public static int gold { get; private set; }
-    private int _meat;
+    public static int meat { get; private set; }
     public static int wood { get; private set; }
 
     public int workersCount { get; private set; }
@@ -18,7 +18,7 @@ public class PlayerBase: IStorage
     public PlayerBase(int initGoldCount, int initMeatCount, int initWoodCount)
     {
         gold = initGoldCount;
-        _meat = initMeatCount;
+        meat = initMeatCount;
         wood = initWoodCount;
 
         workersCount = 0;
@@ -35,23 +35,12 @@ public class PlayerBase: IStorage
 
     public void UpdateMeat(int newMeatCount)
     {
-        _meat += newMeatCount;
+        meat += newMeatCount;
     }
 
     public void UpdateWood(int newWoodCount)
     {
         wood += newWoodCount;
-    }
-
-
-    public int GetMeat()
-    {
-        return _meat;
-    }
-
-    public int GetWood()
-    {
-        return wood;
     }
 
     public void AddUnitToBase(Enums.UnitType type)

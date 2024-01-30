@@ -21,7 +21,6 @@ public class Warrior : MonoBehaviour, IDamageable, IMovable, IAttack
 
 
     [SerializeField] private float _countInStek;
-    private float _countStekHealth;
     [SerializeField] private int _health = 1;
     [SerializeField] private int _attack = 1;
     [SerializeField] private int _defence = 1;
@@ -36,7 +35,7 @@ public class Warrior : MonoBehaviour, IDamageable, IMovable, IAttack
         FindNavMeshAgent();
         SetupNavMeshAgent();
         Move(_tagetPosition);
-        SetCountStek();
+        ViewCountStek();
     }
 
     private void Update()
@@ -56,7 +55,7 @@ public class Warrior : MonoBehaviour, IDamageable, IMovable, IAttack
 
     private void OnValidate()
     {
-        SetCountStek();
+        ViewCountStek();
         GetAniamtion();
     }
 
@@ -176,13 +175,12 @@ public class Warrior : MonoBehaviour, IDamageable, IMovable, IAttack
         _attack = atk;
         _defence = def;
 
-        SetCountStek();
+        ViewCountStek();
     }
 
-    private void SetCountStek()
+    private void ViewCountStek()
     {
         if (_countStekText == null) return;
-        _countStekHealth = _countInStek * _health;
         if (_countInStek <= 0) _countInStek = 0;
         _countStekText.text = _countInStek.ToString("#.#");
     }
@@ -199,16 +197,16 @@ public class Warrior : MonoBehaviour, IDamageable, IMovable, IAttack
     {
         SetTriggerAnimation("Hit");
         if (damage <= 0) return;
-        _countInStek -= CalculateDamage(damage);
-
-        SetCountStek();
+        _countInStek -= DeathEnemys(damage);
+        //Debug.Log($"Погибло воинов: {_countInStek}");
+        ViewCountStek();
         if (_countInStek <= 0)
         {
             Die();
         }
     }
 
-    private float CalculateDamage(float damage)
+    private float DeathEnemys(float damage)
     {
         if (damage > _defence * _countInStek)
             return (damage - (_defence * _countInStek)) / _health;

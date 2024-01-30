@@ -21,7 +21,6 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
     [SerializeField] private Transform _tagetPosition;
 
     [SerializeField] private float _countInStek;
-    private float _countStekHealth;
     [SerializeField] private int _health = 1;
     [SerializeField] private int _attack = 1;
     [SerializeField] private int _defence = 1;
@@ -210,7 +209,6 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
     private void SetCountStek()
     {
         if (_countKnightText == null) return;
-        _countStekHealth = _countInStek * _health;
         if (_countInStek < 0) _countKnightText.text = "0";
         _countKnightText.text = _countInStek.ToString("#");
     }
@@ -230,7 +228,8 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
 
         if (damage <= 0) return;
 
-        _countInStek -= CalculateDamage(damage);
+        _countInStek -= DeathEnemys(damage);
+        //Debug.Log($"Погибло врагов: {_countInStek}");
         SetCountStek();
         if (_countInStek <= 0)
         {
@@ -259,7 +258,7 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
         Move(_tagetPosition);
     }
 
-    private float CalculateDamage(float damage)
+    private float DeathEnemys(float damage)
     {
         if (damage > _defence * _countInStek)
             return (damage - (_defence * _countInStek)) / _health;

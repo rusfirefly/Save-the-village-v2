@@ -13,17 +13,21 @@ public class Spawner : MonoBehaviour
     [SerializeField] private Transform _spawnPosition;
     [SerializeField] private PlayerData _playerData;
     [SerializeField] private Text _cycleWaveText;
-    [SerializeField] private Text _powerEnemysText;
     [SerializeField] private Text _countEnemysText;
 
     private int _countStekEnemy;
     private float _timeSpawn;
     private Random _randomEnemy;
+    private int _countEnemysInWave;
+    private int _indexEnemyRand;
+
     private void Awake()
     {
         _randomEnemy = new Random();
         _playerData.numberWave = 1;
         _countStekEnemy = 1;
+        _countEnemysInWave = _prefabEnemys.Length;
+        _indexEnemyRand = _randomEnemy.Next(0, _countEnemysInWave);
         _countEnemysText.text = $"Колво врагов в слудующем набеге: {_countStekEnemy}";
     }
 
@@ -31,6 +35,7 @@ public class Spawner : MonoBehaviour
     {
         UpdateSpawn();
     }
+
     public void UpdateSpawn()
     {
         _currentTime += Time.deltaTime;
@@ -51,14 +56,12 @@ public class Spawner : MonoBehaviour
 
     private void SpawnEnemy(int countEnemy)
     {
-        int countEnemys = _prefabEnemys.Length;
-        int indexEnemy = _randomEnemy.Next(0,countEnemys);
-        Enemy enemy  = Instantiate(_prefabEnemys[indexEnemy], _spawnPosition.position, Quaternion.identity).GetComponent<Enemy>();
+        Enemy enemy  = Instantiate(_prefabEnemys[_indexEnemyRand], _spawnPosition.position, Quaternion.identity).GetComponent<Enemy>();
         enemy.SetTargetPosition(_targetPosition);
         enemy.InitEnemy(countEnemy);
 
-        _playerData.powerEnemys = enemy.GetPowerEnemy();
-        _powerEnemysText.text = $"Сила врага: {_playerData.powerEnemys}";
+        _countEnemysInWave = _prefabEnemys.Length;
+        _indexEnemyRand = _randomEnemy.Next(0, _countEnemysInWave);
 
         Enemy[] enemys = GameObject.FindObjectsOfType<Enemy>();
         if (enemys.Length == 1)

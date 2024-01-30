@@ -21,10 +21,8 @@ public class GameManager : MonoBehaviour
     private WarriorCamp _warriorCamp;
 
     private GameObject _trainigMessageText;
-    [SerializeField] private Text _powerPlayerText;
     [Header("Настройки для игры")]
     [SerializeField] private PlayerData _playerData;
-    
 
     [Header("Позиции объектов")]
     [SerializeField] private Transform _castlePosition;
@@ -41,8 +39,6 @@ public class GameManager : MonoBehaviour
         FindCamps();
         CreateEventsCamp();
         FindMessageText();
-        _playerData.powerWarriors = 0;
-        _playerData.powerEnemys = 0;
     }
 
     private void Start()
@@ -79,7 +75,7 @@ public class GameManager : MonoBehaviour
     
     private void OnCastleAttaking()
     {
-        Debug.Log("Замок атакуют!!!");
+        Debug.Log("Замок атакуют!!! Собрать всех воинов!");
         Warrior[] warriors = FindObjectsOfType<Warrior>();
         foreach (Warrior knight in warriors)
             knight.FindEnemyPosition();
@@ -137,11 +133,10 @@ public class GameManager : MonoBehaviour
     private void UpdateStoragePanel()
     {
         _workerText.text = _playerBase.workersCount.ToString();
-        _powerPlayerText.text = $"Сила игрока: {_playerData.powerWarriors}";
         _wariorText.text = _playerBase.warriorsCount.ToString();
         _goldText.text = PlayerBase.gold.ToString();
-        _meatText.text = _playerBase.GetMeat().ToString();
-        _woodText.text = _playerBase.GetWood().ToString();
+        _meatText.text = PlayerBase.meat.ToString();
+        _woodText.text = PlayerBase.wood.ToString();
     }
 
     private void OnFinishMining(string tag)
@@ -242,8 +237,6 @@ public class GameManager : MonoBehaviour
         TrainingMessage(show: true);
        SelectedBuilding.AllCampsDeSelect();
     }
-
-   
 
     private void NewGame()
     {

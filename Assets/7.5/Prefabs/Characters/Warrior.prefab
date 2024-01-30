@@ -408,7 +408,7 @@ MonoBehaviour:
   _attackSpeed: 0.4
   _drawGizmo: 1
   _tagetPosition: {fileID: 0}
-  _countInStek: 10
+  _countInStek: 1
   _health: 2
   _attack: 5
   _defence: 6
