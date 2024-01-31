@@ -14,6 +14,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private PlayerData _playerData;
     [SerializeField] private Text _cycleWaveText;
     [SerializeField] private Text _countEnemysText;
+    [SerializeField] private SoundSpawn _sound;
 
     private int _countStekEnemy;
     private float _timeSpawn;
@@ -29,6 +30,7 @@ public class Spawner : MonoBehaviour
         _countEnemysInWave = _prefabEnemys.Length;
         _indexEnemyRand = _randomEnemy.Next(0, _countEnemysInWave);
         _countEnemysText.text = $"Колво врагов в слудующем набеге: {_countStekEnemy}";
+        _sound = gameObject.GetComponent<SoundSpawn>();
     }
 
     private void Update()
@@ -38,6 +40,7 @@ public class Spawner : MonoBehaviour
 
     public void UpdateSpawn()
     {
+        if (GameMenu.isPaused) return;
         _currentTime += Time.deltaTime;
         _timeSpawn = _playerData.waveCycleTime - _currentTime;
         TimeSpan TS = new TimeSpan(0, 0, Mathf.RoundToInt(_timeSpawn));
@@ -46,6 +49,7 @@ public class Spawner : MonoBehaviour
         if (_currentTime>= _playerData.waveCycleTime)
         {
             SpawnEnemy(_countStekEnemy);
+            _sound.PlaySound();
             _countStekEnemy ++;
             _countEnemysText.text = $"Колво врагов в следующем набеге: {_countStekEnemy}";
             _playerData.numberWave++;

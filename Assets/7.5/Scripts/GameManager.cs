@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     private WorkingCamp _workingCamps;
     private WarriorCamp _warriorCamp;
 
-    private GameObject _trainigMessageText;
+    [SerializeField] private GameObject _trainigMessageText;
     [Header("Настройки для игры")]
     [SerializeField] private PlayerData _playerData;
 
@@ -38,7 +38,6 @@ public class GameManager : MonoBehaviour
         CreatePlayerBase();
         FindCamps();
         CreateEventsCamp();
-        FindMessageText();
     }
 
     private void Start()
@@ -76,8 +75,6 @@ public class GameManager : MonoBehaviour
     
     private void OnCastleAttaked()
     {
-        Debug.Log("Замок атакуют!!! Собрать всех воинов!");
-        //звук - замок атакуют милорд
         Warrior[] warriors = FindObjectsOfType<Warrior>();
         foreach (Warrior knight in warriors)
             knight.FindEnemyPosition();
@@ -125,11 +122,6 @@ public class GameManager : MonoBehaviour
     private void OnSelectedCamp(GameObject gameObject)
     {
         TrainingMessage(show: false);
-    }
-
-    private void FindMessageText()
-    {
-        _trainigMessageText = GameObject.Find("TrainigMessageText");
     }
 
     private void CreatePlayerBase()
@@ -255,7 +247,7 @@ public class GameManager : MonoBehaviour
 
     private void GameOver()
     {
-        GameMenu.menuInstance.PauseMenu();
+        GameMenu.menuInstance.ShowGameOverMenu();
     }
 
     private void TrainingMessage(bool show)=>_trainigMessageText.SetActive(show);

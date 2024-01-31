@@ -28,6 +28,7 @@ public class CameraMove : MonoBehaviour
         
     private void MoveCamera()
     {
+        if (GameMenu.isPaused) return;
         Vector3 move = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0);
         _newPosition += move * _speed * Time.deltaTime;
         
@@ -39,6 +40,7 @@ public class CameraMove : MonoBehaviour
 
     private void ZoomCamera()
     {
+        if (GameMenu.isPaused) return;
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - scroll * _zoomSpeed, _minZoom, _maxZoom);
     }

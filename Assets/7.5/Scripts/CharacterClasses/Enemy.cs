@@ -176,7 +176,10 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
     private void TakeDamage(Collider2D unit)
     {
         if (unit.gameObject.tag == "Castle")
+        {
             unit.GetComponent<Castle>().TakeDamage(_attack * _countInStek);
+            _distance = 0;
+        }
         else
             unit.GetComponent<Warrior>().TakeDamage(_attack * _countInStek);
 

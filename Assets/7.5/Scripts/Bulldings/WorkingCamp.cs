@@ -13,24 +13,24 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
     [SerializeField] private Transform _spawnPosition;
     [SerializeField] private GameObject _prefWorker;
     [SerializeField] private Material _outlineMaterial;
-
     [SerializeField] private Transform _castlePoints;
+    [SerializeField] private SoundBulding _sound;
     
     public Transform goldPosition { get; set; }
     public Transform meatPosition { get; set; }
     public Transform woodPosition { get; set; }
     public Transform castlePosition { get; set; }
     
-
     private SpriteRenderer _spriteRender;
     private Material _default;
-    private bool isSelected;
+    private bool _isSelected;
     private WorkMan _working;
 
     void Start()
     {
         SetDefaultMaterial();
         GetWorkerPosition();
+        _sound = gameObject.GetComponent<SoundBulding>();
     }
 
     private void GetWorkerPosition()
@@ -59,11 +59,11 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
 
     private void TargetForWork(Transform position)=> _working.SetNewPosition(position);
     public void NewSpawnPosition(Transform newSpawnPosition)=>_spawnPosition = newSpawnPosition;
-    public bool IsSelected()=> isSelected;
+    public bool IsSelected()=> _isSelected;
 
     public void DeSelected()
     {
-        isSelected = false;
+        _isSelected = false;
         _spriteRender.material = _default;
         HideWorkerPanel();
         SelectedBuilding.selectedObject = null;
@@ -97,10 +97,14 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
 
     public void Selectet()
     {
-        isSelected = true;
-        _spriteRender.material = _outlineMaterial;
-        ShowWorkerPanel();
-        SelectedBuilding.OnSelected(gameObject);
+        if (!_isSelected)
+        {
+            _sound.PlaySound();
+            _isSelected = true;
+            _spriteRender.material = _outlineMaterial;
+            ShowWorkerPanel();
+            SelectedBuilding.OnSelected(gameObject);
+        }
     }
 
     private void ShowWorkerPanel()

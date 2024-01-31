@@ -24,11 +24,13 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
     private SpriteRenderer _spriteRender;
     private Material _default;
     private Warrior _warrior;
+    [SerializeField] private SoundBulding _sound;
 
     void Start()
     {
         SetDefaultMaterial();
         GetWorkerPosition();
+        _sound = gameObject.GetComponent<SoundBulding>();
     }
 
     private void GetWorkerPosition()
@@ -90,10 +92,14 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
 
     public void Selectet()
     {
-        _isSelected = true;
-        _spriteRender.material = _outlineMaterial;
-        ShowWorkerPanel();
-        SelectedBuilding.OnSelected(gameObject);
+        if (!_isSelected)
+        {
+            _isSelected = true;
+            _sound.PlaySound();
+            _spriteRender.material = _outlineMaterial;
+            ShowWorkerPanel();
+            SelectedBuilding.OnSelected(gameObject);
+        }
     }
 
     private void ShowWorkerPanel()

@@ -25,10 +25,12 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     private Material _default;
 
     [SerializeField] private int _countWoodForRepairPrice = 100;
+    private SoundCastle _soundCastle;
 
     private float _timeRepair = 10f;
     private bool _isRepair;
     private bool _isFire;
+    private bool _isAttacking;
     private float _currentTime;
     private float _percentHealth;
     private Animator _animator;
@@ -41,29 +43,30 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
         _fullHealth = _health;
         SetCastleHealth();
         SetRepairText();
+        _soundCastle = gameObject.GetComponent<SoundCastle>();
     }
-    
+
     private void SetCastleHealth()
     {
         _percentHealth = _health / _fullHealth * 100;
-        Debug.Log(_percentHealth);
         _castleInfoText.text = $"Замок:\nHP:{Math.Round(_percentHealth)}%";
     }
 
-    private void SetRepairText()=> _repairPriceText.text = $"Ремонт:\n{_countWoodForRepairPrice}";
+    private void SetRepairText() => _repairPriceText.text = $"Ремонт:\n{_countWoodForRepairPrice}";
 
-    private void CreateListenerEvent()=> _repairButton.onClick.AddListener(RepearCastle);
+    private void CreateListenerEvent() => _repairButton.onClick.AddListener(RepearCastle);
 
     public void TakeDamage(float damage)
     {
         OnCastleAttaking();
         _health -= damage;
-        
+
         SetCastleHealth();
 
-        if (_percentHealth <= 80f)
+        if (_percentHealth <= 80f && !_isFire)
         {
             SetCasetleFire(true);
+            _soundCastle.PlaySoundCastleInFire();
         }
 
         IsGameOver();
@@ -71,11 +74,11 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 
     private void Update()
     {
-        if(PlayerBase.wood >= _countWoodForRepairPrice && _health < _fullHealth && !_isRepair)
+        if (PlayerBase.wood >= _countWoodForRepairPrice && _health < _fullHealth && !_isRepair)
         {
             _repairButton.enabled = true;
             _activeButton.gameObject.SetActive(false);
-        }else
+        } else
         {
             _repairButton.enabled = false;
             _activeButton.gameObject.SetActive(true);
@@ -85,10 +88,11 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 
         _currentTime += Time.deltaTime;
         _progressBar.fillAmount = _currentTime / _timeRepair;
-        if (_currentTime>=_timeRepair)
+        if (_currentTime >= _timeRepair)
         {
             _health = _fullHealth;
-            //звук - починка завершена
+            _soundCastle.PlayeSoundCastleRepair();
+            _isAttacking = false;
             SetCastleHealth();
             SetCasetleFire(false);
             _progressBar.fillAmount = 0;
@@ -98,7 +102,15 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
         }
     }
 
-    private void OnCastleAttaking()=> Attacked?.Invoke();
+    private void OnCastleAttaking()
+    {
+        if (!_isAttacking)
+        {
+            _soundCastle.PlayeSoundWarning();
+            _isAttacking = true;
+        }
+        Attacked?.Invoke();
+    }
 
     private void IsGameOver()
     {
@@ -136,16 +148,14 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 
     private void RepearCastle()
     {
-        if(_health == _fullHealth)
-        {
-            //звук - ремонт не требуется
-        }
-
         if(PlayerBase.wood>=_countWoodForRepairPrice)
         {
             _progressBarPanel.SetActive(true);
             PlayerBase.wood -= _countWoodForRepairPrice;
             _isRepair = true;
+        }else
+        {
+            _soundCastle.PlayeSoundNeedWood();
         }
     }
 
