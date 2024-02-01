@@ -14,7 +14,7 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
     [SerializeField] private GameObject _prefWorker;
     [SerializeField] private Material _outlineMaterial;
     [SerializeField] private Transform _castlePoints;
-    [SerializeField] private SoundBulding _sound;
+    [SerializeField] private SoundClip _sound;
     
     public Transform goldPosition { get; set; }
     public Transform meatPosition { get; set; }
@@ -30,7 +30,8 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
     {
         SetDefaultMaterial();
         GetWorkerPosition();
-        _sound = gameObject.GetComponent<SoundBulding>();
+        _sound = gameObject.GetComponent<SoundClip>();
+
     }
 
     private void GetWorkerPosition()

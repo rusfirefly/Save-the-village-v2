@@ -27,6 +27,7 @@ public class PlayerBase
 
     public void AddOneWorker() => workersCount++;
     public void AddOneWarrior() => warriorsCount++;
+    public void DeathWarrior()=> warriorsCount--;
 
     public void UpdateGold(int newGoldCount1)
     {

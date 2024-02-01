@@ -14,6 +14,7 @@ public class Unit : MonoBehaviour
     private protected NavMeshAgent _agent;
     private Transform _startPosition;
     private Transform _targetPosition;
+    private SoundEntity _soundEntity;
 
     private void Awake()
     {
@@ -24,6 +25,8 @@ public class Unit : MonoBehaviour
     {
         InitAgent();
         SetStartPosition();
+        GetSoundEntity();
+        PlaySoundNewEntity();
     }
     
     private void InitAgent()
@@ -48,6 +51,9 @@ public class Unit : MonoBehaviour
     {
         _startPosition = startPoint;
     }
+
+    private void GetSoundEntity() => _soundEntity = gameObject.GetComponent<SoundEntity>();
+    private void PlaySoundNewEntity() => _soundEntity.PlaySoundNewEntity();
 
     private void SetStartPosition()
     {

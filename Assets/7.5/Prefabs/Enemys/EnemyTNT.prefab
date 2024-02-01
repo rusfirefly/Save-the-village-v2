@@ -442,7 +442,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1866467528059338786}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 0.64
+  m_Radius: 0.1
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -451,10 +451,10 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 1.28
+  m_Height: 0.3
   m_BaseOffset: 0.64
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 0
 --- !u!58 &492878629916523523
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -503,8 +503,8 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 1
+  m_PlayOnAwake: 0
+  m_Volume: 0.417
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -601,6 +601,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _audioSource: {fileID: 1104833415484666804}
-  _hit: {fileID: 0}
-  _attack: {fileID: 0}
-  _death: {fileID: 0}
+  volume: 0.6
+  _newEntitySound:
+  - {fileID: 8300000, guid: 5462fbfa29e43e74d9d3a8bf8078cdeb, type: 3}
+  - {fileID: 8300000, guid: fcd41a0371dcd3f4686b1180b6a0fc9f, type: 3}
+  _hitSound: {fileID: 0}
+  _attackSound: {fileID: 8300000, guid: ace2591661dd5c94891ad028e5083df4, type: 3}
+  _deathSound: {fileID: 8300000, guid: 91ac3d0e76457884b977bf0f9c6a315b, type: 3}

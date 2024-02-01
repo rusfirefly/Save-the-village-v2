@@ -162,7 +162,7 @@ NavMeshAgent:
   m_Height: 0.59
   m_BaseOffset: 0.295
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 0
 --- !u!50 &2505166776305680404
 Rigidbody2D:
   serializedVersion: 4
@@ -309,6 +309,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _audioSource: {fileID: -5856432334920460842}
-  _hit: {fileID: 0}
-  _attack: {fileID: 0}
-  _death: {fileID: 0}
+  volume: 0.5
+  _newEntitySound:
+  - {fileID: 8300000, guid: 9ba1e275d1a6cf148ad09cbfb97c699c, type: 3}
+  - {fileID: 8300000, guid: 3dd652448ab0ea843816866cf83aecea, type: 3}
+  _hitSound: {fileID: 0}
+  _attackSound: {fileID: 0}
+  _deathSound: {fileID: 0}

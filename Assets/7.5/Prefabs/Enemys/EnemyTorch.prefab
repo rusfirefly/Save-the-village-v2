@@ -268,7 +268,7 @@ MonoBehaviour:
   _layerMask:
     serializedVersion: 2
     m_Bits: 128
-  _attackSpeed: 0.5
+  _attackSpeed: 0.9
   _drawGizmo: 1
   _tagetPosition: {fileID: 0}
   _countInStek: 1
@@ -286,7 +286,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 8326569285529444885}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 0.87
+  m_Radius: 0.1
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -295,10 +295,10 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 1.42
+  m_Height: 1
   m_BaseOffset: 0.71
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 0
 --- !u!58 &3286817665577828823
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -347,8 +347,8 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 1
+  m_PlayOnAwake: 0
+  m_Volume: 0.432
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -445,9 +445,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _audioSource: {fileID: -3307911797770260971}
-  _hit: {fileID: 0}
-  _attack: {fileID: 0}
-  _death: {fileID: 0}
+  volume: 0.5
+  _newEntitySound:
+  - {fileID: 8300000, guid: 5462fbfa29e43e74d9d3a8bf8078cdeb, type: 3}
+  - {fileID: 8300000, guid: fcd41a0371dcd3f4686b1180b6a0fc9f, type: 3}
+  _hitSound: {fileID: 0}
+  _attackSound: {fileID: 8300000, guid: d13fed5201f1ed24c850404a342abf7f, type: 3}
+  _deathSound: {fileID: 8300000, guid: 1be7df87694c70c44b5ed28c2bc1f715, type: 3}
 --- !u!1 &8326569286131717092
 GameObject:
   m_ObjectHideFlags: 0

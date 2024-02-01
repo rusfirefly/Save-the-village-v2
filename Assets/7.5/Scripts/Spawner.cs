@@ -48,8 +48,11 @@ public class Spawner : MonoBehaviour
             
         if (_currentTime>= _playerData.waveCycleTime)
         {
-            SpawnEnemy(_countStekEnemy);
+            for(int i = 0; i < _countStekEnemy; i++)
+                SpawnEnemy(_countStekEnemy);
+
             _sound.PlaySound();
+
             _countStekEnemy ++;
             _countEnemysText.text = $"Колво врагов в следующем набеге: {_countStekEnemy}";
             _playerData.numberWave++;
@@ -62,14 +65,14 @@ public class Spawner : MonoBehaviour
     {
         Enemy enemy  = Instantiate(_prefabEnemys[_indexEnemyRand], _spawnPosition.position, Quaternion.identity).GetComponent<Enemy>();
         enemy.SetTargetPosition(_targetPosition);
-        enemy.InitEnemy(countEnemy);
-
+        //enemy.InitEnemy(countEnemy);
+        enemy.InitEnemy(1);
         _countEnemysInWave = _prefabEnemys.Length;
         _indexEnemyRand = _randomEnemy.Next(0, _countEnemysInWave);
 
-        Enemy[] enemys = GameObject.FindObjectsOfType<Enemy>();
-        if (enemys.Length == 1)
-            enemys[0].firstEnemy = true;
+        //Enemy[] enemys = GameObject.FindObjectsOfType<Enemy>();
+        //if (enemys.Length == 1)
+        //    enemys[0].firstEnemy = true;
 
     }
 }

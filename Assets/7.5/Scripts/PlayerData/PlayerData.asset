@@ -19,7 +19,7 @@ MonoBehaviour:
   goldWorkTrainingTimer: 5
   meatWorkTrainingTimer: 3
   woodWorkTrainingTimer: 5
-  knightTrainingTimer: 3
+  knightTrainingTimer: 1
   archerTrainingTimer: 0
   knightEatTimer: 0
   archerEatTimer: 0
@@ -29,6 +29,6 @@ MonoBehaviour:
   timeGoldMine: 5
   timeMeatMine: 10
   timeWoodMine: 2
-  numberWave: 3
-  waveCycleTime: 15
+  numberWave: 1
+  waveCycleTime: 1600
   countEnemyNextWave: 0

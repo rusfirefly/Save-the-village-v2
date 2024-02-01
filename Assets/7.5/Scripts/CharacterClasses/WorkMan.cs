@@ -7,6 +7,7 @@ public class WorkMan : Unit
 {
     public static Action<GameObject, Collider2D> Working;
 
+    
     public override void StartedWork(Collider2D collider)
     {
         string tag = collider.gameObject.tag;

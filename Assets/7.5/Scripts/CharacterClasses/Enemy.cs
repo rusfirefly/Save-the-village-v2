@@ -7,6 +7,8 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Animator))]
 public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
 {
+    private SoundEntity _soundEntity;
+
     public enum TypeEnym {Knight, TNT, Torch};
     [SerializeField] private TypeEnym _typeEnym;
     [SerializeField] private Animator _animator;
@@ -29,11 +31,18 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
     private float _stepEnemy = 2;
     public bool firstEnemy;
     private int _distance = 2;
+    private bool _hitWarrion;
 
     private void Awake()
     {
         FindNavMeshAgent();
         SetupNavMeshAgent();
+
+    }
+
+    private void Start()
+    {
+        GetSourceEntity();
     }
 
     private void Update()
@@ -46,8 +55,7 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
         }
         else
         {
-            if(GetDistanceTo(_tagetPosition)>2)
-                GoBackPosition();
+            GoBackPosition();
         }
 
         AttackWarrior();
@@ -67,12 +75,27 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        UpdateStek(collision);
+        //AttackWarrior();
     }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (!_isRun)
+        {
+            RunAgent();
+            GoBackPosition();
+        }
+    }
+
+
+    private void GetSourceEntity() => _soundEntity = gameObject.GetComponent<SoundEntity>();
+    private void PlaySoundNewEntity() => _soundEntity.PlaySoundNewEntity();
+    private void PlaySoundAttack() => _soundEntity.PlaySoundAttack();
+    private void PlaySoundDie() => _soundEntity.PlaySoundDeath();
 
     private void FindNavMeshAgent()
     {
-        _agent = GetComponent<NavMeshAgent>();
+        _agent = gameObject.GetComponent<NavMeshAgent>();
     }
 
     private void SetupNavMeshAgent()
@@ -82,12 +105,12 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
         _agent.updateUpAxis = false;
     }
 
-    
     private void MoveToWarrior(Warrior warrior)
     {
         float dist = GetDistanceToWarrior(warrior);
         if (CheckDistanceToWarrior(dist, _distance))
         {
+            StopAgent();
             RunToWarrior(warrior);
         }
     }
@@ -121,22 +144,21 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
 
     private void GoBackPosition()
     {
-         _agent.destination = _tagetPosition.position;
+        RunAgent();
+        if(!_agent.isPathStale)
+          _agent.destination = _tagetPosition.position;
     }
-
 
     private void AttackWarrior()
     {
-        
         Collider2D[] hitWarriors = HitWarriors();
-
-        if (hitWarriors.Length == 0)
-            RunAgent();
-
         foreach (Collider2D warrior in hitWarriors)
         {
-             StopAgent();
-             Attack(warrior);
+            if (!_hitWarrion)
+            {
+                StopAgent();
+                Attack(warrior);
+            }
         }
     }
 
@@ -146,8 +168,9 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
     {
         if (_isRun)
         {
-            _agent.isStopped = true;
-            _agent.enabled = false;
+            if(_agent.isActiveAndEnabled)
+                _agent.isStopped = true;
+           // _agent.enabled = false;
             _isRun = false;
         }
     }
@@ -156,11 +179,13 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
     {
         if (!_isRun)
         {
-            _agent.enabled = true;
-            _agent.isStopped = false;
+            if (_agent.isActiveAndEnabled)
+                _agent.isStopped = false;
+            //_agent.enabled = true;
             _isRun = true;
         }
     }
+
 
     public void Attack(Collider2D unit)
     {
@@ -169,10 +194,11 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
         {
             StartAnimationAttack();
             TakeDamage(unit);
+            PlaySoundAttack();
             _nextAttackTime = 0;
         }
     }
-
+    
     private void TakeDamage(Collider2D unit)
     {
         if (unit.gameObject.tag == "Castle")
@@ -181,7 +207,9 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
             _distance = 0;
         }
         else
+        {
             unit.GetComponent<Warrior>().TakeDamage(_attack * _countInStek);
+        }
 
         if (_typeEnym == TypeEnym.TNT)
         {
@@ -218,6 +246,7 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
 
     private void Die()
     {
+        PlaySoundDie();
         SetBoolAnimation("IsDie", true);
         GetComponent<Collider2D>().enabled = false;
         GetComponent<NavMeshAgent>().enabled = false;
@@ -231,8 +260,7 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
 
         if (damage <= 0) return;
 
-        _countInStek -= DeathEnemys(damage);
-        //Debug.Log($"Ïîãèáëî âðàãîâ: {_countInStek}");
+        _countInStek -= DamageÑalculation(damage);
         SetCountStek();
         if (_countInStek <= 0)
         {
@@ -247,7 +275,7 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
         _defence = def;
 
         SetCountStek();
-        Move(_tagetPosition);
+        Move(_tagetPosition.position);
     }
 
     public void InitEnemy(int countStek)
@@ -258,10 +286,10 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
             _countInStek = countStek;
 
         SetCountStek();
-        Move(_tagetPosition);
+        Move(_tagetPosition.position);
     }
 
-    private float DeathEnemys(float damage)
+    private float DamageÑalculation(float damage)
     {
         if (damage > _defence * _countInStek)
             return (damage - (_defence * _countInStek)) / _health;
@@ -281,16 +309,16 @@ public class Enemy : MonoBehaviour, IDamageable, IMovable, IAttack
 
     private void SetBoolAnimation(string animation, bool value) => _animator.SetBool(animation, value);
 
-    public void Move(Transform position)
+    public void Move(Vector3 position)
     {
         if (_isRun && position != null)
-            _agent.destination = position.position;
+            _agent.destination = position;
     }
 
     public void GoToNewTargetPosition(Transform newPosition)
     {
         _tagetPosition = newPosition;
-        Move(_tagetPosition);
+        Move(_tagetPosition.position);
     }
 
     public void FindEnemyPosition()

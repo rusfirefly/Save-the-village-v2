@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
 
 public class Mining : MonoBehaviour
 {
@@ -10,6 +9,7 @@ public class Mining : MonoBehaviour
     public bool _inMine { get; set; }
     private float _mineTimer;
     [SerializeField] private float _mineTimerCycle;
+    [SerializeField] protected SoundClip _soundClip; 
 
     [SerializeField] private Text _coldownTimeText;
     [SerializeField] private Image _progress;
@@ -25,16 +25,18 @@ public class Mining : MonoBehaviour
     private float _timeAnimation = 2f;
     private float _startTimeAnimation = 0;
 
-    void Start()
+    protected virtual void Start()
     {
         _inMine = false;
         _mineCountText.gameObject.SetActive(false);
         MineCanvas(false);
         _defaulPosition = _mineCountText.rectTransform.position;
         _positionText = _mineCountText.rectTransform.position.y;
+
+        _soundClip = gameObject.GetComponent<SoundClip>();
     }
 
-    void Update()
+    protected virtual void Update()
     {
         Mine();
         AnimationMineText();
@@ -58,7 +60,13 @@ public class Mining : MonoBehaviour
     }
     
     public void SetCycleMining(float newTimeCycle) => _mineTimerCycle = newTimeCycle;
-    private void FinishMining(string tag) => Work?.Invoke(tag);
+
+    private void FinishMining(string tag)
+    {
+        PlaySoundMinig();
+        Work?.Invoke(tag);
+    }
+
     private void SetColdownText(float time) => _coldownTimeText.text = time.ToString("#");
     private void ProgressFillAmount(float currentTime) => _progress.fillAmount = currentTime / _mineTimerCycle;
 
@@ -87,4 +95,6 @@ public class Mining : MonoBehaviour
 
     public void MineCanvas(bool show) => _inMineCanvas.gameObject.SetActive(show);
     public void MinerResourcesPerCycleToText(int count) => _mineCountText.text = $"+{count}";
+
+    protected virtual void PlaySoundMinig()=>_soundClip.PlaySound();
 }

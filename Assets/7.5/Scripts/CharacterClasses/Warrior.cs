@@ -1,12 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
+using Random = System.Random;
+
 [RequireComponent(typeof(Animator))]
 public class Warrior : MonoBehaviour, IDamageable, IMovable, IAttack
 {
+    private SoundEntity _soundEntity;
+    public static event Action Deathing;
+
     [SerializeField] private Animator _animator;
     [SerializeField] private NavMeshAgent _agent;
     [SerializeField] private Text _countStekText;
@@ -17,8 +23,7 @@ public class Warrior : MonoBehaviour, IDamageable, IMovable, IAttack
     [SerializeField] private float _attackSpeed = 0.5f;
     [SerializeField] private bool _drawGizmo;
     private float _nextAttackTime;
-    [SerializeField] private Transform _tagetPosition;
-
+    private Vector3 _tagetPosition;
 
     [SerializeField] private float _countInStek;
     [SerializeField] private int _health = 1;
@@ -30,12 +35,16 @@ public class Warrior : MonoBehaviour, IDamageable, IMovable, IAttack
     [SerializeField] private int _distanceFindEnemy = 2;
     public bool firstWarrior { get; set; }
 
+    private Random _random;
+
     private void Awake()
     {
         FindNavMeshAgent();
         SetupNavMeshAgent();
-        Move(_tagetPosition);
         ViewCountStek();
+        GetSoundEntity();
+        PlaySoundNewEntity();
+        _random = new Random();
     }
 
     private void Update()
@@ -67,13 +76,22 @@ public class Warrior : MonoBehaviour, IDamageable, IMovable, IAttack
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        UpdateStek(collision);
+        AttackEnemy();
     }
 
-    //-------------------------------
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        RunAgent();
+    }
+
+    private void GetSoundEntity() => _soundEntity = gameObject.GetComponent<SoundEntity>();
+    private void PlaySoundNewEntity() => _soundEntity.PlaySoundNewEntity();
+    private void PlaySoundAttack() => _soundEntity.PlaySoundAttack();
+    private void PlaySoundDie() => _soundEntity.PlaySoundDeath();
+
     private void FindNavMeshAgent()
     {
-        _agent = GetComponent<NavMeshAgent>();
+        _agent = gameObject.GetComponent<NavMeshAgent>();
     }
 
     private void SetupNavMeshAgent()
@@ -111,16 +129,18 @@ public class Warrior : MonoBehaviour, IDamageable, IMovable, IAttack
         return Vector2.Distance(gameObject.transform.position, enemy.gameObject.transform.position);
     }
 
-    private void GoBackPosition() => _agent.destination = _tagetPosition.position;
+    private void GoBackPosition()
+    {
+        RunAgent();
+    }
 
     private void AttackEnemy()
     {
-        RunAgent();
         Collider2D[] hitEnemies = HitEnemys();
         foreach (Collider2D enemy in hitEnemies)
         {
             StopAgent();
-             Attack(enemy);
+            Attack(enemy);
         }
     }
 
@@ -131,8 +151,8 @@ public class Warrior : MonoBehaviour, IDamageable, IMovable, IAttack
     {
         if (_isRun)
         {
-            _agent.isStopped = true;
-            _agent.enabled = false;
+            if (_agent.isActiveAndEnabled)
+                _agent.isStopped = true;
             _isRun = false;
         }
     }
@@ -141,24 +161,29 @@ public class Warrior : MonoBehaviour, IDamageable, IMovable, IAttack
     {
         if (!_isRun)
         {
-            _agent.enabled = true;
-            _agent.isStopped = false;
+            if (_agent.isActiveAndEnabled)
+            {
+                _agent.isStopped = false;
+                _agent.destination = _tagetPosition;
+            }
             _isRun = true;
         }
     }
 
     public void Attack(Collider2D unit)
-    {
-        _nextAttackTime += Time.deltaTime;
-        if (_nextAttackTime >= _attackSpeed)
-        {
-            SetTriggerAnimation("Attack1");
-            unit.GetComponent<Enemy>().TakeDamage(_attack * _countInStek);
-            _nextAttackTime = 0;
-        }
-    }
+     {
+         _nextAttackTime += Time.deltaTime;
+         if (_nextAttackTime >= _attackSpeed)
+         {
+             SetTriggerAnimation("Attack1");
+             unit.GetComponent<Enemy>().TakeDamage(_attack * _countInStek);
+             PlaySoundAttack();
+             _nextAttackTime = 0;
+         }
+     }
+    
 
-    private void GetAniamtion() => _animator ??= GetComponent<Animator>();
+    private void GetAniamtion() => _animator ??= gameObject.GetComponent<Animator>();
 
     private bool IsDrawGizmo() => _drawGizmo;
 
@@ -187,9 +212,11 @@ public class Warrior : MonoBehaviour, IDamageable, IMovable, IAttack
 
     private void Die()
     {
+        PlaySoundDie();
         SetBoolAnimation("IsDie", true);
-        GetComponent<Collider2D>().enabled = false;
-        GetComponent<NavMeshAgent>().enabled = false;
+        gameObject.GetComponent<Collider2D>().enabled = false;
+        gameObject.GetComponent<NavMeshAgent>().enabled = false;
+        Deathing?.Invoke();
         DisableScript();
     }
 
@@ -197,8 +224,7 @@ public class Warrior : MonoBehaviour, IDamageable, IMovable, IAttack
     {
         SetTriggerAnimation("Hit");
         if (damage <= 0) return;
-        _countInStek -= DeathEnemys(damage);
-        //Debug.Log($"Ïîãèáëî âîèíîâ: {_countInStek}");
+        _countInStek -= DamageÑalculation(damage);
         ViewCountStek();
         if (_countInStek <= 0)
         {
@@ -206,7 +232,7 @@ public class Warrior : MonoBehaviour, IDamageable, IMovable, IAttack
         }
     }
 
-    private float DeathEnemys(float damage)
+    private float DamageÑalculation(float damage)
     {
         if (damage > _defence * _countInStek)
             return (damage - (_defence * _countInStek)) / _health;
@@ -226,23 +252,29 @@ public class Warrior : MonoBehaviour, IDamageable, IMovable, IAttack
 
     private void SetBoolAnimation(string animation, bool value) => _animator.SetBool(animation, value);
 
-    public void Move(Transform position)
+    public void Move(Vector3 position)
     {
         if (_isRun && position != null)
-            _agent.destination = position.position;
+        {
+            //_agent.nextPosition = position;
+            _agent.destination = position;
+        }
     }
 
     public void GoToNewTargetPosition(Transform newPosition)
     {
-        _tagetPosition = newPosition;
-        Move(_tagetPosition);
+        _tagetPosition = newPosition.position;
+        Vector3 newPoistion = new Vector3(_tagetPosition.x + _random.Next(1, 5) * 0.3f, _tagetPosition.y + _random.Next(1, 5) * 0.3f);
+        Move(newPoistion);
     }
 
     public void FindEnemyPosition()
     {
         Enemy[] enemys = GameObject.FindObjectsOfType<Enemy>();
         foreach (Enemy enemy in enemys)
+        {
             _agent.destination = enemy.gameObject.transform.position;
+        }
     }
 
     private void UpdateStek(Collider2D collision)

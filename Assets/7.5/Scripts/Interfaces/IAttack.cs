@@ -5,5 +5,6 @@ using UnityEngine;
 public interface IAttack 
 {
     void Attack(Collider2D unit);
+    //IEnumerator Attack(Collider2D unit);
 
 }

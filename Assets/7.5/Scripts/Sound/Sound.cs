@@ -1,0 +1,21 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[RequireComponent(typeof(AudioSource))]
+public class Sound : MonoBehaviour
+{
+    [SerializeField] protected AudioSource _audioSource;
+    [SerializeField] [Range(0, 1)] protected float volume = 0.3f;  
+
+    private void OnValidate()
+    {
+        GetAudioSouceComponent();
+    }
+
+    protected virtual void Start()
+    {
+    }
+
+    private void GetAudioSouceComponent() => _audioSource ??= GetComponent<AudioSource>();
+}

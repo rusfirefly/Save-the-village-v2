@@ -68,7 +68,7 @@ public class GameManager : MonoBehaviour
         TrainigPanel.Traiding += OnTarianigFinish;
         WorkMan.Working += OnWorking;
         Mining.Work += OnFinishMining;
-
+        Warrior.Deathing += OnDeathWarrior;
         Castle.Attacked += OnCastleAttaked;
         Castle.Destroyed += OnCastleDestroyed;
     }
@@ -82,7 +82,6 @@ public class GameManager : MonoBehaviour
 
     private void OnCastleDestroyed()
     {
-        //звук - музыка game over
         GameOver();
     }
 
@@ -92,6 +91,7 @@ public class GameManager : MonoBehaviour
         TrainigPanel.Traiding -= OnTarianigFinish;
         WorkMan.Working -= OnWorking;
         Mining.Work -= OnFinishMining;
+        Warrior.Deathing -= OnDeathWarrior;
     }
 
     private void FindCamps()
@@ -106,6 +106,8 @@ public class GameManager : MonoBehaviour
         foreach (T mine in mines)
             (mine as Mining).SetCycleMining(timeMine);
     }
+
+    private void OnDeathWarrior()=>_playerBase.DeathWarrior();
 
     private void SetPositionResources()
     {

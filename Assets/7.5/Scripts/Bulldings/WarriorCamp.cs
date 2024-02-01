@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Random = System.Random;
 
 public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
 {
@@ -24,13 +25,17 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
     private SpriteRenderer _spriteRender;
     private Material _default;
     private Warrior _warrior;
-    [SerializeField] private SoundBulding _sound;
+    [SerializeField] private SoundClip _sound;
 
+    [SerializeField] private GameObject _pointPref;
+    private Random _random;
+    
     void Start()
     {
         SetDefaultMaterial();
         GetWorkerPosition();
-        _sound = gameObject.GetComponent<SoundBulding>();
+        _sound = gameObject.GetComponent<SoundClip>();
+        _random = new Random();
     }
 
     private void GetWorkerPosition()
@@ -51,11 +56,10 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
 
     private void CreateNewKnight()
     {
+        _warrior = null;
         GameObject newWarrior = Instantiate(_prefKnight, _spawnPosition.transform.position, Quaternion.identity);
-        //звук- воин готов
         _warrior = newWarrior.GetComponent<Warrior>();
-        SetCharacteristicsWarrior(2,3,4);
-        _warrior.GoToNewTargetPosition(_targetPosition);
+        _warrior.GoToNewTargetPosition(_pointPref.transform);
     }
 
     private void SetCharacteristicsWarrior(int hp, int def, int atk)

@@ -4,6 +4,6 @@ using UnityEngine;
 
 public interface IMovable
 {
-    void Move(Transform position);
+    void Move(Vector3 position);
     void GoToNewTargetPosition(Transform newPosition);
 }
