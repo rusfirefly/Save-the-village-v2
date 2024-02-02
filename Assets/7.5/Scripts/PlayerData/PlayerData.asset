@@ -29,6 +29,12 @@ MonoBehaviour:
   timeGoldMine: 5
   timeMeatMine: 10
   timeWoodMine: 2
-  numberWave: 1
-  waveCycleTime: 1600
+  numberWave: 2
+  waveCycleTime: 25
   countEnemyNextWave: 0
+  countGolds: 0
+  countMeats: 0
+  countWoods: 0
+  countWarriors: 0
+  countWorkers: 0
+  survivedTheWaves: 0

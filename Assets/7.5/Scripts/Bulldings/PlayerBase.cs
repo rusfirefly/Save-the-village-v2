@@ -10,6 +10,8 @@ public class PlayerBase
 
     public int workersCount { get; private set; }
     public int warriorsCount { get; private set; }
+    public int warriorsCountTotal { get; private set; }
+    public int warriorsCountDeath { get; private set; }
 
     public int countGoldWorker { get;  set; }
     public int countMeatWorker { get;  set; }
@@ -23,11 +25,20 @@ public class PlayerBase
 
         workersCount = 0;
         warriorsCount = 0;
+        warriorsCountTotal = 0;
     }
 
     public void AddOneWorker() => workersCount++;
-    public void AddOneWarrior() => warriorsCount++;
-    public void DeathWarrior()=> warriorsCount--;
+    public void AddOneWarrior()
+    {
+        warriorsCount++;
+        warriorsCountTotal++;
+    }
+    public void DeathWarrior()
+    {
+        warriorsCount--;
+        warriorsCountDeath++;
+    }
 
     public void UpdateGold(int newGoldCount1)
     {
@@ -42,6 +53,22 @@ public class PlayerBase
     public void UpdateWood(int newWoodCount)
     {
         wood += newWoodCount;
+    }
+
+    public void Reload()
+    {
+        gold = 0;
+        meat = 0;
+        wood = 0;
+
+        countGoldWorker = 0;
+        countMeatWorker = 0;
+        countWoodWorker = 0;
+
+        workersCount = 0;
+        warriorsCount = 0;
+        warriorsCountTotal = 0;
+        warriorsCountDeath = 0;
     }
 
     public void AddUnitToBase(Enums.UnitType type)

@@ -5,12 +5,6 @@ using UnityEngine.AI;
 
 public class Unit : MonoBehaviour
 {
-    //---------IAtributes------------------
-    public int def { get; set; }
-    public int atk { get; set; }
-    public int hp { get; set; }
-    //-------------end IAtributes-----------
-
     private protected NavMeshAgent _agent;
     private Transform _startPosition;
     private Transform _targetPosition;

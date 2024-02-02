@@ -38,4 +38,16 @@ public class PlayerData : ScriptableObject
     public int numberWave;
     public float waveCycleTime;
     public int countEnemyNextWave;
+
+    [Header("Условия победы")]
+    public int countGolds;
+    public int countMeats;
+    public int countWoods;
+    public int countWarriors;
+    public int countWorkers;
+
+    public int survivedTheWaves;
+
+
 }
+

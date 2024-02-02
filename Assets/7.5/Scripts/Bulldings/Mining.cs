@@ -27,13 +27,17 @@ public class Mining : MonoBehaviour
 
     protected virtual void Start()
     {
+        Reload();
+        _defaulPosition = _mineCountText.rectTransform.position;
+        _positionText = _mineCountText.rectTransform.position.y;
+        _soundClip = gameObject.GetComponent<SoundClip>();
+    }
+
+    public void Reload()
+    {
         _inMine = false;
         _mineCountText.gameObject.SetActive(false);
         MineCanvas(false);
-        _defaulPosition = _mineCountText.rectTransform.position;
-        _positionText = _mineCountText.rectTransform.position.y;
-
-        _soundClip = gameObject.GetComponent<SoundClip>();
     }
 
     protected virtual void Update()

@@ -17,8 +17,8 @@ public class TrainigPanel : MonoBehaviour
     [SerializeField] private Text _priceText;
 
     [SerializeField] private Enums.UnitType _unitType;
+    [SerializeField] private SoundClip _sound;
 
-    
     private float _workTrainingTimer;
     private float _workProgress;
 
@@ -29,6 +29,7 @@ public class TrainigPanel : MonoBehaviour
     private void Start()
     {
         UpdatePanelInfo(_priceText);
+        _sound = gameObject.GetComponent<SoundClip>();
     }
 
     private void Update()
@@ -89,7 +90,12 @@ public class TrainigPanel : MonoBehaviour
 
     public void TrainigWorking()
     {
-        if (!_isActiveTrainig) return;
+        if (!_isActiveTrainig)
+        {
+            _sound.PlaySound();
+            return;
+        }
+
         if (_isTrainig) return;
 
         if (!isBought)

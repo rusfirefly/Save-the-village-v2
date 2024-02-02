@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-
+    //public CustomMask customLayerMask;
     [SerializeField] private Text _workerText;
     [SerializeField] private Text _wariorText;
 
@@ -32,10 +32,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform _warriorPosition;
     [SerializeField] private Transform _archerPosition;
 
-    
+    private float _timeUpdateSortingLayer=1f;
+    private int _enemiesDestroyed;
     private void Awake()
     {
-        CreatePlayerBase();
+        NewGame();
         FindCamps();
         CreateEventsCamp();
     }
@@ -48,6 +49,8 @@ public class GameManager : MonoBehaviour
         SetMiningCycleTime<GoldMine>(_playerData.timeGoldMine);
         SetMiningCycleTime<Miratorg>(_playerData.timeMeatMine);
         SetMiningCycleTime<SawMill>(_playerData.timeWoodMine);
+
+        StartCoroutine(UpdateWarriorLayerOrder());
     }
 
     private void FixedUpdate() => UpdateStoragePanel();
@@ -62,6 +65,80 @@ public class GameManager : MonoBehaviour
         RemoveListenerEvents();
     }
 
+    IEnumerator UpdateWarriorLayerOrder()
+    {
+        SortingLayerWarrior();
+        yield return new WaitForSeconds(_timeUpdateSortingLayer);
+        StartCoroutine(UpdateWarriorLayerOrder());
+    }
+//---------------------------------
+    EntityInfo[] warriorsPosition;
+    Entity[] warriors;
+
+    private void SortingLayerWarrior()
+    {
+        warriors = FindObjectsOfType<Entity>();
+        if(warriors.Length > 0)
+            warriorsPosition = new EntityInfo[warriors.Length];
+        int index = 0;
+        foreach (Entity entity in warriors)
+        {
+            warriorsPosition[index].entity = entity;
+            warriorsPosition[index].positionY = entity.transform.localPosition.y;
+            index++;
+        }
+
+        if (warriorsPosition!=null)
+        {
+            QuickSort(warriorsPosition, 0, warriorsPosition.Length - 1);
+            for (int i = 0; i < warriorsPosition.Length; i++)
+            {
+                warriorsPosition[i].entity.SetNewLayer(warriorsPosition.Length - i);
+            }
+        }
+        warriorsPosition = null;
+        warriors = null;
+    }
+
+    public static void QuickSort(EntityInfo[] arr, int left, int right)
+    {
+        if (left < right)
+        {
+            int pivot = Partition(arr, left, right);
+            if (pivot > 0)
+                QuickSort(arr, left, pivot - 1);
+            if (pivot < arr.Length - 1)
+                QuickSort(arr, pivot + 1, right);
+        }
+    }
+
+    public static int Partition(EntityInfo[] arr, int left, int right)
+    {
+        float pivot = arr[left].positionY;
+        while (true)
+        {
+            while (arr[left].positionY < pivot)
+                left++;
+            while (arr[right].positionY > pivot)
+                right--;
+            if (left < right)
+            {
+                if (arr[left].positionY == arr[right].positionY)
+                    return right;
+
+                EntityInfo temp = arr[left];
+                arr[left] = arr[right];
+                arr[right] = temp;
+            }
+            else
+            {
+                return right;
+            }
+        }
+    }
+
+    //------------------------
+
     private void CreateListenerEvents()
     {
         TrainigPanel.Bounten += OnBounten;
@@ -71,8 +148,13 @@ public class GameManager : MonoBehaviour
         Warrior.Deathing += OnDeathWarrior;
         Castle.Attacked += OnCastleAttaked;
         Castle.Destroyed += OnCastleDestroyed;
+        Enemy.Deathing += OnEnemiesDestroyed;
     }
     
+    private void OnEnemiesDestroyed()
+    {
+        _enemiesDestroyed++;
+    }
     private void OnCastleAttaked()
     {
         Warrior[] warriors = FindObjectsOfType<Warrior>();
@@ -82,7 +164,7 @@ public class GameManager : MonoBehaviour
 
     private void OnCastleDestroyed()
     {
-        GameOver();
+        GameOver("GAME OVER");
     }
 
     private void RemoveListenerEvents()
@@ -92,6 +174,7 @@ public class GameManager : MonoBehaviour
         WorkMan.Working -= OnWorking;
         Mining.Work -= OnFinishMining;
         Warrior.Deathing -= OnDeathWarrior;
+        Enemy.Deathing -= OnEnemiesDestroyed;
     }
 
     private void FindCamps()
@@ -138,6 +221,9 @@ public class GameManager : MonoBehaviour
         _goldText.text = PlayerBase.gold.ToString();
         _meatText.text = PlayerBase.meat.ToString();
         _woodText.text = PlayerBase.wood.ToString();
+
+      
+      //  GameOver("VIKTORY");
     }
 
     private void OnFinishMining(string tag)
@@ -180,16 +266,10 @@ public class GameManager : MonoBehaviour
 
     private void OnTarianigFinish(Enums.UnitType type)
     {
-        //звук - воин готов к защите
-        //звук - работик готов
-
         switch(type)
         {
             case Enums.UnitType.Knight:
                 _warriorCamp.Training(type);
-                Warrior[] warriors = GameObject.FindObjectsOfType<Warrior>();
-                if (warriors.Length == 1)
-                    warriors[0].firstWarrior = true;
                 break;
             default:
                 _workingCamps.Training(type);
@@ -202,7 +282,6 @@ public class GameManager : MonoBehaviour
 
     private void OnWorking(GameObject workMan, Collider2D collider)
     {
-        //звук - приступаю к работе
         string tag = collider.gameObject.tag;
         switch (tag)
         {
@@ -244,12 +323,23 @@ public class GameManager : MonoBehaviour
 
     private void NewGame()
     {
-
+        CreatePlayerBase();
     }
 
-    private void GameOver()
+    private void GameOver(string title)
     {
-        GameMenu.menuInstance.ShowGameOverMenu();
+        string statistic = $"Итоги игры:\n" +
+                           $"Волн пережито: {_playerData.numberWave}\n" +
+                           $"Врагов уничтоженно:{_enemiesDestroyed}\n"+
+                           $"Нането воинов: {_playerBase.warriorsCountTotal}\n" +
+                           $"Воинов выжило: {_playerBase.warriorsCount}\n" +
+                           $"Воинов погибло:{_playerBase.warriorsCountDeath}\n" +
+                           $"Рабочих нанято:{_playerBase.workersCount}\n" +
+                           $"Собрано золота:{PlayerBase.gold}\n" +
+                           $"Собрано мяса:{PlayerBase.meat}\n" +
+                           $"Собрано дерева:{PlayerBase.wood}";
+
+        GameMenu.menuInstance.ShowGameOverMenu(statistic, title);
     }
 
     private void TrainingMessage(bool show)=>_trainigMessageText.SetActive(show);

@@ -67,8 +67,6 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
         _warrior.UpdateCharater(hp, def, atk, 1);
     }
     
-    public void SetFirstWarrior() => _warrior.firstWarrior = true;
-
     public bool IsSelected()
     {
         return _isSelected;

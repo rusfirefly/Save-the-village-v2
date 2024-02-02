@@ -52,9 +52,9 @@ public class Spawner : MonoBehaviour
                 SpawnEnemy(_countStekEnemy);
 
             _sound.PlaySound();
-
-            _countStekEnemy ++;
-            _countEnemysText.text = $"Колво врагов в следующем набеге: {_countStekEnemy}";
+            _countStekEnemy++;
+            _playerData.numberWave++;
+            _countEnemysText.text = $"Колво врагов в следующем набеге: {_countStekEnemy} Волна: {_playerData.numberWave}";
             _playerData.numberWave++;
             
             _currentTime = 0;

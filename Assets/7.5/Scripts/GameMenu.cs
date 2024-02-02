@@ -1,5 +1,6 @@
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameMenu: MonoBehaviour
@@ -8,16 +9,19 @@ public class GameMenu: MonoBehaviour
     [SerializeField] private Canvas _HUDMenu;
     [SerializeField] private Canvas _mainMenu;
     [SerializeField] private Canvas _hudGame;
+    [SerializeField] private Canvas _gameOverCanvas;
+    [SerializeField] private Text _statisticText;
+    [SerializeField] private Text _titleGameOver;
     public static bool isPaused;
     private bool _isMainMenu;
     private bool _isSoundOff;
     public static GameMenu menuInstance;
+    
 
     private void Start()
     {
         _isSoundOff = true;
         InitMenu();
-        //ChangeGameTimeState();
         isPaused = true;
         VisibleCanvas(_HUDMenu, true);
         VisibleMainMenu(true);
@@ -51,12 +55,13 @@ public class GameMenu: MonoBehaviour
     }
 
 
-    public void ShowGameOverMenu()
+    public void ShowGameOverMenu(string statisticText, string gameOverTitileText)
     {
+        SetStatisticText(statisticText);
+        _titleGameOver.text = gameOverTitileText;
         ChangeGameTimeState();
         VisibleCanvas(_HUDMenu, true);
-
-
+        VisibleCanvas(_gameOverCanvas, isShow: isPaused);
     }
 
     public void ShowMainMenu()
@@ -82,6 +87,11 @@ public class GameMenu: MonoBehaviour
         PauseMenu();
     }
 
+    public void ReloadGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     private void VisibleMainMenu(bool isShow)
     {
         _isMainMenu = true;
@@ -103,5 +113,8 @@ public class GameMenu: MonoBehaviour
         _isSoundOff = !_isSoundOff;
     }
 
+    private void SetStatisticText(string text) => _statisticText.text = text;
+
     private void VisibleCanvas(Canvas canvas, bool isShow) => canvas.gameObject.SetActive(isShow);
+
 }

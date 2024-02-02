@@ -125,7 +125,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1866467527081657909
 RectTransform:
   m_ObjectHideFlags: 0
@@ -415,24 +415,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d2abca02faf1a54b8bd7a225dd0fe17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _typeEnym: 1
   _animator: {fileID: 1866467528059338787}
   _agent: {fileID: 0}
-  _countKnightText: {fileID: 1866467527823497274}
+  _countStekText: {fileID: 1866467527823497274}
   _attackPoint: {fileID: 1866467526872070175}
-  _attackRange: 1
+  _attackRange: 0.82
+  _healthImage: {fileID: 0}
   _layerMask:
     serializedVersion: 2
     m_Bits: 128
   _attackSpeed: 0.2
   _drawGizmo: 1
-  _tagetPosition: {fileID: 0}
   _countInStek: 1
   _health: 1
   _attack: 100
   _defence: 1
   _isRun: 1
-  firstEnemy: 0
+  _distanceFindEntity: 2
+  _typeEnym: 1
 --- !u!195 &1866467528059338790
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -454,7 +454,7 @@ NavMeshAgent:
   m_Height: 0.3
   m_BaseOffset: 0.64
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 0
+  m_ObstacleAvoidanceType: 2
 --- !u!58 &492878629916523523
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -470,7 +470,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: -0.06, y: -0.21}
   serializedVersion: 2
-  m_Radius: 0.55366206
+  m_Radius: 1
 --- !u!50 &5100291163503265885
 Rigidbody2D:
   serializedVersion: 4
