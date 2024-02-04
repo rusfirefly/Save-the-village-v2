@@ -10,6 +10,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 {
     public static event Action Attacked;
     public static event Action Destroyed;
+    public static event Action<int> Repair;
 
     [SerializeField] private float _health;
     private float _fullHealth;
@@ -48,6 +49,9 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 
     public void Reload()
     {
+        _isRepair = false;
+        _currentTime = 0;
+
         SetDefauldMaterial();
         SetBoolAnimation("IsDestroed", false);
         SetCurrentHealthFull();
@@ -187,7 +191,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 
     private void RepearCastle()
     {
-        if(PlayerBase.wood>=_countWoodForRepairPrice)
+        if(PlayerBase.wood >= _countWoodForRepairPrice)
         {
             PorgressBarVisible(true);
             SpendWoodOnRepairs();
@@ -199,7 +203,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     }
 
     private void PlayeSoundNeedWood()=> _soundCastle.PlayeSoundNeedWood();
-    private void SpendWoodOnRepairs() => PlayerBase.wood -= _countWoodForRepairPrice;
+    private void SpendWoodOnRepairs() => Repair?.Invoke(_countWoodForRepairPrice);
     
     private void PorgressBarVisible(bool visible)=> _repairBarPanel.SetActive(visible);
 
@@ -231,6 +235,5 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     {
         _spriteRender = gameObject.GetComponent<SpriteRenderer>();
         _default = _spriteRender.material;
-
     }
 }

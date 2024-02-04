@@ -6,18 +6,24 @@ using UnityEngine.UI;
 public class Warrior : Entity, IDamageable, IMovable, IAttack
 {
     public static event Action Deathing;
+    public static event Action<int> EatUp;
 
     [SerializeField] private float _baffAttack;
     [SerializeField] private float _baffDefence;
+    [SerializeField] private float _baffHealth;
     [SerializeField] private SoundClip _needMeat;
 
    
-    private float _satiety;
+    private float _satiety = 100;
+    private float _currentTimeEat;
+    [SerializeField] private int _eatUp = 15;
+    [SerializeField] private float _eatUpCycle=10;
 
     protected override void Awake()
     {
         base.Awake();
         PlaySoundNewEntity();
+       // _eatUpCycle = PlayerData.
     }
 
     private void Update()
@@ -33,6 +39,7 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         }
 
         DetectHitEntity();
+        EatUpCycle();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -90,26 +97,42 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         _nextAttackTime += Time.deltaTime;
         if (_nextAttackTime >= _attackSpeed)
         {
+            BaffSatiety();
             SetTriggerAnimation("Attack1");
-            unit.GetComponent<Enemy>().TakeDamage(_attack + _attack * _satiety/100);
+            unit.GetComponent<Enemy>().TakeDamage(_attack + _baffAttack);
             PlaySoundAttack();
             _nextAttackTime = 0;
         }
     }
 
-    private void EatUp()
+    private void EatUpCycle()
     {
+        _currentTimeEat += Time.deltaTime;
+        if(_currentTimeEat >= _eatUpCycle)
+        {
+            if (PlayerBase.meat >= 0)
+                EatUp?.Invoke(_eatUp);
+            else
+                Debug.Log("çàêîí÷èëàñü åäà, ïîêàçàòåëè âîèíîâ ñíèæåíû");
 
+            _currentTimeEat -= _eatUpCycle;
+        }
     }
         
 
-    private void Satiety()
+    private void BaffSatiety()
     {
-       //if(PlayerBase.meat)
+        if(PlayerBase.meat>=_eatUpCycle)
+        {
+            _baffAttack = 0;
+            _baffDefence = 0;
+            _baffHealth = 0;
+        }
     }
 
     public void TakeDamage(float damage)
     {
+        BaffSatiety();
         SetTriggerAnimation("Hit");
         if (damage <= 0) return;
         _countInStek -= DamageÑalculation(damage);
@@ -130,10 +153,10 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
 
     private float DamageÑalculation(float damage)
     {
-        if (damage > _defence * _countInStek)
-            return (damage - (_defence * _countInStek)) / _health;
+        if (damage > (_defence+_baffDefence) * _countInStek)
+            return (damage - ((_defence + _baffDefence) * _countInStek)) / _health;
         else
-            return ((_defence * _countInStek) - damage) / _health;
+            return (((_defence + _baffDefence) * _countInStek) - damage) / _health;
     }
 
     public void GoToNewTargetPosition(Transform newPosition)
@@ -151,6 +174,4 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
             _agent.destination = enemy.gameObject.transform.position;
         }
     }
-
-    public float GetPowerWarror() => _countInStek * (_attack + _defence + _health);
 }

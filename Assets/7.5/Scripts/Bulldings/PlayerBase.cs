@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerBase 
+public class PlayerBase
 {
     public static int gold { get; private set; }
     public static int meat { get; private set; }
-    public static int wood { get; set; }
+    public static int wood { get; private set; }
 
     public int workersCount { get; private set; }
     public int warriorsCount { get; private set; }
@@ -26,6 +26,9 @@ public class PlayerBase
         workersCount = 0;
         warriorsCount = 0;
         warriorsCountTotal = 0;
+
+        Castle.Repair += OnRepairEvent;
+        Warrior.EatUp += OnEatUpEvent;
     }
 
     public void AddOneWorker() => workersCount++;
@@ -72,6 +75,9 @@ public class PlayerBase
         warriorsCount = 0;
         warriorsCountTotal = 0;
         warriorsCountDeath = 0;
+
+        Castle.Repair -= OnRepairEvent;
+        Warrior.EatUp -= OnEatUpEvent;
     }
 
     public void AddUnitToBase(Enums.UnitType type)
@@ -93,4 +99,6 @@ public class PlayerBase
         };
     }
 
+    private void OnRepairEvent(int price) => wood -= price;
+    private void OnEatUpEvent(int eatUp)=>meat -= eatUp;
 }

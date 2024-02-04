@@ -247,6 +247,7 @@ public class GameManager : MonoBehaviour
         foreach (Entity entity in entitys)
             Destroy(entity.gameObject);
 
+
     }
 
     public void ReloadGame()
@@ -261,6 +262,7 @@ public class GameManager : MonoBehaviour
         Spawner spawner = FindObjectOfType<Spawner>();
         spawner.Reload();
 
+        _playerBase.Reload();
     }
 
     private void GameOver(string title)

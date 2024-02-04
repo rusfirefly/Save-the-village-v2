@@ -14,6 +14,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private PlayerData _playerData;
     [SerializeField] private Text _cycleWaveText;
     [SerializeField] private Text _countEnemysText;
+    [SerializeField] private Text _waveText;
     [SerializeField] private SoundSpawn _sound;
 
     private int _countStekEnemy;
@@ -31,6 +32,7 @@ public class Spawner : MonoBehaviour
         _countEnemysInWave = _prefabEnemys.Length;
         _indexEnemyRand = _randomEnemy.Next(0, _countEnemysInWave);
         _countEnemysText.text = $"Врагов в следующем набеге: {_countStekEnemy}";
+        _waveText.text = $"Волна: {_playerData.numberWave}";
         _sound = gameObject.GetComponent<SoundSpawn>();
     }
 
@@ -39,6 +41,8 @@ public class Spawner : MonoBehaviour
         _countStekEnemy = 1;
         _countEnemysText.text = $"Врагов в следующем набеге: {_countStekEnemy}";
         _currentTime = 0;
+        _playerData.numberWave = 1;
+        _waveText.text = $"Волна: {_playerData.numberWave}";
     }
 
     private void Update()
@@ -63,7 +67,8 @@ public class Spawner : MonoBehaviour
             _sound.PlaySound();
             _countStekEnemy++;
             _playerData.numberWave++;
-            _countEnemysText.text = $"Врагов в следующем набеге: {_countStekEnemy} Волна: {_playerData.numberWave}";
+            _countEnemysText.text = $"Врагов в следующем набеге: {_countStekEnemy}";
+            _waveText.text =$"Волна: {_playerData.numberWave}";
             _currentTime = 0;
         }
     }

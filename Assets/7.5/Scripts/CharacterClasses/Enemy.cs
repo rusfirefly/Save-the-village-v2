@@ -96,12 +96,12 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
        
         if (unit.gameObject.tag == "Castle")
         {
-            unit.GetComponent<Castle>().TakeDamage(_attack * _countInStek);
+            unit.GetComponent<Castle>().TakeDamage(_attack);
             _distanceFindEntity = 0;
         }
         else
         {
-            unit.GetComponent<Warrior>().TakeDamage(_attack * _countInStek);
+            unit.GetComponent<Warrior>().TakeDamage(_attack);
         }
     }
 
