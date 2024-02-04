@@ -4,7 +4,6 @@ using UnityEngine;
 
 public interface ISelecteble
 {
-    bool IsSelected();
     void DeSelected();
-    void Selectet();
+    void Selected();
 }

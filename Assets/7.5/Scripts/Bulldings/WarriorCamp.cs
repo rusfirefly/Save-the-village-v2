@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Random = System.Random;
 
 public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
 {
@@ -25,17 +24,15 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
     private SpriteRenderer _spriteRender;
     private Material _default;
     private Warrior _warrior;
-    [SerializeField] private SoundClip _sound;
+    private SoundClip _sound;
 
     [SerializeField] private GameObject _pointPref;
-    private Random _random;
     
     void Start()
     {
         SetDefaultMaterial();
         GetWorkerPosition();
         _sound = gameObject.GetComponent<SoundClip>();
-        _random = new Random();
     }
 
     private void GetWorkerPosition()
@@ -56,15 +53,8 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
 
     private void CreateNewKnight()
     {
-        _warrior = null;
-        GameObject newWarrior = Instantiate(_prefKnight, _spawnPosition.transform.position, Quaternion.identity);
-        _warrior = newWarrior.GetComponent<Warrior>();
+        _warrior = Instantiate(_prefKnight, _spawnPosition.transform.position, Quaternion.identity).GetComponent<Warrior>(); ;
         _warrior.GoToNewTargetPosition(_pointPref.transform);
-    }
-
-    private void SetCharacteristicsWarrior(int hp, int def, int atk)
-    {
-        _warrior.UpdateCharater(hp, def, atk, 1);
     }
     
     public bool IsSelected()
@@ -83,7 +73,7 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
     private void OnMouseDown()
     {
         if (EventSystem.current.IsPointerOverGameObject()) return;
-        Selectet();
+        Selected();
     }
 
     private void SetDefaultMaterial()
@@ -92,7 +82,7 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
         _default = _spriteRender.material;
     }
 
-    public void Selectet()
+    public void Selected()
     {
         if (!_isSelected)
         {

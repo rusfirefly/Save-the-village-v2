@@ -18,7 +18,7 @@ public class GameMenu: MonoBehaviour
     public static GameMenu menuInstance;
     
 
-    private void Start()
+    public void Initialize()
     {
         _isSoundOff = true;
         InitMenu();
@@ -30,6 +30,13 @@ public class GameMenu: MonoBehaviour
     private void InitMenu()
     {
        menuInstance ??= FindAnyObjectByType<GameMenu>();
+    }
+
+    public void Reload()
+    {
+        ChangeGameTimeState();
+        VisibleCanvas(_HUDMenu, false);
+        VisibleCanvas(_gameOverCanvas, false);
     }
 
     private void Update()
@@ -87,11 +94,6 @@ public class GameMenu: MonoBehaviour
         PauseMenu();
     }
 
-    public void ReloadGame()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
     private void VisibleMainMenu(bool isShow)
     {
         _isMainMenu = true;
@@ -102,12 +104,12 @@ public class GameMenu: MonoBehaviour
     {
         if (_isSoundOff)
         {
-            SoudsManager.soundInstance.AllSoundOff();
+            SoundSystem.soundInstance.AllSoundOff();
             buttonText.text = "¬ключить\nзвук";
         }
         else
         {
-            SoudsManager.soundInstance.AllSoundOn();
+            SoundSystem.soundInstance.AllSoundOn();
             buttonText.text = "ќтключить\nзвук";
         }
         _isSoundOff = !_isSoundOff;

@@ -11,4 +11,10 @@ public class SoundClip : Sound
         _audioSource.Play();
     }
 
+    public void PlaySound(AudioClip clip)
+    {
+        _audioSource.volume = volume;
+        _audioSource.clip = clip;
+        _audioSource.Play();
+    }
 }

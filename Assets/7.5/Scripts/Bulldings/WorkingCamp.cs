@@ -93,10 +93,10 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
     private void OnMouseDown()
     {
         if (EventSystem.current.IsPointerOverGameObject()) return;
-        Selectet();
+        Selected();
     }
 
-    public void Selectet()
+    public void Selected()
     {
         if (!_isSelected)
         {

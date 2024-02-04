@@ -37,13 +37,12 @@ public class Entity : MonoBehaviour
 
     protected Random _random;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         FindNavMeshAgent();
         SetupNavMeshAgent();
         ViewCountStek();
         GetSoundEntity();
-        PlaySoundNewEntity();
         _spriteRander = gameObject.GetComponent<SpriteRenderer>();
         _random = new Random();
     }
@@ -100,6 +99,7 @@ public class Entity : MonoBehaviour
         {
             if(_agent.isOnNavMesh)
                 _agent.isStopped = true;
+
             _isRun = false;
         }
     }

@@ -106,7 +106,7 @@ public class TrainigPanel : MonoBehaviour
 
         _isTrainig = true;
         _workProgress = _workTrainingTimer;
-        SetColdownText($"{_workProgress.ToString("#")}s");
+        SetColdownText($"{_workProgress:F0}s");
     }
 
     private void OnBounten(Enums.UnitType type) => Bounten?.Invoke(type);
@@ -128,11 +128,11 @@ public class TrainigPanel : MonoBehaviour
     private void UpdateProgress(ref float progress, float trainingTime, Text coldownText, Image progressPanel)
     {
         progress -= Time.deltaTime;
-        coldownText.text = $"{progress.ToString("#")}s";
+        SetColdownText($"{progress:F0}s");
         progressPanel.fillAmount = progress / trainingTime;
     }
 
-    private void SetColdownText(string text="")=> _coldownText.text = "";
+    private void SetColdownText(string text = "")=> _coldownText.text = text;
 
     private void UpdateInfo()
     {

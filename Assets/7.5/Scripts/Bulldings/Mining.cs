@@ -71,7 +71,7 @@ public class Mining : MonoBehaviour
         Work?.Invoke(tag);
     }
 
-    private void SetColdownText(float time) => _coldownTimeText.text = time.ToString("#");
+    private void SetColdownText(float time) => _coldownTimeText.text = $"{time:F0}";
     private void ProgressFillAmount(float currentTime) => _progress.fillAmount = currentTime / _mineTimerCycle;
 
     private void AnimationMineText()

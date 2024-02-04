@@ -7,6 +7,19 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
 {
     public static event Action Deathing;
 
+    [SerializeField] private float _baffAttack;
+    [SerializeField] private float _baffDefence;
+    [SerializeField] private SoundClip _needMeat;
+
+   
+    private float _satiety;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        PlaySoundNewEntity();
+    }
+
     private void Update()
     {
         Enemy enemy = FindEnemy();
@@ -26,6 +39,7 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
     {
         DetectHitEntity();
     }
+
     protected override void Die()
     {
         base.Die();
@@ -77,10 +91,21 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         if (_nextAttackTime >= _attackSpeed)
         {
             SetTriggerAnimation("Attack1");
-            unit.GetComponent<Enemy>().TakeDamage(_attack * _countInStek);
+            unit.GetComponent<Enemy>().TakeDamage(_attack + _attack * _satiety/100);
             PlaySoundAttack();
             _nextAttackTime = 0;
         }
+    }
+
+    private void EatUp()
+    {
+
+    }
+        
+
+    private void Satiety()
+    {
+       //if(PlayerBase.meat)
     }
 
     public void TakeDamage(float damage)

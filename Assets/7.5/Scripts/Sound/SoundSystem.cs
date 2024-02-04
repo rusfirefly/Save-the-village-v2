@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
-public class SoudsManager : MonoBehaviour
+public class SoundSystem : MonoBehaviour
 {
-    public static SoudsManager soundInstance { get; private set; }
+    public static SoundSystem soundInstance { get; private set; }
     private AudioSource[] _allAudio;
+    
+    [SerializeField] [Range(0, 1)] private float _effectVolume = 0.5f;
+    [SerializeField] [Range(0, 1)] private float _musicVolume = 0.9f;
 
-    public void Start()
+    public void Initialize()
     {
-        Init();
+        soundInstance ??= FindAnyObjectByType<SoundSystem>();
     }
    
     public void AllSoundOff()
@@ -34,8 +37,4 @@ public class SoudsManager : MonoBehaviour
         return GameObject.FindObjectsOfType<AudioSource>();
     }
 
-    private void Init()
-    {
-        soundInstance ??= FindAnyObjectByType<SoudsManager>();
-    }
 }

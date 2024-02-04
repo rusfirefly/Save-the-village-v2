@@ -13,9 +13,9 @@ public class PlayerBase
     public int warriorsCountTotal { get; private set; }
     public int warriorsCountDeath { get; private set; }
 
-    public int countGoldWorker { get;  set; }
-    public int countMeatWorker { get;  set; }
-    public int countWoodWorker { get;  set; }
+    public int countGoldWorker { get; private set; }
+    public int countMeatWorker { get; private set; }
+    public int countWoodWorker { get; private set; }
 
     public PlayerBase(int initGoldCount, int initMeatCount, int initWoodCount)
     {
@@ -29,6 +29,9 @@ public class PlayerBase
     }
 
     public void AddOneWorker() => workersCount++;
+    public void AddOneGoldWorker() => countGoldWorker++;
+    public void AddOneMeatWorker() => countMeatWorker++;
+    public void AddOneWoodWorker() => countWoodWorker++;
     public void AddOneWarrior()
     {
         warriorsCount++;

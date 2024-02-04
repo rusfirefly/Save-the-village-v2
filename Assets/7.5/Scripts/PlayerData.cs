@@ -48,6 +48,10 @@ public class PlayerData : ScriptableObject
 
     public int survivedTheWaves;
 
-
+    public void SetDefaultValue()
+    {
+        numberWave = 0;
+        countEnemyNextWave = 1;
+    }
 }
 

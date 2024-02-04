@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using TypeEnym = Enums.TypeEnym;
 
 public class Enemy : Entity, IDamageable, IMovable, IAttack
 {
     public static event Action Deathing;
-    public enum TypeEnym {Knight, TNT, Torch};
+
     [SerializeField] private TypeEnym _typeEnym;
 
     private void Update()
@@ -72,7 +73,6 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
             StopAgent();
             Attack(entity);
         }
-        
     }
 
     public void Attack(Collider2D unit)
@@ -93,9 +93,11 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
     
     private void TakeDamage(Collider2D unit)
     {
+       
         if (unit.gameObject.tag == "Castle")
         {
             unit.GetComponent<Castle>().TakeDamage(_attack * _countInStek);
+            _distanceFindEntity = 0;
         }
         else
         {
@@ -140,7 +142,6 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
     public void InitEnemy(int countStek)
     {
         _countInStek = countStek;
-
         Move(_tagetPosition);
     }
 

@@ -21,6 +21,7 @@ public class Spawner : MonoBehaviour
     private Random _randomEnemy;
     private int _countEnemysInWave;
     private int _indexEnemyRand;
+    private TimeSpan _time;
 
     private void Awake()
     {
@@ -29,8 +30,15 @@ public class Spawner : MonoBehaviour
         _countStekEnemy = 1;
         _countEnemysInWave = _prefabEnemys.Length;
         _indexEnemyRand = _randomEnemy.Next(0, _countEnemysInWave);
-        _countEnemysText.text = $"Колво врагов в слудующем набеге: {_countStekEnemy}";
+        _countEnemysText.text = $"Врагов в следующем набеге: {_countStekEnemy}";
         _sound = gameObject.GetComponent<SoundSpawn>();
+    }
+
+    public void Reload()
+    {
+        _countStekEnemy = 1;
+        _countEnemysText.text = $"Врагов в следующем набеге: {_countStekEnemy}";
+        _currentTime = 0;
     }
 
     private void Update()
@@ -43,8 +51,9 @@ public class Spawner : MonoBehaviour
         if (GameMenu.isPaused) return;
         _currentTime += Time.deltaTime;
         _timeSpawn = _playerData.waveCycleTime - _currentTime;
-        TimeSpan TS = new TimeSpan(0, 0, Mathf.RoundToInt(_timeSpawn));
-        _cycleWaveText.text = $"Время до набега врагов: {TS.Minutes} м {TS.Seconds} с";
+
+        _time = new TimeSpan(0, 0, Mathf.RoundToInt(_timeSpawn));
+        _cycleWaveText.text = $"Время до набега врагов: {_time.Minutes} м {_time.Seconds} с";
             
         if (_currentTime>= _playerData.waveCycleTime)
         {
@@ -54,9 +63,7 @@ public class Spawner : MonoBehaviour
             _sound.PlaySound();
             _countStekEnemy++;
             _playerData.numberWave++;
-            _countEnemysText.text = $"Колво врагов в следующем набеге: {_countStekEnemy} Волна: {_playerData.numberWave}";
-            _playerData.numberWave++;
-            
+            _countEnemysText.text = $"Врагов в следующем набеге: {_countStekEnemy} Волна: {_playerData.numberWave}";
             _currentTime = 0;
         }
     }
@@ -65,14 +72,8 @@ public class Spawner : MonoBehaviour
     {
         Enemy enemy  = Instantiate(_prefabEnemys[_indexEnemyRand], _spawnPosition.position, Quaternion.identity).GetComponent<Enemy>();
         enemy.SetTargetPosition(_targetPosition);
-        //enemy.InitEnemy(countEnemy);
         enemy.InitEnemy(1);
         _countEnemysInWave = _prefabEnemys.Length;
         _indexEnemyRand = _randomEnemy.Next(0, _countEnemysInWave);
-
-        //Enemy[] enemys = GameObject.FindObjectsOfType<Enemy>();
-        //if (enemys.Length == 1)
-        //    enemys[0].firstEnemy = true;
-
     }
 }
