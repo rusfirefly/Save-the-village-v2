@@ -45,6 +45,7 @@ SpriteAtlasAsset:
     secondaryTextureSettings: {}
     variantMultiplier: 1
     packables:
+    - {fileID: 2800000, guid: e23be3e5f786c1b4a8ebdd87d2ef0259, type: 3}
     - {fileID: 2800000, guid: a369fe9abcc74c14f9b15dbce1866d93, type: 3}
     - {fileID: 2800000, guid: 62460e01f03aa6b4cbf5932ba415357a, type: 3}
     - {fileID: 2800000, guid: ab401d5ef3f8f764398866a02f091251, type: 3}

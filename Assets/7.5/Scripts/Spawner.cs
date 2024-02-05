@@ -16,6 +16,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private Text _countEnemysText;
     [SerializeField] private Text _waveText;
     [SerializeField] private SoundSpawn _sound;
+    [SerializeField] private GameObject _waveInfoCanvas;
 
     private int _countStekEnemy;
     private float _timeSpawn;
@@ -34,6 +35,7 @@ public class Spawner : MonoBehaviour
         _countEnemysText.text = $"Врагов в следующем набеге: {_countStekEnemy}";
         _waveText.text = $"Волна: {_playerData.numberWave}";
         _sound = gameObject.GetComponent<SoundSpawn>();
+        WaveCanvasVisible(true);
     }
 
     public void Reload()
@@ -72,12 +74,22 @@ public class Spawner : MonoBehaviour
             _currentTime = 0;
         }
     }
-
+    private void WaveCanvasVisible(bool visible)
+    {
+        if(visible)
+        {
+            _waveInfoCanvas.transform.localPosition = new Vector3(_waveInfoCanvas.transform.localPosition.x, _waveInfoCanvas.transform.localPosition.y-198);
+        }
+        else
+        {
+            _waveInfoCanvas.transform.localPosition = new Vector3(_waveInfoCanvas.transform.localPosition.x, _waveInfoCanvas.transform.localPosition.y + 198);
+        }
+    }
     private void SpawnEnemy(int countEnemy)
     {
         Enemy enemy  = Instantiate(_prefabEnemys[_indexEnemyRand], _spawnPosition.position, Quaternion.identity).GetComponent<Enemy>();
         enemy.SetTargetPosition(_targetPosition);
-        enemy.InitEnemy(1);
+        enemy.InitEnemy();
         _countEnemysInWave = _prefabEnemys.Length;
         _indexEnemyRand = _randomEnemy.Next(0, _countEnemysInWave);
     }

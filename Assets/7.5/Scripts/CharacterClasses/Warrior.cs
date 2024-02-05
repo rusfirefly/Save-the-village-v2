@@ -13,21 +13,29 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
     [SerializeField] private float _baffHealth;
     [SerializeField] private SoundClip _needMeat;
 
-   
+    [SerializeField] private Image _eatBar;
+    [SerializeField] private PlayerData _playerData;
+
     private float _satiety = 100;
     private float _currentTimeEat;
-    [SerializeField] private int _eatUp = 15;
-    [SerializeField] private float _eatUpCycle=10;
+    [SerializeField] private int _eatUp;
+    [SerializeField] private float _eatUpCycle;
 
     protected override void Awake()
     {
         base.Awake();
+        _eatUpCycle = _playerData.warriorEatTimer;
+        _eatUp = _playerData.warriorEatUpCycle;
         PlaySoundNewEntity();
-       // _eatUpCycle = PlayerData.
+        _healthFull = _health + _baffHealth;
+        BaffSatiety();
+        EatBarAmountFillAmount(_satiety);
+        HealthBarAmountFillAmount(_health);
     }
 
     private void Update()
     {
+        if (_isDie) return;
         Enemy enemy = FindEnemy();
         if (enemy != null)
         {
@@ -50,6 +58,7 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
     protected override void Die()
     {
         base.Die();
+
         Deathing?.Invoke();
         DisableScript();
     }
@@ -108,10 +117,14 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
     private void EatUpCycle()
     {
         _currentTimeEat += Time.deltaTime;
-        if(_currentTimeEat >= _eatUpCycle)
+        EatBarAmountFillAmount(_eatUpCycle - _currentTimeEat);
+        if (_currentTimeEat >= _eatUpCycle)
         {
+            BaffSatiety();
             if (PlayerBase.meat >= 0)
+            {
                 EatUp?.Invoke(_eatUp);
+            }
             else
                 Debug.Log("çàêîí÷èëàñü åäà, ïîêàçàòåëè âîèíîâ ñíèæåíû");
 
@@ -124,9 +137,14 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
     {
         if(PlayerBase.meat>=_eatUpCycle)
         {
-            _baffAttack = 0;
-            _baffDefence = 0;
-            _baffHealth = 0;
+            _baffAttack = _attack*0.15f;
+            _baffDefence = _defence * 0.15f;
+            _baffHealth = _health*0.5f;
+        }else
+        {
+            _baffAttack = _attack * 0.15f * -1;
+            _baffDefence = _defence * 0.15f * -1;
+            _baffHealth = _health * 0.5f * -1;
         }
     }
 
@@ -135,9 +153,9 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         BaffSatiety();
         SetTriggerAnimation("Hit");
         if (damage <= 0) return;
-        _countInStek -= DamageÑalculation(damage);
-        ViewCountStek();
-        if (_countInStek <= 0)
+        _health -= DamageÑalculation(damage);
+        HealthBarAmountFillAmount(_health);
+        if (_health <= 0)
         {
             Die();
         }
@@ -153,11 +171,13 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
 
     private float DamageÑalculation(float damage)
     {
-        if (damage > (_defence+_baffDefence) * _countInStek)
-            return (damage - ((_defence + _baffDefence) * _countInStek)) / _health;
+        if (damage > (_defence + _baffDefence))
+            return (damage - (_defence + _baffDefence));
         else
-            return (((_defence + _baffDefence) * _countInStek) - damage) / _health;
+            return ((_defence + _baffDefence) - damage);
     }
+
+    private void EatBarAmountFillAmount(float value) => _eatBar.fillAmount = value / _eatUpCycle;
 
     public void GoToNewTargetPosition(Transform newPosition)
     {

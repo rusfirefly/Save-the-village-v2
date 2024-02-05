@@ -13,19 +13,18 @@ public class Entity : MonoBehaviour
 
     [SerializeField] private Animator _animator;
     [SerializeField] protected NavMeshAgent _agent;
-    [SerializeField] private Text _countStekText;
     [SerializeField] private Transform _attackPoint;
     [SerializeField] private float _attackRange = 0.5f;
     [SerializeField] private Image _healthImage;
     [SerializeField] private LayerMask _layerMask;
     [SerializeField] protected float _attackSpeed = 0.5f;
     [SerializeField] private bool _drawGizmo;
-
+    [SerializeField] protected Image _hpBar;
     protected float _nextAttackTime;
     protected Vector3 _tagetPosition;
 
-    [SerializeField] protected float _countInStek;
-    [SerializeField] protected int _health = 1;
+    [SerializeField] protected float _health = 1;
+    [SerializeField] protected float _healthFull = 1;
     [SerializeField] protected int _attack = 1;
     [SerializeField] protected int _defence = 1;
     [SerializeField] protected bool _isRun = true;
@@ -33,23 +32,24 @@ public class Entity : MonoBehaviour
     protected float _speedEntity;
     protected float _stepEntity = 2;
 
+    [SerializeField]private Canvas _hud;
     [SerializeField] protected int _distanceFindEntity = 3;
 
     protected Random _random;
+    protected bool _isDie;
 
     protected virtual void Awake()
     {
         FindNavMeshAgent();
         SetupNavMeshAgent();
-        ViewCountStek();
         GetSoundEntity();
         _spriteRander = gameObject.GetComponent<SpriteRenderer>();
         _random = new Random();
+        _agent.autoBraking = true;
     }
 
     private void OnValidate()
     {
-        ViewCountStek();
         GetAniamtion();
     }
 
@@ -67,6 +67,7 @@ public class Entity : MonoBehaviour
     public void SetNewLayer(int layerLevel)
     {
         _spriteRander.sortingOrder = layerLevel;
+        _hud.sortingOrder = layerLevel;
     }
 
     protected void GetSoundEntity() => _soundEntity = gameObject.GetComponent<SoundEntity>();
@@ -91,29 +92,28 @@ public class Entity : MonoBehaviour
         RunAgent();
     }
 
+    protected void HealthBarAmountFillAmount(float value) => _hpBar.fillAmount = value / (_healthFull);
+
     protected Collider2D[] HitEntity() => Physics2D.OverlapCircleAll(_attackPoint.position, _attackRange, _layerMask);
 
     protected void StopAgent()
     {
         if (_isRun)
         {
-            if(_agent.isOnNavMesh)
-                _agent.isStopped = true;
-
+            _agent.isStopped = true;
+            _agent.enabled = false;
             _isRun = false;
         }
     }
 
     private void RunAgent()
     {
-        if (!_isRun)
+        if (!_isRun&&!_isDie)
         {
-            if (_agent.isOnNavMesh)
-            {
-                _agent.isStopped = false;
+            _agent.enabled = true;
+            _agent.isStopped = false;
+            if(!_agent.hasPath)
                 _agent.destination = _tagetPosition;
-            }
-
             _isRun = true;
         }
     }
@@ -123,35 +123,25 @@ public class Entity : MonoBehaviour
 
     private bool IsDrawGizmo() => _drawGizmo;
 
-    public void IncrementStek()
-    {
-        _countInStek++;
-        _countStekText.text = _countInStek.ToString("#");
-    }
-
     public void UpdateCharater(int hp, int def, int atk, int countStek)
     {
-        _countInStek = countStek;
         _health = hp;
+        _healthFull = hp;
         _attack = atk;
         _defence = def;
-
-        ViewCountStek();
-    }
-
-    protected void ViewCountStek()
-    {
-        if (_countStekText == null) return;
-        if (_countInStek <= 0) _countInStek = 0;
-        _countStekText.text = _countInStek.ToString("#.#");
     }
 
     protected virtual void Die()
     {
+        _isDie = true;
+        //        StopAgent();
+        //_agent.isStopped = true;
+        //_agent.ResetPath();
+        _agent.enabled = false;
         PlaySoundDie();
         SetBoolAnimation("IsDie", true);
+        
         gameObject.GetComponent<Collider2D>().enabled = false;
-        gameObject.GetComponent<NavMeshAgent>().enabled = false;
     }
 
     public void DestroyEntity() => Destroy(gameObject);

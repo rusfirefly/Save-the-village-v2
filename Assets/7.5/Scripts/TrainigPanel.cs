@@ -61,8 +61,8 @@ public class TrainigPanel : MonoBehaviour
                 SetTrainingPrice(_playerData.woodUnitTrainigPrice);
                 break;
             case Enums.UnitType.Knight:
-                SetTrainingTime(_playerData.knightTrainingTimer);
-                SetTrainingPrice(_playerData.knightTrainigPrice);
+                SetTrainingTime(_playerData.warriorTrainingTimer);
+                SetTrainingPrice(_playerData.warriorTrainigPrice);
                 break;
 
         }

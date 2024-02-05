@@ -14,15 +14,15 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
 
     private void Update()
     {
+        if (_isDie) return;
         Warrior playerWarrior = FindWarrior();
-
         if (playerWarrior != null)
         {
             MoveToWarrior(playerWarrior);
         }
         else
         {
-            GoBackPosition();
+           GoBackPosition();
         }
 
         DetectHitEntity();
@@ -31,7 +31,6 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
     protected override void Die()
     {
         base.Die();
-        
         Deathing?.Invoke();
         DisableScript();
     }
@@ -83,7 +82,7 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
             StartAnimationAttack();
             TakeDamage(unit);
             PlaySoundAttack();
-            if (_typeEnym == TypeEnym.TNT)
+            if (_typeEnym != TypeEnym.TNT)
             {
                 StopAgent();
             }
@@ -122,9 +121,10 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
 
         if (damage <= 0) return;
 
-        _countInStek -= DamageÑalculation(damage);
-     
-        if (_countInStek <= 0)
+        _health -= DamageÑalculation(damage);
+        HealthBarAmountFillAmount(_health);
+
+        if (_health <= 0)
         {
            Die();
         }
@@ -132,25 +132,24 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
 
     public void InitEnemy(int hp, int def, int atk, int countStek)
     {
-        _countInStek = countStek;
         _health = hp;
         _attack = atk;
         _defence = def;
+        HealthBarAmountFillAmount(_health);
         Move(_tagetPosition);
     }
 
-    public void InitEnemy(int countStek)
+    public void InitEnemy()
     {
-        _countInStek = countStek;
         Move(_tagetPosition);
     }
 
     private float DamageÑalculation(float damage)
     {
-        if (damage > _defence * _countInStek)
-            return (damage - (_defence * _countInStek)) / _health;
+        if (damage > _defence)
+            return (damage - _defence ) / _health;
         else
-            return ((_defence * _countInStek) - damage) / _health;
+            return (_defence  - damage) / _health;
     }
 
     

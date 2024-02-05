@@ -132,9 +132,9 @@ public class GameManager : MonoBehaviour
     {
         _workerText.text = $"{_playerBase.workersCount}";
         _wariorText.text = $"{_playerBase.warriorsCount}";
-        _goldText.text = $"{PlayerBase.gold }";
-        _meatText.text = $"{PlayerBase.meat }";
-        _woodText.text = $"{PlayerBase.wood }";
+        _goldText.text = $"{PlayerBase.gold} +({_playerBase.countGoldWorker *_playerData.goldMiningPerCycle})";
+        _meatText.text = $"{PlayerBase.meat} +({_playerBase.countMeatWorker * _playerData.meatMiningPerCycle})|-({_playerBase.warriorsCount * _playerData.warriorEatUpCycle})";
+        _woodText.text = $"{PlayerBase.wood} +({_playerBase.countWoodWorker * _playerData.woodMiningPerCycle})";
       //  GameOver("VIKTORY");
     }
     private void OnSelectedCampEvent(GameObject gameObject)
@@ -212,7 +212,7 @@ public class GameManager : MonoBehaviour
             Enums.UnitType.Gold => _playerData.goldUnitTrainigPrice,
             Enums.UnitType.Meat => _playerData.meatUnitTrainigPrice,
             Enums.UnitType.Wood => _playerData.woodUnitTrainigPrice,
-            Enums.UnitType.Knight => _playerData.knightTrainigPrice,
+            Enums.UnitType.Knight => _playerData.warriorTrainigPrice,
             _ => 0
         };
     }
@@ -269,8 +269,8 @@ public class GameManager : MonoBehaviour
     {
         string statistic = $"Итоги игры:\n" +
                            $"Волн пережито: {_playerData.numberWave}\n" +
-                           $"Врагов уничтоженно:{_enemiesDestroyed}\n"+
-                           $"Нането воинов: {_playerBase.warriorsCountTotal}\n" +
+                           $"Врагов уничтожено:{_enemiesDestroyed}\n"+
+                           $"Нанято воинов: {_playerBase.warriorsCountTotal}\n" +
                            $"Воинов выжило: {_playerBase.warriorsCount}\n" +
                            $"Воинов погибло:{_playerBase.warriorsCountDeath}\n" +
                            $"Рабочих нанято:{_playerBase.workersCount}\n" +
