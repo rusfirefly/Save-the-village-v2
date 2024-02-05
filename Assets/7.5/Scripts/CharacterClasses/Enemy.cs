@@ -76,6 +76,7 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
 
     public void Attack(Collider2D unit)
     {
+        if (_isDie) return;
         _nextAttackTime += Time.deltaTime;
         if (_nextAttackTime >= _attackSpeed)
         {
@@ -85,6 +86,10 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
             if (_typeEnym != TypeEnym.TNT)
             {
                 StopAgent();
+            }
+            else
+            {
+                _isDie = true;
             }
             _nextAttackTime = 0;
         }

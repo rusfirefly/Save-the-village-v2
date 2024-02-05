@@ -23,8 +23,9 @@ public class TrainigPanel : MonoBehaviour
     private float _workProgress;
 
     [SerializeField] private PlayerData _playerData;
-    private int countResource = 0;
-    private bool isBought { get; set; }
+    private int _countResource = 0;
+    private bool _isBought;
+    public static bool isReload;
 
     private void Start()
     {
@@ -67,19 +68,19 @@ public class TrainigPanel : MonoBehaviour
 
         }
 
-        countResource = PlayerBase.gold;
+        _countResource = PlayerBase.gold;
         trainigPriceText.text = _trainigPrice.ToString();
 
-        if (countResource >= _trainigPrice)
+        if (_countResource >= _trainigPrice)
         {
             _trainigProgressPanel.fillAmount = 0;
-            if(!isBought) 
+            if(!_isBought) 
                 _isActiveTrainig = true;
         }
         else
         {
             _trainigProgressPanel.fillAmount = 1f;
-            if(!isBought)
+            if(!_isBought)
                 _isActiveTrainig = false;
         }
     }
@@ -98,10 +99,10 @@ public class TrainigPanel : MonoBehaviour
 
         if (_isTrainig) return;
 
-        if (!isBought)
+        if (!_isBought)
         {
             OnBounten(_unitType);
-            isBought = true;
+            _isBought = true;
         }
 
         _isTrainig = true;
@@ -114,25 +115,37 @@ public class TrainigPanel : MonoBehaviour
    
     private void AnimationTraining()
     {
+
         if (_isTrainig && _isActiveTrainig)
         {
-            UpdateProgress(ref _workProgress, _workTrainingTimer, _coldownText, _trainigProgressPanel);
+            if (isReload)
+            {
+                _isTrainig = false;
+                isReload = false;
+                _isBought = false;
+                UpdateInfo();
+                return;
+            }
+
+            UpdateProgress(ref _workProgress, _workTrainingTimer, _trainigProgressPanel);
             if (_workProgress <= 0)
             {
-                isBought = false;
+                _isBought = false;
                 UpdateInfo();
                 OnTarianigFinish(_unitType);
             }
         }
     }
-    private void UpdateProgress(ref float progress, float trainingTime, Text coldownText, Image progressPanel)
+    private void UpdateProgress(ref float progress, float trainingTime, Image progressPanel)
     {
+
+
         progress -= Time.deltaTime;
         SetColdownText($"{progress:F0}s");
         progressPanel.fillAmount = progress / trainingTime;
     }
 
-    private void SetColdownText(string text = "")=> _coldownText.text = text;
+    private void SetColdownText(string text = "") => _coldownText.text = text;
 
     private void UpdateInfo()
     {

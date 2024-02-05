@@ -1,96 +1,207 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Animator))]
-public class Archer : MonoBehaviour
+public class Archer : Entity, IDamageable, IAttack, IMovable
 {
-    [SerializeField] private Animator _animator;
-    [SerializeField] private NavMeshAgent _agent;
-    [SerializeField] private Text _countStekText;
-    [SerializeField] private Transform _attackPoint;
-    [SerializeField] private float _attackRange = 0.5f;
-    [SerializeField] private bool _drawGizmo;
-    [SerializeField] private LayerMask _layerMask;
-    [SerializeField] private float _attackSpeed = 0.5f;
-    
-    private float _nextAttackTime;
-    [SerializeField] private Transform _tagetPosition;
-    [SerializeField] private Transform _enemyPosition;
 
-    [SerializeField] private float _countInStek;
-    private float _countStekHealth;
-    [SerializeField] private int _health = 1;
-    [SerializeField] private int _attack = 1;
-    [SerializeField] private int _defence = 1;
-    [SerializeField] private bool _isRun = true;
     [SerializeField] private GameObject _arrowPrefab;
-    private float _speedWarrior;
-    private float _stepWarrior = 2;
-     private float _distanceFindEnemy;
-    public bool firstArcher { get; set; }
-    private bool _isTargetInRange;
+    public static event Action Deathing;
+    public static event Action<int> EatUp;
 
-    private void Start()
+    [SerializeField] private float _baffAttack;
+    [SerializeField] private float _baffDefence;
+    [SerializeField] private float _baffHealth;
+    [SerializeField] private SoundClip _needMeat;
+
+    [SerializeField] private Image _eatBar;
+    [SerializeField] private PlayerData _playerData;
+
+    private float _satiety = 100;
+    private float _currentTimeEat;
+    [SerializeField] private int _eatUp;
+    [SerializeField] private float _eatUpCycle;
+
+    protected override void Awake()
     {
-        FindNavMeshAgent();
-        SetupNavMeshAgent();
-        _distanceFindEnemy = _attackRange;
+        base.Awake();
+        _eatUpCycle = _playerData.warriorEatTimer;
+        _eatUp = _playerData.warriorEatUpCycle;
+        //PlaySoundNewEntity();
+        _healthFull = _health + _baffHealth;
+        BaffSatiety();
+        EatBarAmountFillAmount(_satiety);
+        HealthBarAmountFillAmount(_health);
     }
 
     private void Update()
     {
-        AttackEnemy();
-    }
-
-    private void OnDrawGizmos()
-    {
-        if (_attackPoint == null || !IsDrawGizmo()) return;
-        DrawAttackRange();
-        DrawArrowAttack();
-     }
-
-    private void OnValidate()
-    {
-        GetAnimation();
-    }
-    private void FindNavMeshAgent()
-    {
-        _agent = GetComponent<NavMeshAgent>();
-    }
-
-    private void SetupNavMeshAgent()
-    {
-        if (_agent == null) return;
-        _agent.updateRotation = false;
-        _agent.updateUpAxis = false;
-    }
-    private void GetAnimation() => _animator ??= GetComponent<Animator>();
-    private void AttackEnemy()
-    {
-        Collider2D[] hitEnemies = HitEnemys();
-        if(hitEnemies.Length>0) _isTargetInRange = true;
-        else _isTargetInRange = false;
-        foreach (Collider2D enemy in hitEnemies)
+        if (_isDie) return;
+        Enemy enemy = FindEnemy();
+        if (enemy != null)
         {
-            Arrow arrow = Instantiate(_arrowPrefab, _attackPoint.position, Quaternion.identity).GetComponent<Arrow>();
-            _enemyPosition = enemy.transform;
-            arrow.ShootArrow(enemy.transform);
+            MoveToEnemy(enemy);
+        }
+        else
+        {
+            GoBackPosition();
+        }
+
+        DetectHitEntity();
+        EatUpCycle();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        DetectHitEntity();
+    }
+
+    protected override void Die()
+    {
+        base.Die();
+
+        Deathing?.Invoke();
+        DisableScript();
+    }
+
+    private void DetectHitEntity()
+    {
+        Collider2D[] hitEntities = HitEntity();
+        foreach (Collider2D entity in hitEntities)
+        {
+            StopAgent();
+            Attack(entity);
         }
     }
 
-    private void Shoot()
+    private void MoveToEnemy(Enemy enemy)
     {
-        //àíèìàöèÿ
+        float dist = GetDistanceToEnmy(enemy);
+        if (CheckDistanceToEnemy(dist, _distanceFindEntity))
+        {
+            GoToEnemy(enemy);
+        }
     }
-    private bool IsDrawGizmo() => _drawGizmo;
-    private void DrawAttackRange() => Gizmos.DrawWireSphere(_attackPoint.position, _attackRange);
-    private Collider2D[] HitEnemys() => Physics2D.OverlapCircleAll(_attackPoint.position, _attackRange, _layerMask);
-    private void DrawArrowAttack()
+
+    private bool CheckDistanceToEnemy(float currentDistance, float distance)
     {
-        if(_isTargetInRange && _enemyPosition!=null)
-            Gizmos.DrawLine(_attackPoint.position, _enemyPosition.position);
+        if (currentDistance <= distance) return true;
+        else return false;
+    }
+
+    private Enemy FindEnemy() => FindObjectOfType<Enemy>();
+
+    private void GoToEnemy(Enemy enemy)
+    {
+        _speedEntity = _stepEntity * Time.deltaTime;
+        gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, enemy.gameObject.transform.position, _speedEntity);
+    }
+
+    private float GetDistanceToEnmy(Enemy enemy)
+    {
+        return Vector2.Distance(gameObject.transform.position, enemy.gameObject.transform.position);
+    }
+
+    public void Attack(Collider2D unit)
+    {
+        _nextAttackTime += Time.deltaTime;
+        if (_nextAttackTime >= _attackSpeed)
+        {
+            BaffSatiety();
+            SetTriggerAnimation("Attack1");
+            //unit.GetComponent<Enemy>().TakeDamage(_attack + _baffAttack);
+            PlaySoundAttack();
+            _nextAttackTime = 0;
+        }
+    }
+
+    private void ArrowShoot()
+    { 
+    
+    }
+
+    private void EatUpCycle()
+    {
+        _currentTimeEat += Time.deltaTime;
+        EatBarAmountFillAmount(_eatUpCycle - _currentTimeEat);
+        if (_currentTimeEat >= _eatUpCycle)
+        {
+            BaffSatiety();
+            if (PlayerBase.meat >= 0)
+            {
+                EatUp?.Invoke(_eatUp);
+            }
+            else
+                Debug.Log("çàêîí÷èëàñü åäà, ïîêàçàòåëè âîèíîâ ñíèæåíû");
+
+            _currentTimeEat -= _eatUpCycle;
+        }
+    }
+
+
+    private void BaffSatiety()
+    {
+        if (PlayerBase.meat >= _eatUpCycle)
+        {
+            _baffAttack = _attack * 0.15f;
+            _baffDefence = _defence * 0.15f;
+            _baffHealth = _health * 0.5f;
+        }
+        else
+        {
+            _baffAttack = _attack * 0.15f * -1;
+            _baffDefence = _defence * 0.15f * -1;
+            _baffHealth = _health * 0.5f * -1;
+        }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        BaffSatiety();
+        SetTriggerAnimation("Hit");
+        if (damage <= 0) return;
+        _health -= DamageÑalculation(damage);
+        HealthBarAmountFillAmount(_health);
+        if (_health <= 0)
+        {
+            Die();
+        }
+    }
+
+    public void Move(Vector3 position)
+    {
+        if (_isRun && position != null)
+        {
+            _agent.destination = position;
+        }
+    }
+
+    private float DamageÑalculation(float damage)
+    {
+        if (damage > (_defence + _baffDefence))
+            return (damage - (_defence + _baffDefence));
+        else
+            return ((_defence + _baffDefence) - damage);
+    }
+
+    private void EatBarAmountFillAmount(float value) => _eatBar.fillAmount = value / _eatUpCycle;
+
+    public void GoToNewTargetPosition(Transform newPosition)
+    {
+        Vector3 newPoint = new Vector3(newPosition.position.x + (_random.Next(-5, 6) + 0.1f) * 0.6f, newPosition.position.y + (_random.Next(-2, 3) + 0.1f) * 0.3f);
+        _tagetPosition = newPoint;
+        Move(_tagetPosition);
+    }
+
+    public void FindEnemyPosition()
+    {
+        Enemy[] enemys = GameObject.FindObjectsOfType<Enemy>();
+        foreach (Enemy enemy in enemys)
+        {
+            _agent.destination = enemy.gameObject.transform.position;
+        }
     }
 }

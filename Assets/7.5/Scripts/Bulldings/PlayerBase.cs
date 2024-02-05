@@ -63,10 +63,6 @@ public class PlayerBase
 
     public void Reload()
     {
-        gold = 0;
-        meat = 0;
-        wood = 0;
-
         countGoldWorker = 0;
         countMeatWorker = 0;
         countWoodWorker = 0;

@@ -13,7 +13,7 @@ public class Entity : MonoBehaviour
 
     [SerializeField] private Animator _animator;
     [SerializeField] protected NavMeshAgent _agent;
-    [SerializeField] private Transform _attackPoint;
+    [SerializeField] protected Transform _attackPoint;
     [SerializeField] private float _attackRange = 0.5f;
     [SerializeField] private Image _healthImage;
     [SerializeField] private LayerMask _layerMask;
@@ -134,9 +134,6 @@ public class Entity : MonoBehaviour
     protected virtual void Die()
     {
         _isDie = true;
-        //        StopAgent();
-        //_agent.isStopped = true;
-        //_agent.ResetPath();
         _agent.enabled = false;
         PlaySoundDie();
         SetBoolAnimation("IsDie", true);

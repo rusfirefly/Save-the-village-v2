@@ -54026,7 +54026,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1875795307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56673,7 +56673,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 488292511, guid: c8992e1c826021846ae68823bcdd7d7c, type: 3}
       propertyPath: _health
-      value: 500
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 488292511, guid: c8992e1c826021846ae68823bcdd7d7c, type: 3}
       propertyPath: _repairBar

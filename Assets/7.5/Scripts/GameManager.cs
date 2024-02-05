@@ -247,7 +247,7 @@ public class GameManager : MonoBehaviour
         foreach (Entity entity in entitys)
             Destroy(entity.gameObject);
 
-
+     
     }
 
     public void ReloadGame()
@@ -263,6 +263,7 @@ public class GameManager : MonoBehaviour
         spawner.Reload();
 
         _playerBase.Reload();
+        TrainigPanel.isReload = true;
     }
 
     private void GameOver(string title)

@@ -104,4 +104,6 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
         _warriorPanelPosition.localPosition = new Vector3(450, _warriorPanel.transform.localPosition.y);
     }
 
+
+
 }

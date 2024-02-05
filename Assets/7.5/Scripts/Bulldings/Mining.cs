@@ -36,6 +36,7 @@ public class Mining : MonoBehaviour
     public void Reload()
     {
         _inMine = false;
+        _mineTimer = 0;
         _mineCountText.gameObject.SetActive(false);
         MineCanvas(false);
     }

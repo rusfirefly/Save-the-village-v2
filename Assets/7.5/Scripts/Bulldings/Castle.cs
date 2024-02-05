@@ -57,6 +57,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
         SetCurrentHealthFull();
         SetCastleFire(false);
         SetCastleHealth();
+        RepairBarVisible(false);
     }
 
     private void GetSoundComponent()=> _soundCastle = gameObject.GetComponent<SoundCastle>();

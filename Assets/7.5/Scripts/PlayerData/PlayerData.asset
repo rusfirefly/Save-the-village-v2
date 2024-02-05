@@ -16,7 +16,7 @@ MonoBehaviour:
   meatUnitTrainigPrice: 1
   woodUnitTrainigPrice: 1
   warriorTrainigPrice: 1
-  goldWorkTrainingTimer: 0.1
+  goldWorkTrainingTimer: 10
   meatWorkTrainingTimer: 0.1
   woodWorkTrainingTimer: 0.1
   warriorTrainingTimer: 0.2
@@ -30,8 +30,8 @@ MonoBehaviour:
   timeGoldMine: 5
   timeMeatMine: 6
   timeWoodMine: 7
-  numberWave: 2
-  waveCycleTime: 15
+  numberWave: 5
+  waveCycleTime: 5
   countEnemyNextWave: 1
   countGolds: 0
   countMeats: 0
