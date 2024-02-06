@@ -121,7 +121,7 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         if (_currentTimeEat >= _eatUpCycle)
         {
             BaffSatiety();
-            if (PlayerBase.meat >= 0)
+            if (Storage.Meat >= 0)
             {
                 EatUp?.Invoke(_eatUp);
             }
@@ -135,7 +135,7 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
 
     private void BaffSatiety()
     {
-        if(PlayerBase.meat>=_eatUpCycle)
+        if(Storage.Meat>=_eatUpCycle)
         {
             _baffAttack = _attack*0.15f;
             _baffDefence = _defence * 0.15f;

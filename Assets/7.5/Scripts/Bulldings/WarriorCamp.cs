@@ -7,9 +7,6 @@ using UnityEngine.UI;
 
 public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
 {
-    public float trainingTime { get; set; }
-    public float trainingPrice { get; set; }
-    public bool isTrainig { get; set; }
     private bool _isSelected;
 
     [SerializeField] private GameObject _warriorPanel;

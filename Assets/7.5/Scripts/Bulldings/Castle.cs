@@ -13,7 +13,6 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     public static event Action<int> Repair;
 
     [SerializeField] private float _health;
-    private float _fullHealth;
     [SerializeField] private GameObject _fire;
     [SerializeField] private Text _castleInfoText;
     [SerializeField] private Text _repairPriceText;
@@ -23,11 +22,12 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     [SerializeField] private GameObject _repairBarPanel;
     [SerializeField] private Image _repairBar;
     [SerializeField] private Transform _positionArcher;
+    [SerializeField] private int _countWoodForRepairPrice = 100;
+    private float _fullHealth;
 
     private SpriteRenderer _spriteRender;
     private Material _default;
 
-    [SerializeField] private int _countWoodForRepairPrice = 100;
     private SoundCastle _soundCastle;
 
     private float _timeRepair = 10f;
@@ -38,7 +38,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     private float _currentTime;
     private float _percentHealth;
     private Animator _animator;
-    
+
     public void Start()
     {
         SetDefaultMaterial();
@@ -132,7 +132,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 
     private void CheckStateRepairButton()
     {
-        if (PlayerBase.wood >= _countWoodForRepairPrice && _health < _fullHealth && !_isRepair)
+        if (Storage.Wood >= _countWoodForRepairPrice && _health < _fullHealth && !_isRepair)
         {
             RepairButtonEnable(true);
             ActiveButtonVisible(false);
@@ -194,7 +194,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 
     private void RepearCastle()
     {
-        if(PlayerBase.wood >= _countWoodForRepairPrice)
+        if(Storage.Wood >= _countWoodForRepairPrice)
         {
             PorgressBarVisible(true);
             SpendWoodOnRepairs();

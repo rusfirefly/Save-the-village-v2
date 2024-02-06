@@ -6,8 +6,6 @@ using UnityEngine.EventSystems;
 
 public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
 {
-    public bool isTrainig { get; set; }
-
     [SerializeField] private GameObject _workerPanel;
     private RectTransform _workerPanelPosition;
     [SerializeField] private Transform _spawnPosition;
@@ -16,10 +14,9 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
     [SerializeField] private Transform _castlePoints;
     [SerializeField] private SoundClip _sound;
     
-    public Transform goldPosition { get; set; }
-    public Transform meatPosition { get; set; }
-    public Transform woodPosition { get; set; }
-    public Transform castlePosition { get; set; }
+    public Transform GoldPosition { get; set; }
+    public Transform MeatPosition { get; set; }
+    public Transform WoodPosition { get; set; }
     
     private SpriteRenderer _spriteRender;
     private Material _default;
@@ -51,9 +48,9 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
     {
         return type switch
         {
-            Enums.UnitType.Gold => goldPosition,
-            Enums.UnitType.Meat => meatPosition,
-            Enums.UnitType.Wood => woodPosition,
+            Enums.UnitType.Gold => GoldPosition,
+            Enums.UnitType.Meat => MeatPosition,
+            Enums.UnitType.Wood => WoodPosition,
             _ => _spawnPosition
         };
     }

@@ -2,117 +2,161 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct ResourceStorage
+public class Storage
 {
-    public int gold;
-    public int meat;
-    public int wood;
-}
+    public static int Gold { get; private set; }
+    public static int Meat { get; private set; }
+    public static int Wood { get; private set; }
 
-public struct UnitStorage
-{
-    public int workersCount;
-    public int workersCountMaximum;
-
-    public int warriorsCount;
-    public int warriorsCountMaximum;
-
-    public int archerCount;
-    public int archerCountMaximum;
-
-    public int warriorsCountTotal;
-    public int warriorsCountDeath;
-
-    public int countGoldWorker;
-    public int countMeatWorker;
-    public int countWoodWorker;
-}
-
-public class PlayerBase
-{
-    public static ResourceStorage resourceStorage { get; private set; }
-    public UnitStorage unitStorage { get; private set; }
-
-    //------------
-    public static int gold { get; private set; }
-    public static int meat { get; private set; }
-    public static int wood { get; private set; }
-    //----------------
-
-    public int workersCount { get; private set; }
-    public int warriorsCount { get; private set; }
-    public int archerCount { get; private set; }
-    public int warriorsCountTotal { get; private set; }
-    public int warriorsCountDeath { get; private set; }
-
-    public int countGoldWorker { get; private set; }
-    public int countMeatWorker { get; private set; }
-    public int countWoodWorker { get; private set; }
-    //--------------------
-
-    public PlayerBase(int initGoldCount, int initMeatCount, int initWoodCount)
+    public Storage(int gold, int meat, int wood)
     {
-        gold = initGoldCount;
-        meat = initMeatCount;
-        wood = initWoodCount;
-
-        workersCount = 0;
-        warriorsCount = 0;
-        warriorsCountTotal = 0;
-
-        Castle.Repair += OnRepairEvent;
-        Warrior.EatUp += OnEatUpEvent;
-        Archer.EatUp += OnEatUpEvent;
+        Gold = gold;
+        Meat = meat;
+        Wood = wood;
     }
+    
+    public void AddGold(int newGoldCount1)=>Gold += newGoldCount1;
 
-    public void AddOneWorker() => workersCount++;
+    public void AddMeat(int newMeatCount)=>Meat += newMeatCount;
 
-    public void AddOneGoldWorker() => countGoldWorker++;
+    public void AddWood(int newWoodCount)=>Wood += newWoodCount;
 
-    public void AddOneMeatWorker() => countMeatWorker++;
+    public void SpendGold(int price) => Gold -= price;
 
-    public void AddOneWoodWorker() => countWoodWorker++;
+    public void UseWood(int price) => Wood -= price;
+
+    public void UseMeat(int eatUp) => Meat -= eatUp;
+}
+
+public class Population
+{
+    public static int WorkersCount { get; private set; }
+    public static int WorkersCountTotal { get; private set; }
+    public static int WarriorsCount { get; private set; }
+    public static int WarriorsCountTotal { get; private set; }
+    public static int ArcherCount { get; private set; }
+    public static int ArcherCountTotal { get; private set; }
+    public static int WarriorsCountDeath { get; private set; }
+
+    public static int CountGoldWorker { get; private set; }
+    public static int CountMeatWorker { get; private set; }
+    public static int CountWoodWorker { get; private set; }
+
+    public void AddOneWorker() => WorkersCount++;
+
+    public void AddOneGoldWorker() => CountGoldWorker++;
+
+    public void AddOneMeatWorker() => CountMeatWorker++;
+
+    public void AddOneWoodWorker() => CountWoodWorker++;
 
     public void AddOneWarrior()
     {
-        warriorsCount++;
-        warriorsCountTotal++;
+        WarriorsCount++;
     }
 
     public void DeathWarrior()
     {
-        warriorsCount--;
-        warriorsCountDeath++;
+        WarriorsCount--;
+        WarriorsCountDeath++;
     }
 
-    public void UpdateGold(int newGoldCount1)
+    public void ReloadValue()
     {
-        gold += newGoldCount1;
+        WorkersCount = 0;
+        WarriorsCount = 0;
+        CountGoldWorker = 0;
+        CountMeatWorker = 0;
+        CountWoodWorker = 0;
+
+        WorkersCountTotal = 10;
+        WarriorsCountTotal = 10;
+        ArcherCountTotal = 1;
+    }
+}
+
+public class PlayerBase
+{
+    private Storage _storage;
+    private Population _population;
+    private PlayerData _playerData;
+
+    public PlayerBase(PlayerData playerData, int initGoldCount, int initMeatCount, int initWoodCount)
+    {
+        _storage = new Storage(initGoldCount, initMeatCount, initWoodCount);
+        _population = new();
+        _playerData = playerData;
+
+        ReloadValue();
+
+        Castle.Repair += OnRepairEvent;
+        Warrior.EatUp += OnEatUpEvent;
+        Archer.EatUp += OnEatUpEvent;
+        Mining.Work += OnFinishMiningEvent;
+        TrainigButton.Bounten += OnBountenEvent;
+        Warrior.Deathing += OnDeathWarriorEvent;
+        Archer.Deathing += OnDeathWarriorEvent;
+        WorkMan.Working += OnWorkingEvent;
     }
 
-    public void UpdateMeat(int newMeatCount)
+    public void ReloadValue() => _population.ReloadValue();
+
+    private void OnFinishMiningEvent(string tag)
     {
-        meat += newMeatCount;
+        int mining;
+        switch (tag)
+        {
+            case "GoldMine":
+                mining = _playerData.goldMiningPerCycle * Population.CountGoldWorker;
+                _storage.AddGold(mining);
+                break;
+            case "MeatMine":
+                mining = _playerData.meatMiningPerCycle * Population.CountMeatWorker;
+                _storage.AddMeat(mining);
+                break;
+            case "WoodMine":
+                mining = _playerData.woodMiningPerCycle * Population.CountWoodWorker;
+                _storage.AddWood(mining);
+                break;
+        }
     }
 
-    public void UpdateWood(int newWoodCount)
+    private void OnWorkingEvent(GameObject workMan, Collider2D collider)
     {
-        wood += newWoodCount;
+        string tag = collider.gameObject.tag;
+        switch (tag)
+        {
+            case "GoldMine":
+                _population.AddOneGoldWorker();
+                break;
+            case "MeatMine":
+                _population.AddOneMeatWorker();
+                break;
+            case "WoodMine":
+                _population.AddOneWoodWorker();
+                break;
+        }
     }
 
-    public void Reload()
+    private void OnBountenEvent(Enums.UnitType type)
     {
-        countGoldWorker = 0;
-        countMeatWorker = 0;
-        countWoodWorker = 0;
+        int price = GetPrice(type);
+        _storage.SpendGold(price);
+    }
 
-        workersCount = 0;
-        warriorsCount = 0;
-        warriorsCountTotal = 0;
-        warriorsCountDeath = 0;
+    private void OnDeathWarriorEvent() => _population.DeathWarrior();
 
-        Castle.Repair -= OnRepairEvent;
-        Warrior.EatUp -= OnEatUpEvent;
+    private int GetPrice(Enums.UnitType type)
+    {
+        return type switch
+        {
+            Enums.UnitType.Gold => _playerData.goldUnitTrainigPrice,
+            Enums.UnitType.Meat => _playerData.meatUnitTrainigPrice,
+            Enums.UnitType.Wood => _playerData.woodUnitTrainigPrice,
+            Enums.UnitType.Knight => _playerData.warriorTrainigPrice,
+            Enums.UnitType.Archer => _playerData.archerTrainigPrice,
+            _ => 0
+        };
     }
 
     public void AddUnitToBase(Enums.UnitType type)
@@ -120,23 +164,22 @@ public class PlayerBase
         switch (type)
         {
             case Enums.UnitType.Gold:
-                AddOneWorker();
+                _population.AddOneWorker();
                 break;
             case Enums.UnitType.Meat:
-                AddOneWorker();
+                _population.AddOneWorker();
                 break;
             case Enums.UnitType.Wood:
-                AddOneWorker();
+                _population.AddOneWorker();
                 break;
             case Enums.UnitType.Knight:
-                AddOneWarrior();
+                _population.AddOneWarrior();
                 break;
             case Enums.UnitType.Archer:
-                AddOneWarrior();
+                _population.AddOneWarrior();
                 break;
         };
     }
-
-    private void OnRepairEvent(int price) => wood -= price;
-    private void OnEatUpEvent(int eatUp) => meat -= eatUp;
+    private void OnRepairEvent(int price) => _storage.UseWood(price);
+    private void OnEatUpEvent(int eatUp) => _storage.UseMeat(eatUp);
 }

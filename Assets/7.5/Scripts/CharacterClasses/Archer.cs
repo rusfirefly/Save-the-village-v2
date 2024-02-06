@@ -7,25 +7,24 @@ using UnityEngine.UI;
 
 public class Archer : Entity, IDamageable, IAttack, IMovable
 {
-
-    [SerializeField] private GameObject _arrowPrefab;
     private SpriteRenderer _archer;
     public static event Action Deathing;
     public static event Action<int> EatUp;
 
-    [SerializeField] private float _baffAttack;
-    [SerializeField] private float _baffDefence;
-    [SerializeField] private float _baffHealth;
+    [SerializeField] private GameObject _arrowPrefab;
     [SerializeField] private SoundClip _needMeat;
-
     [SerializeField] private Image _eatBar;
     [SerializeField] private PlayerData _playerData;
+    [SerializeField] private float _baffHealth;
+    [SerializeField] private float _baffDefence;
+    [SerializeField] private float _baffAttack;
+    [SerializeField] private int _eatUp;
+    [SerializeField] private float _eatUpCycle;
 
     private float _satiety = 100;
     private float _currentTimeEat;
-    [SerializeField] private int _eatUp;
-    [SerializeField] private float _eatUpCycle;
     private Vector3 _target;
+
     protected override void Awake()
     {
         base.Awake();
@@ -125,7 +124,7 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
         if (_currentTimeEat >= _eatUpCycle)
         {
             BaffSatiety();
-            if (PlayerBase.meat >= 0)
+            if (Storage.Meat >= 0)
             {
                 EatUp?.Invoke(_eatUp);
             }
@@ -139,7 +138,7 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
 
     private void BaffSatiety()
     {
-        if (PlayerBase.meat >= _eatUpCycle)
+        if (Storage.Meat >= _eatUpCycle)
         {
             _baffAttack = _attack * 0.15f;
             _baffDefence = _defence * 0.15f;

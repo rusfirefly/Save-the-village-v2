@@ -5,13 +5,7 @@ using UnityEngine;
 
 public interface ICamp
 {
-   
-    bool isTrainig { get; set; }
-
     void Training(Enums.UnitType type);
 
     void NewSpawnPosition(Transform newSpawnPosition);
-
-
-
 }

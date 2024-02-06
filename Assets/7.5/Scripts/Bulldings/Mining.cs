@@ -6,21 +6,20 @@ using UnityEngine.UI;
 public class Mining : MonoBehaviour
 {
     public static event Action<string> Work;
-    public bool _inMine { get; set; }
-    private float _mineTimer;
+    public bool InMine { get; set; }
+
+    [SerializeField] private Image _progress;
+    [SerializeField] private Text _coldownTimeText;
+    [SerializeField] private Text _mineCountText;
+    [SerializeField] private Canvas _inMineCanvas;
     [SerializeField] private float _mineTimerCycle;
+    [SerializeField] private int _countResources;
     [SerializeField] protected SoundClip _soundClip; 
 
-    [SerializeField] private Text _coldownTimeText;
-    [SerializeField] private Image _progress;
-    [SerializeField] private Canvas _inMineCanvas;
-    [SerializeField] private Text _mineCountText;
-
+    private float _mineTimer;
     private bool _isAnimation;
     private float _positionText;
     private Vector3 _defaulPosition;
-
-    [SerializeField] private int _countResources;
 
     private float _timeAnimation = 2f;
     private float _startTimeAnimation = 0;
@@ -32,12 +31,13 @@ public class Mining : MonoBehaviour
         _positionText = _mineCountText.rectTransform.position.y;
         _soundClip = gameObject.GetComponent<SoundClip>();
     }
-
+    
     public void Reload()
     {
-        _inMine = false;
+        InMine = false;
         _mineTimer = 0;
         _mineCountText.gameObject.SetActive(false);
+
         MineCanvas(false);
     }
 
@@ -49,7 +49,7 @@ public class Mining : MonoBehaviour
 
     private void Mine()
     {
-        if (_inMine)
+        if (InMine)
         {
             _mineTimer += Time.deltaTime;
 

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public interface IWorkingPoints
 {
-    Transform goldPosition { get; set; }
-    Transform meatPosition { get; set; }
-    Transform woodPosition { get; set; }
+    Transform GoldPosition { get; set; }
+    Transform MeatPosition { get; set; }
+    Transform WoodPosition { get; set; }
 
     public void NewSpawnPosition(Transform newSpawnPosition);
 }

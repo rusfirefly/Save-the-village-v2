@@ -8,15 +8,6 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    //в hud class
-    [SerializeField] private Text _workerText;
-    [SerializeField] private Text _wariorText;
-
-    [SerializeField] private Text _goldText;
-    [SerializeField] private Text _meatText;
-    [SerializeField] private Text _woodText;
-    //------------------------------------------
-
     private PlayerBase _playerBase;
     private WorkingCamp _workingCamps;
     private WarriorCamp _warriorCamp;
@@ -32,21 +23,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform _warriorPosition;
     [SerializeField] private Transform _archerPosition;
 
-    private int _enemiesDestroyed;//сделать struct GameStatistic
+    private int _enemiesDestroyed;
 
     public void Initialize()
     {
-        NewGame();
+        CreatePlayerBase();
         FindCamps();
-        UpdateStoragePanel();
         SetPositionResources();
-
         SetMiningCycleTime<GoldMine>(_playerData.timeGoldMine);
         SetMiningCycleTime<Miratorg>(_playerData.timeMeatMine);
         SetMiningCycleTime<SawMill>(_playerData.timeWoodMine);
     }
-
-    private void FixedUpdate() => UpdateStoragePanel();
 
     private void OnEnable()
     {
@@ -61,25 +48,19 @@ public class GameManager : MonoBehaviour
     private void CreateListenerEvents()
     {
         SelectedBuilding.Selected += OnSelectedCampEvent;
-        TrainigPanel.Bounten += OnBountenEvent;
-        TrainigPanel.Traiding += OnTarianigFinishEvent;
+        TrainigButton.Traiding += OnTarianigFinishEvent;
         WorkMan.Working += OnWorkingEvent;
-        Mining.Work += OnFinishMiningEvent;
-        Warrior.Deathing += OnDeathWarriorEvent;
-        Archer.Deathing += OnDeathWarriorEvent;
         Castle.Attacked += OnCastleAttakedEvent;
         Castle.Destroyed += OnCastleDestroyedEvent;
         Enemy.Deathing += OnEnemiesDestroyedEvent;
     }
+
     private void RemoveListenerEvents()
     {
         SelectedBuilding.Selected -= OnSelectedCampEvent;
-        TrainigPanel.Bounten -= OnBountenEvent;
-        TrainigPanel.Traiding -= OnTarianigFinishEvent;
+
+        TrainigButton.Traiding -= OnTarianigFinishEvent;
         WorkMan.Working -= OnWorkingEvent;
-        Mining.Work -= OnFinishMiningEvent;
-        Warrior.Deathing -= OnDeathWarriorEvent;
-        Archer.Deathing -= OnDeathWarriorEvent;
         Castle.Attacked -= OnCastleAttakedEvent;
         Castle.Destroyed -= OnCastleDestroyedEvent;
         Enemy.Deathing -= OnEnemiesDestroyedEvent;
@@ -104,8 +85,8 @@ public class GameManager : MonoBehaviour
 
     private void FindCamps()
     {
-        _workingCamps = GameObject.Find("WorkerCamp").GetComponent<WorkingCamp>();
-        _warriorCamp = GameObject.Find("WariorCamp").GetComponent<WarriorCamp>();
+        _workingCamps = FindObjectOfType<WorkingCamp>();
+        _warriorCamp = FindObjectOfType<WarriorCamp>();
     }
 
     private T[] SetMiningCycleTime<T>(float timeMine) where T : UnityEngine.Object
@@ -116,59 +97,22 @@ public class GameManager : MonoBehaviour
 
         return mines;
     }
+
     private void SetPositionResources()
     {
-        _workingCamps.goldPosition = _goldMinePosition;
-        _workingCamps.meatPosition = _meatPosition;
-        _workingCamps.woodPosition = _woodPosition;
+        _workingCamps.GoldPosition = _goldMinePosition;
+        _workingCamps.MeatPosition = _meatPosition;
+        _workingCamps.WoodPosition = _woodPosition;
     }
-
-    private void OnDeathWarriorEvent() => _playerBase.DeathWarrior();
 
     private void CreatePlayerBase()
     {
-        _playerBase = new PlayerBase(initGoldCount: 10, initMeatCount: 10, initWoodCount: 0);
+        _playerBase = new PlayerBase(_playerData, initGoldCount: 10, initMeatCount: 10, initWoodCount: 0);
     }
 
-    private void UpdateStoragePanel()
-    {
-        _workerText.text = $"{_playerBase.workersCount}/10";
-        _wariorText.text = $"{_playerBase.warriorsCount}/10";
-        
-        _goldText.text = $"{PlayerBase.gold} +({_playerBase.countGoldWorker *_playerData.goldMiningPerCycle})";
-        _meatText.text = $"{PlayerBase.meat} +({_playerBase.countMeatWorker * _playerData.meatMiningPerCycle})|-({_playerBase.warriorsCount * _playerData.warriorEatUpCycle})";
-        _woodText.text = $"{PlayerBase.wood} +({_playerBase.countWoodWorker * _playerData.woodMiningPerCycle})";
-      //  GameOver("VIKTORY");
-    }
     private void OnSelectedCampEvent(GameObject gameObject)
     {
         TrainingMessage(show: false);
-    }
-
-    private void OnFinishMiningEvent(string tag)
-    {
-        int mining;
-        switch(tag)
-        {
-            case "GoldMine":
-                mining = _playerData.goldMiningPerCycle *_playerBase.countGoldWorker;
-                UpdateGold(mining);
-                break;
-            case "MeatMine":
-                mining = _playerData.meatMiningPerCycle * _playerBase.countMeatWorker;
-                UpdateMeat(mining);
-                break;
-            case "WoodMine":
-                mining = _playerData.woodMiningPerCycle * _playerBase.countWoodWorker;
-                UpdateWood(mining);
-                break;
-        }
-    }
-
-    private void OnBountenEvent(Enums.UnitType type)
-    {
-        int price = GetPrice(type);
-        UpdateGold(price * -1);
     }
 
     private void OnTarianigFinishEvent(Enums.UnitType type)
@@ -195,45 +139,27 @@ public class GameManager : MonoBehaviour
         switch (tag)
         {
             case "GoldMine":
-                _playerBase.AddOneGoldWorker();
-                StartMining(collider, _playerData.goldMiningPerCycle * _playerBase.countGoldWorker);
+                StartMining(collider, _playerData.goldMiningPerCycle * Population.CountGoldWorker);
                 Destroy(workMan);
                 break;
             case "MeatMine":
-                _playerBase.AddOneMeatWorker();
-                StartMining(collider, _playerData.meatMiningPerCycle * _playerBase.countMeatWorker);
+                StartMining(collider, _playerData.meatMiningPerCycle * Population.CountMeatWorker);
                 Destroy(workMan);
                 break;
             case "WoodMine":
-                _playerBase.AddOneWoodWorker();
-                StartMining(collider, _playerData.woodMiningPerCycle * _playerBase.countWoodWorker);
+                StartMining(collider, _playerData.woodMiningPerCycle * Population.CountWoodWorker);
                 Destroy(workMan);
                 break;
         }
     }
-    private int GetPrice(Enums.UnitType type)
-    {
-        return type switch
-        {
-            Enums.UnitType.Gold => _playerData.goldUnitTrainigPrice,
-            Enums.UnitType.Meat => _playerData.meatUnitTrainigPrice,
-            Enums.UnitType.Wood => _playerData.woodUnitTrainigPrice,
-            Enums.UnitType.Knight => _playerData.warriorTrainigPrice,
-            Enums.UnitType.Archer => _playerData.archerTrainigPrice,
-            _ => 0
-        };
-    }
+   
     private void StartMining(Collider2D collider, int countResourcePerCycle)
     {
         Mining mining = collider.gameObject.GetComponent<Mining>();
-        mining._inMine = true;
+        mining.InMine = true;
         mining.MinerResourcesPerCycleToText(countResourcePerCycle);
         mining.MineCanvas(true);
     }
-
-    private void UpdateGold(int price) => _playerBase.UpdateGold(price);
-    private void UpdateMeat(int price) => _playerBase.UpdateMeat(price);
-    private void UpdateWood(int price) => _playerBase.UpdateWood(price);
 
     public void DefaultStatePanel()
     {
@@ -241,10 +167,8 @@ public class GameManager : MonoBehaviour
        SelectedBuilding.AllCampsDeSelect();
     }
 
-    public void NewGame()
+    public void ReloadGame()
     {
-        CreatePlayerBase();
-        _playerData.SetDefaultValue();
 
         Mining[] miningBuilds = FindObjectsOfType<Mining>();
         foreach (Mining bulding in miningBuilds)
@@ -254,12 +178,6 @@ public class GameManager : MonoBehaviour
         foreach (Entity entity in entitys)
             Destroy(entity.gameObject);
 
-     
-    }
-
-    public void ReloadGame()
-    {
-        NewGame();
         SelectedBuilding.AllCampsDeSelect();
         GameMenu.menuInstance.Reload();
 
@@ -269,8 +187,8 @@ public class GameManager : MonoBehaviour
         Spawner spawner = FindObjectOfType<Spawner>();
         spawner.Reload();
 
-        _playerBase.Reload();
-        TrainigPanel.isReload = true;
+        _playerBase.ReloadValue();
+        TrainigButton.IsReload = true;
     }
 
     private void GameOver(string title)
@@ -278,17 +196,17 @@ public class GameManager : MonoBehaviour
         string statistic = $"Итоги игры:\n" +
                            $"Волн пережито: {_playerData.numberWave}\n" +
                            $"Врагов уничтожено:{_enemiesDestroyed}\n"+
-                           $"Нанято воинов: {_playerBase.warriorsCountTotal}\n" +
-                           $"Воинов выжило: {_playerBase.warriorsCount}\n" +
-                           $"Воинов погибло:{_playerBase.warriorsCountDeath}\n" +
-                           $"Рабочих нанято:{_playerBase.workersCount}\n" +
-                           $"Собрано золота:{PlayerBase.gold}\n" +
-                           $"Собрано мяса:{PlayerBase.meat}\n" +
-                           $"Собрано дерева:{PlayerBase.wood}";
+                           $"Нанято воинов: {Population.WarriorsCountTotal}\n" +
+                           $"Воинов выжило: {Population.WarriorsCount}\n" +
+                           $"Воинов погибло:{Population.WarriorsCountDeath}\n" +
+                           $"Рабочих нанято:{Population.WorkersCount}\n" +
+                           $"Собрано золота:{Storage.Gold}\n" +
+                           $"Собрано мяса:{Storage.Meat}\n" +
+                           $"Собрано дерева:{Storage.Wood}";
 
         GameMenu.menuInstance.ShowGameOverMenu(statistic, title);
     }
 
-    private void TrainingMessage(bool show)=>_trainigMessageText.SetActive(show);
+    private void TrainingMessage(bool show) =>_trainigMessageText.SetActive(show);
 
 }

@@ -7,7 +7,7 @@ using Random = System.Random;
 
 public class Spawner : MonoBehaviour
 {
-    private float _currentTime;
+
     [SerializeField] private GameObject[] _prefabEnemys;
     [SerializeField] private Transform _targetPosition;
     [SerializeField] private Transform _spawnPosition;
@@ -18,21 +18,22 @@ public class Spawner : MonoBehaviour
     [SerializeField] private SoundSpawn _sound;
     [SerializeField] private GameObject _waveInfoCanvas;
 
-    private int _countStekEnemy;
+    private float _currentTime;
     private float _timeSpawn;
-    private Random _randomEnemy;
+    private int _countStekEnemy;
     private int _countEnemysInWave;
     private int _indexEnemyRand;
     private TimeSpan _time;
     private Random _random;
+    private Random _randomEnemy;
 
     private void Awake()
     {
         _randomEnemy = new Random();
         _playerData.numberWave = 1;
         _countStekEnemy = 1;
-        _countEnemysInWave = _prefabEnemys.Length;
         _indexEnemyRand = _randomEnemy.Next(0, _countEnemysInWave);
+        _countEnemysInWave = _prefabEnemys.Length;
         _countEnemysText.text = $"Врагов в следующем набеге: {_countStekEnemy}";
         _waveText.text = $"Волна: {_playerData.numberWave}";
         _sound = gameObject.GetComponent<SoundSpawn>();
