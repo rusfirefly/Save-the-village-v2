@@ -22,6 +22,8 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     [SerializeField] private Material _outlineMaterial;
     [SerializeField] private GameObject _repairBarPanel;
     [SerializeField] private Image _repairBar;
+    [SerializeField] private Transform _positionArcher;
+
     private SpriteRenderer _spriteRender;
     private Material _default;
 
@@ -236,5 +238,10 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     {
         _spriteRender = gameObject.GetComponent<SpriteRenderer>();
         _default = _spriteRender.material;
+    }
+
+    public void ArcherOnCastle(Archer archer)
+    {
+        archer.transform.position = _positionArcher.position;
     }
 }

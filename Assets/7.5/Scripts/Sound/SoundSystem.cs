@@ -8,8 +8,8 @@ public class SoundSystem : MonoBehaviour
     public static SoundSystem soundInstance { get; private set; }
     private AudioSource[] _allAudio;
     
-    [SerializeField] [Range(0, 1)] private float _effectVolume = 0.5f;
-    [SerializeField] [Range(0, 1)] private float _musicVolume = 0.9f;
+    //[SerializeField] [Range(0, 1)] private float _effectVolume = 0.5f;
+    //[SerializeField] [Range(0, 1)] private float _musicVolume = 0.9f;
 
     public void Initialize()
     {

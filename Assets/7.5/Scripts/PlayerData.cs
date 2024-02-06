@@ -10,6 +10,7 @@ public class PlayerData : ScriptableObject
     public int meatUnitTrainigPrice;
     public int woodUnitTrainigPrice;
     public int warriorTrainigPrice;
+    public int archerTrainigPrice;
 
     [Header("Время найма рабочих")]
     public float goldWorkTrainingTimer;
@@ -24,6 +25,7 @@ public class PlayerData : ScriptableObject
     public float warriorEatTimer;
     public int warriorEatUpCycle;
     public float archerEatTimer;
+    public int archerEatUpCycle;
 
     [Header("Количество добываемого ресурса за цикл")]
     public int goldMiningPerCycle;

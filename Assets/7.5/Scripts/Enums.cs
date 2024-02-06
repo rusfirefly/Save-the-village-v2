@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Enums 
 {
-    public enum UnitType { Gold, Meat, Wood, Knight, Archer }
-    public enum TypeEnym { Knight, TNT, Torch };
+    public enum UnitType { Gold, Meat, Wood, Knight, Archer, Enemy }
+    public enum TypeEnym { Knight, TNT, Torch};
+    public enum TypeEntity { Player, Enemy}
 }

@@ -16,21 +16,23 @@ MonoBehaviour:
   meatUnitTrainigPrice: 1
   woodUnitTrainigPrice: 1
   warriorTrainigPrice: 1
-  goldWorkTrainingTimer: 10
+  archerTrainigPrice: 1
+  goldWorkTrainingTimer: 0.1
   meatWorkTrainingTimer: 0.1
   woodWorkTrainingTimer: 0.1
   warriorTrainingTimer: 0.2
-  archerTrainingTimer: 5
+  archerTrainingTimer: 0.2
   warriorEatTimer: 20
   warriorEatUpCycle: 5
-  archerEatTimer: 0
+  archerEatTimer: 20
+  archerEatUpCycle: 5
   goldMiningPerCycle: 5
   meatMiningPerCycle: 6
   woodMiningPerCycle: 2
   timeGoldMine: 5
   timeMeatMine: 6
   timeWoodMine: 7
-  numberWave: 5
+  numberWave: 4
   waveCycleTime: 5
   countEnemyNextWave: 1
   countGolds: 0

@@ -66,6 +66,7 @@ public class GameManager : MonoBehaviour
         WorkMan.Working += OnWorkingEvent;
         Mining.Work += OnFinishMiningEvent;
         Warrior.Deathing += OnDeathWarriorEvent;
+        Archer.Deathing += OnDeathWarriorEvent;
         Castle.Attacked += OnCastleAttakedEvent;
         Castle.Destroyed += OnCastleDestroyedEvent;
         Enemy.Deathing += OnEnemiesDestroyedEvent;
@@ -78,6 +79,7 @@ public class GameManager : MonoBehaviour
         WorkMan.Working -= OnWorkingEvent;
         Mining.Work -= OnFinishMiningEvent;
         Warrior.Deathing -= OnDeathWarriorEvent;
+        Archer.Deathing -= OnDeathWarriorEvent;
         Castle.Attacked -= OnCastleAttakedEvent;
         Castle.Destroyed -= OnCastleDestroyedEvent;
         Enemy.Deathing -= OnEnemiesDestroyedEvent;
@@ -130,8 +132,9 @@ public class GameManager : MonoBehaviour
 
     private void UpdateStoragePanel()
     {
-        _workerText.text = $"{_playerBase.workersCount}";
-        _wariorText.text = $"{_playerBase.warriorsCount}";
+        _workerText.text = $"{_playerBase.workersCount}/10";
+        _wariorText.text = $"{_playerBase.warriorsCount}/10";
+        
         _goldText.text = $"{PlayerBase.gold} +({_playerBase.countGoldWorker *_playerData.goldMiningPerCycle})";
         _meatText.text = $"{PlayerBase.meat} +({_playerBase.countMeatWorker * _playerData.meatMiningPerCycle})|-({_playerBase.warriorsCount * _playerData.warriorEatUpCycle})";
         _woodText.text = $"{PlayerBase.wood} +({_playerBase.countWoodWorker * _playerData.woodMiningPerCycle})";
@@ -175,11 +178,14 @@ public class GameManager : MonoBehaviour
             case Enums.UnitType.Knight:
                 _warriorCamp.Training(type);
                 break;
+            case Enums.UnitType.Archer:
+                _warriorCamp.Training(type);
+                break;
             default:
                 _workingCamps.Training(type);
-
                 break;
         }
+
         _playerBase.AddUnitToBase(type);
     }
 
@@ -213,6 +219,7 @@ public class GameManager : MonoBehaviour
             Enums.UnitType.Meat => _playerData.meatUnitTrainigPrice,
             Enums.UnitType.Wood => _playerData.woodUnitTrainigPrice,
             Enums.UnitType.Knight => _playerData.warriorTrainigPrice,
+            Enums.UnitType.Archer => _playerData.archerTrainigPrice,
             _ => 0
         };
     }

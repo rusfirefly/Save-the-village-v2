@@ -14,14 +14,16 @@ public class Entity : MonoBehaviour
     [SerializeField] private Animator _animator;
     [SerializeField] protected NavMeshAgent _agent;
     [SerializeField] protected Transform _attackPoint;
-    [SerializeField] private float _attackRange = 0.5f;
+    [SerializeField] protected float _attackRange = 0.5f;
     [SerializeField] private Image _healthImage;
-    [SerializeField] private LayerMask _layerMask;
+    [SerializeField] protected LayerMask _layerMask;
     [SerializeField] protected float _attackSpeed = 0.5f;
     [SerializeField] private bool _drawGizmo;
     [SerializeField] protected Image _hpBar;
     protected float _nextAttackTime;
     protected Vector3 _tagetPosition;
+
+    [SerializeField] private Enums.TypeEntity _typeEntity;
 
     [SerializeField] protected float _health = 1;
     [SerializeField] protected float _healthFull = 1;
@@ -30,9 +32,9 @@ public class Entity : MonoBehaviour
     [SerializeField] protected bool _isRun = true;
     private SpriteRenderer _spriteRander;
     protected float _speedEntity;
-    protected float _stepEntity = 2;
+    protected float _stepEntity = 0.5f;
 
-    [SerializeField]private Canvas _hud;
+    [SerializeField] private Canvas _hud;
     [SerializeField] protected int _distanceFindEntity = 3;
 
     protected Random _random;
@@ -69,7 +71,7 @@ public class Entity : MonoBehaviour
         _spriteRander.sortingOrder = layerLevel;
         _hud.sortingOrder = layerLevel;
     }
-
+    public Enums.TypeEntity GetEntityType() => _typeEntity;
     protected void GetSoundEntity() => _soundEntity = gameObject.GetComponent<SoundEntity>();
     protected void PlaySoundNewEntity() => _soundEntity.PlaySoundNewEntity();
     protected void PlaySoundAttack() => _soundEntity.PlaySoundAttack();

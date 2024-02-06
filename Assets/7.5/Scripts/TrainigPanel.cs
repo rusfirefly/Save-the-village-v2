@@ -65,6 +65,10 @@ public class TrainigPanel : MonoBehaviour
                 SetTrainingTime(_playerData.warriorTrainingTimer);
                 SetTrainingPrice(_playerData.warriorTrainigPrice);
                 break;
+            case Enums.UnitType.Archer:
+                SetTrainingTime(_playerData.archerTrainingTimer);
+                SetTrainingPrice(_playerData.archerTrainigPrice);
+                break;
 
         }
 
@@ -138,8 +142,6 @@ public class TrainigPanel : MonoBehaviour
     }
     private void UpdateProgress(ref float progress, float trainingTime, Image progressPanel)
     {
-
-
         progress -= Time.deltaTime;
         SetColdownText($"{progress:F0}s");
         progressPanel.fillAmount = progress / trainingTime;

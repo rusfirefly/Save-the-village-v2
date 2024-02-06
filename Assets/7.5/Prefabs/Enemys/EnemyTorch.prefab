@@ -346,10 +346,11 @@ MonoBehaviour:
   _attackSpeed: 0.9
   _drawGizmo: 1
   _hpBar: {fileID: 3555287870306231330}
+  _typeEntity: 1
   _health: 1
   _healthFull: 1
   _attack: 3
-  _defence: 2
+  _defence: 4
   _isRun: 1
   _hud: {fileID: 9205852362713563108}
   _distanceFindEntity: 2
@@ -375,7 +376,7 @@ NavMeshAgent:
   m_Height: 1
   m_BaseOffset: 0.71
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 1
+  m_ObstacleAvoidanceType: 0
 --- !u!58 &3286817665577828823
 CircleCollider2D:
   m_ObjectHideFlags: 0

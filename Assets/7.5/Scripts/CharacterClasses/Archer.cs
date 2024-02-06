@@ -9,6 +9,7 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
 {
 
     [SerializeField] private GameObject _arrowPrefab;
+    private SpriteRenderer _archer;
     public static event Action Deathing;
     public static event Action<int> EatUp;
 
@@ -24,39 +25,67 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
     private float _currentTimeEat;
     [SerializeField] private int _eatUp;
     [SerializeField] private float _eatUpCycle;
-
+    private Vector3 _target;
     protected override void Awake()
     {
         base.Awake();
-        _eatUpCycle = _playerData.warriorEatTimer;
-        _eatUp = _playerData.warriorEatUpCycle;
-        //PlaySoundNewEntity();
+        _eatUpCycle = _playerData.archerEatTimer;
+        _eatUp = _playerData.archerEatUpCycle;
+        PlaySoundNewEntity();
         _healthFull = _health + _baffHealth;
         BaffSatiety();
         EatBarAmountFillAmount(_satiety);
         HealthBarAmountFillAmount(_health);
+        _archer = gameObject.GetComponent<SpriteRenderer>();
+    }
+
+    protected override void OnDrawGizmos()
+    {
+        base.OnDrawGizmos();
+        Gizmos.DrawLine(_attackPoint.position, _target);
     }
 
     private void Update()
     {
         if (_isDie) return;
-        Enemy enemy = FindEnemy();
-        if (enemy != null)
-        {
-            MoveToEnemy(enemy);
-        }
-        else
-        {
-            GoBackPosition();
-        }
-
-        DetectHitEntity();
+        DetectEnemy();
+        Attack(colider);
         EatUpCycle();
+    }
+
+    Collider2D colider;
+    protected void DetectEnemy()
+    {
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Vector2.down, _attackRange, _layerMask);
+        if (hits.Length > 0 && colider == null)
+        {
+            _target = hits[0].collider.gameObject.transform.position;
+            colider = hits[0].collider;
+            ArrowShoot(colider.gameObject.transform.position);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        DetectHitEntity();
+        if(collision.gameObject.tag == "Castle")
+        {
+            collision.GetComponent<Castle>().ArcherOnCastle(this);  
+        }
+    }
+
+    IEnumerator ArachOnCastle()
+    {
+        //gameObject
+        yield return new WaitForSeconds(1f);
+
+    }
+
+    private void FlipArcher(float x)
+    {
+        if (x < transform.position.x)
+            _archer.flipX = true;
+        else
+            _archer.flipX = false;
     }
 
     protected override void Die()
@@ -67,60 +96,26 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
         DisableScript();
     }
 
-    private void DetectHitEntity()
-    {
-        Collider2D[] hitEntities = HitEntity();
-        foreach (Collider2D entity in hitEntities)
-        {
-            StopAgent();
-            Attack(entity);
-        }
-    }
-
-    private void MoveToEnemy(Enemy enemy)
-    {
-        float dist = GetDistanceToEnmy(enemy);
-        if (CheckDistanceToEnemy(dist, _distanceFindEntity))
-        {
-            GoToEnemy(enemy);
-        }
-    }
-
-    private bool CheckDistanceToEnemy(float currentDistance, float distance)
-    {
-        if (currentDistance <= distance) return true;
-        else return false;
-    }
-
-    private Enemy FindEnemy() => FindObjectOfType<Enemy>();
-
-    private void GoToEnemy(Enemy enemy)
-    {
-        _speedEntity = _stepEntity * Time.deltaTime;
-        gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, enemy.gameObject.transform.position, _speedEntity);
-    }
-
-    private float GetDistanceToEnmy(Enemy enemy)
-    {
-        return Vector2.Distance(gameObject.transform.position, enemy.gameObject.transform.position);
-    }
-
     public void Attack(Collider2D unit)
     {
+        if (unit == null) return;
         _nextAttackTime += Time.deltaTime;
         if (_nextAttackTime >= _attackSpeed)
         {
             BaffSatiety();
-            SetTriggerAnimation("Attack1");
-            //unit.GetComponent<Enemy>().TakeDamage(_attack + _baffAttack);
+            SetTriggerAnimation("Attack2");
+            ArrowShoot(unit.gameObject.transform.position);
             PlaySoundAttack();
+            colider = null;
+            //_target = gameObject.transform.position;
             _nextAttackTime = 0;
         }
     }
 
-    private void ArrowShoot()
-    { 
-    
+    private void ArrowShoot(Vector3 position)
+    {
+        Arrow arrow = Instantiate(_arrowPrefab, _attackPoint.position, _attackPoint.rotation).GetComponent<Arrow>();
+        arrow.ShootArrow(_attack + _baffAttack, position);
     }
 
     private void EatUpCycle()
@@ -171,6 +166,7 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
         }
     }
 
+
     public void Move(Vector3 position)
     {
         if (_isRun && position != null)
@@ -191,9 +187,9 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
 
     public void GoToNewTargetPosition(Transform newPosition)
     {
-        Vector3 newPoint = new Vector3(newPosition.position.x + (_random.Next(-5, 6) + 0.1f) * 0.6f, newPosition.position.y + (_random.Next(-2, 3) + 0.1f) * 0.3f);
-        _tagetPosition = newPoint;
-        Move(_tagetPosition);
+        //Vector3 newPoint = new Vector3(newPosition.position.x + (_random.Next(-5, 6) + 0.1f) * 0.6f, newPosition.position.y + (_random.Next(-2, 3) + 0.1f) * 0.3f);
+       // _tagetPosition = newPoint;
+        Move(newPosition.position);
     }
 
     public void FindEnemyPosition()

@@ -194,6 +194,8 @@ GameObject:
   - component: {fileID: 2906337237758671785}
   - component: {fileID: 8518209198840608152}
   - component: {fileID: 7281159507612072995}
+  - component: {fileID: 780104401718777139}
+  - component: {fileID: 1899036589212321885}
   m_Layer: 7
   m_Name: Archer
   m_TagString: Untagged
@@ -256,9 +258,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: 140257693
+  m_SortingLayer: 7
+  m_SortingOrder: 1
   m_Sprite: {fileID: 1135518753, guid: fc5fd5bc944141b43b296af52a5a6a6c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -300,7 +302,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 2906337237758671796}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 0.64
+  m_Radius: 0.4
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -309,10 +311,10 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 1.28
+  m_Height: 0.1
   m_BaseOffset: 0.64
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 1
 --- !u!114 &2906337237758671785
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -325,21 +327,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb0eb11800c76c84ba8e1f1e0bb3d27d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animator: {fileID: 0}
+  _animator: {fileID: 2906337237758671797}
   _agent: {fileID: 0}
   _attackPoint: {fileID: 2906337238813677457}
-  _attackRange: 7.68
+  _attackRange: 5
   _healthImage: {fileID: 0}
   _layerMask:
     serializedVersion: 2
     m_Bits: 64
-  _attackSpeed: 0.5
+  _attackSpeed: 2
   _drawGizmo: 1
   _hpBar: {fileID: 7203741346024115428}
-  _health: 1
+  _typeEntity: 0
+  _health: 2
   _healthFull: 1
-  _attack: 50
-  _defence: 2
+  _attack: 6
+  _defence: 1
   _isRun: 1
   _hud: {fileID: 3824072896315504840}
   _distanceFindEntity: 3
@@ -462,10 +465,52 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _audioSource: {fileID: 8518209198840608152}
   volume: 0.3
-  _newEntitySound: []
-  _hitSound: {fileID: 8300000, guid: 671fd1d96c82aba4bb952351b120098c, type: 3}
-  _attackSound: {fileID: 0}
-  _deathSound: {fileID: 0}
+  _newEntitySound:
+  - {fileID: 8300000, guid: 01b7e9b0512b1cf43a0658d23ef126a5, type: 3}
+  - {fileID: 8300000, guid: d7d0d98183d694c4c941b4dc890fcb1f, type: 3}
+  - {fileID: 8300000, guid: e13a238ba462aa242938b048e71207d9, type: 3}
+  - {fileID: 8300000, guid: a98f4de76d223044bacb77e687fcf345, type: 3}
+  - {fileID: 8300000, guid: 7da3604026055c54a91aae9998eda5b6, type: 3}
+  _hitSound: {fileID: 8300000, guid: 89d5ad5db71d06048846934b6272f484, type: 3}
+  _attackSound: {fileID: 8300000, guid: 885da5a7706e84945bc74745fc719e3f, type: 3}
+  _deathSound: {fileID: 8300000, guid: 7a2f63dee85c8d5418ba1254c91f0c75, type: 3}
+--- !u!50 &780104401718777139
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2906337237758671796}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!58 &1899036589212321885
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2906337237758671796}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.49
 --- !u!1 &2906337238813677456
 GameObject:
   m_ObjectHideFlags: 0
@@ -490,7 +535,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2906337238813677456}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.01, y: 0.08, z: 0}
+  m_LocalPosition: {x: -0.056, y: 0.033, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -191,11 +191,13 @@ MonoBehaviour:
   _warriorPanel: {fileID: 0}
   _spawnPosition: {fileID: 1149563670}
   _prefKnight: {fileID: 6947149926774815501, guid: 792603400f9afc24c962919ddc5eaa7a, type: 3}
-  _prefArch: {fileID: 0}
+  _prefArch: {fileID: 2906337237758671796, guid: 175db93e144543a4ca354bebb5478cdf, type: 3}
   _outlineMaterial: {fileID: 2100000, guid: 6cd70cf2393d8cf429a93a920f751f23, type: 2}
   _targetPosition: {fileID: 0}
+  _archerPosition: {fileID: 0}
   _playerData: {fileID: 11400000, guid: 0fe396b4a36645042aba21e9fdf365bd, type: 2}
-  _sound: {fileID: 0}
+  _pointPref: {fileID: 0}
+  _archerPointPref: {fileID: 0}
 --- !u!82 &1909191298
 AudioSource:
   m_ObjectHideFlags: 0
@@ -217,7 +219,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 4
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0

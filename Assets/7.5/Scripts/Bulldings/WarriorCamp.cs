@@ -19,15 +19,18 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
     [SerializeField] private GameObject _prefArch;
     [SerializeField] private Material _outlineMaterial;
     [SerializeField] private Transform _targetPosition;
+    [SerializeField] private Transform _archerPosition;
     [SerializeField] private PlayerData _playerData;
   
     private SpriteRenderer _spriteRender;
     private Material _default;
     private Warrior _warrior;
+    private Archer _archer;
     private SoundClip _sound;
 
     [SerializeField] private GameObject _pointPref;
-    
+    [SerializeField] private GameObject _archerPointPref;
+
     void Start()
     {
         SetDefaultMaterial();
@@ -47,16 +50,23 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
 
     public void Training(Enums.UnitType type)
     {
-        
-        CreateNewKnight();
+        if (type == Enums.UnitType.Archer)
+            CreateNewArch();
+        else 
+            CreateNewKnight();
     }
 
     private void CreateNewKnight()
     {
-        _warrior = Instantiate(_prefKnight, _spawnPosition.transform.position, Quaternion.identity).GetComponent<Warrior>(); ;
+        _warrior = Instantiate(_prefKnight, _spawnPosition.transform.position, Quaternion.identity).GetComponent<Warrior>(); 
         _warrior.GoToNewTargetPosition(_pointPref.transform);
     }
-    
+    private void CreateNewArch()
+    {
+        _archer = Instantiate(_prefArch, _spawnPosition.transform.position, Quaternion.identity).GetComponent<Archer>(); 
+        _archer.GoToNewTargetPosition(_archerPointPref.transform);
+    }
+
     public bool IsSelected()
     {
         return _isSelected;

@@ -9,22 +9,22 @@ using TypeEnym = Enums.TypeEnym;
 public class Enemy : Entity, IDamageable, IMovable, IAttack
 {
     public static event Action Deathing;
-
     [SerializeField] private TypeEnym _typeEnym;
-
+   
     private void Update()
     {
         if (_isDie) return;
-        Warrior playerWarrior = FindWarrior();
-        if (playerWarrior != null)
+
+        Entity playerEntity = FindEntity();
+        if (playerEntity != null)
         {
-            MoveToWarrior(playerWarrior);
+            MoveToEntity(playerEntity);
         }
         else
         {
            GoBackPosition();
         }
-
+        
         DetectHitEntity();
     }
 
@@ -37,47 +37,58 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
 
     public TypeEnym GetTypeEnemy() => _typeEnym;
 
-    private void MoveToWarrior(Warrior warrior)
+    private void MoveToEntity(Entity entity)
     {
-        float dist = GetDistanceToWarrior(warrior);
-        if (CheckDistanceToWarrior(dist, _distanceFindEntity))
+        float dist = GetDistanceToEntity(entity);
+        if (CheckDistanceToEntity(dist, _distanceFindEntity))
         {
-           RunToWarrior(warrior);
+            RunToEntity(entity);
         }
     }
-    private bool CheckDistanceToWarrior(float currentDistance, float distance)
+
+    private bool CheckDistanceToEntity(float currentDistance, float distance)
     {
         if (currentDistance <= distance) return true;
         else return false;
     }
 
-    private Warrior FindWarrior() => GameObject.FindObjectOfType<Warrior>();
-
-    private void RunToWarrior(Warrior warrior)
+    private Entity FindEntity()
     {
-       _speedEntity = _stepEntity * Time.deltaTime;
-       gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, warrior.gameObject.transform.position, _speedEntity);
+        Entity entity = GameObject.FindObjectOfType<Entity>();
+        if (entity.GetEntityType() == Enums.TypeEntity.Player)
+            return entity;
+        else return null;
     }
 
-    private float GetDistanceToWarrior(Warrior warrior)
+    private void RunToEntity(Entity entity)
     {
-        return Vector2.Distance(gameObject.transform.position, warrior.gameObject.transform.position);
+        _speedEntity = _stepEntity * Time.deltaTime;
+        gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, entity.gameObject.transform.position, _speedEntity);
+    }
+
+    private float GetDistanceToEntity(Entity entity)
+    {
+        return Vector2.Distance(gameObject.transform.position, entity.gameObject.transform.position);
     }
 
     private void DetectHitEntity()
     {
         Collider2D[] hitEntities = HitEntity();
-        foreach (Collider2D entity in hitEntities)
+        //foreach (Collider2D entity in hitEntities)
+        //{
+        if (hitEntities.Length > 0)
         {
             StopAgent();
-            Attack(entity);
+            Attack(hitEntities[0]);
         }
+        //}
     }
 
     public void Attack(Collider2D unit)
     {
         if (_isDie) return;
         _nextAttackTime += Time.deltaTime;
+
         if (_nextAttackTime >= _attackSpeed)
         {
             StartAnimationAttack();
@@ -89,6 +100,7 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
             }
             else
             {
+                StopAgent();
                 _isDie = true;
             }
             _nextAttackTime = 0;
@@ -105,7 +117,14 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
         }
         else
         {
-            unit.GetComponent<Warrior>().TakeDamage(_attack);
+            Warrior warrior = unit.GetComponent<Warrior>();
+            if(warrior)
+                warrior.TakeDamage(_attack);
+
+            Archer archer = unit.GetComponent<Archer>();
+            if (archer)
+                archer.TakeDamage(_attack);
+
         }
     }
 

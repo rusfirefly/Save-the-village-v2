@@ -15,6 +15,7 @@ TagManager:
   - Castle
   - Enemy
   - Camp
+  - tower
   layers:
   - Default
   - TransparentFX

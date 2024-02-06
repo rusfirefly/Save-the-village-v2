@@ -24,6 +24,7 @@ public class Spawner : MonoBehaviour
     private int _countEnemysInWave;
     private int _indexEnemyRand;
     private TimeSpan _time;
+    private Random _random;
 
     private void Awake()
     {
@@ -36,6 +37,7 @@ public class Spawner : MonoBehaviour
         _waveText.text = $"Волна: {_playerData.numberWave}";
         _sound = gameObject.GetComponent<SoundSpawn>();
         WaveCanvasVisible(true);
+        _random = new Random();
     }
 
     public void Reload()
@@ -87,7 +89,8 @@ public class Spawner : MonoBehaviour
     }
     private void SpawnEnemy(int countEnemy)
     {
-        Enemy enemy  = Instantiate(_prefabEnemys[_indexEnemyRand], _spawnPosition.position, Quaternion.identity).GetComponent<Enemy>();
+        Vector3 newPoint = new Vector3(_spawnPosition.position.x + (_random.Next(-5, 6) + 0.1f) * 0.6f, _spawnPosition.position.y + (_random.Next(-2, 3) + 0.1f) * 0.3f);
+        Enemy enemy  = Instantiate(_prefabEnemys[_indexEnemyRand], newPoint, Quaternion.identity).GetComponent<Enemy>();
         enemy.SetTargetPosition(_targetPosition);
         enemy.InitEnemy();
         _countEnemysInWave = _prefabEnemys.Length;
