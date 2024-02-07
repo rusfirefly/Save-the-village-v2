@@ -187,6 +187,10 @@ public class GameManager : MonoBehaviour
         Spawner spawner = FindObjectOfType<Spawner>();
         spawner.Reload();
 
+        House[] houses = FindObjectsOfType<House>();
+        foreach (House hous in houses)
+            hous.Reload();
+
         _playerBase.ReloadValue();
         TrainigButton.IsReload = true;
     }

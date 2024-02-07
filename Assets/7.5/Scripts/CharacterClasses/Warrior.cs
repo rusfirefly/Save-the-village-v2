@@ -76,6 +76,7 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
     private void MoveToEnemy(Enemy enemy)
     {
         float dist = GetDistanceToEnmy(enemy);
+
         if (CheckDistanceToEnemy(dist, _distanceFindEntity))
         {
             GoToEnemy(enemy);

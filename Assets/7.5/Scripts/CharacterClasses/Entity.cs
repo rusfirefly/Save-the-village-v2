@@ -35,7 +35,7 @@ public class Entity : MonoBehaviour
     protected float _stepEntity = 0.5f;
 
     [SerializeField] private Canvas _hud;
-    [SerializeField] protected int _distanceFindEntity = 3;
+    [SerializeField] protected int _distanceFindEntity = 5;
 
     protected Random _random;
     protected bool _isDie;

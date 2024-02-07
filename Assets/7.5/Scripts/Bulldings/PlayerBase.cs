@@ -42,6 +42,8 @@ public class Population
     public static int CountMeatWorker { get; private set; }
     public static int CountWoodWorker { get; private set; }
 
+    public Population() => ReloadValue();
+
     public void AddOneWorker() => WorkersCount++;
 
     public void AddOneGoldWorker() => CountGoldWorker++;
@@ -54,10 +56,19 @@ public class Population
     {
         WarriorsCount++;
     }
-
+    public void AddOneArcher()
+    {
+        ArcherCount++;
+    }
     public void DeathWarrior()
     {
         WarriorsCount--;
+        WarriorsCountDeath++;
+    }
+
+    public void DeathArcher()
+    {
+        ArcherCount--;
         WarriorsCountDeath++;
     }
 
@@ -68,10 +79,18 @@ public class Population
         CountGoldWorker = 0;
         CountMeatWorker = 0;
         CountWoodWorker = 0;
+        ArcherCount = 0;
 
         WorkersCountTotal = 10;
         WarriorsCountTotal = 10;
         ArcherCountTotal = 1;
+    }
+
+    public void UpPopulation()
+    {
+        WarriorsCountTotal += 5;
+        WorkersCountTotal += 5;
+        ArcherCountTotal += 1;
     }
 }
 
@@ -84,7 +103,7 @@ public class PlayerBase
     public PlayerBase(PlayerData playerData, int initGoldCount, int initMeatCount, int initWoodCount)
     {
         _storage = new Storage(initGoldCount, initMeatCount, initWoodCount);
-        _population = new();
+        _population = new Population();
         _playerData = playerData;
 
         ReloadValue();
@@ -95,8 +114,9 @@ public class PlayerBase
         Mining.Work += OnFinishMiningEvent;
         TrainigButton.Bounten += OnBountenEvent;
         Warrior.Deathing += OnDeathWarriorEvent;
-        Archer.Deathing += OnDeathWarriorEvent;
+        Archer.Deathing += OnDeathArcherEvent;
         WorkMan.Working += OnWorkingEvent;
+        House.BuildComplete += BuildCompleteEvent;
     }
 
     public void ReloadValue() => _population.ReloadValue();
@@ -119,6 +139,11 @@ public class PlayerBase
                 _storage.AddWood(mining);
                 break;
         }
+    }
+
+    private void BuildCompleteEvent()
+    {
+        _population.UpPopulation();
     }
 
     private void OnWorkingEvent(GameObject workMan, Collider2D collider)
@@ -145,7 +170,7 @@ public class PlayerBase
     }
 
     private void OnDeathWarriorEvent() => _population.DeathWarrior();
-
+    private void OnDeathArcherEvent() => _population.DeathArcher();
     private int GetPrice(Enums.UnitType type)
     {
         return type switch
@@ -176,7 +201,7 @@ public class PlayerBase
                 _population.AddOneWarrior();
                 break;
             case Enums.UnitType.Archer:
-                _population.AddOneWarrior();
+                _population.AddOneArcher();
                 break;
         };
     }

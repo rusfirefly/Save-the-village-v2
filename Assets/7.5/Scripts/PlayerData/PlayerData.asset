@@ -32,7 +32,7 @@ MonoBehaviour:
   timeGoldMine: 5
   timeMeatMine: 6
   timeWoodMine: 7
-  numberWave: 4
+  numberWave: 3
   waveCycleTime: 5
   countEnemyNextWave: 1
   countGolds: 0

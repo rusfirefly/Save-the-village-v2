@@ -7,6 +7,7 @@ public class HUDGame : MonoBehaviour
 {
     [SerializeField] private Text _workerText;
     [SerializeField] private Text _wariorText;
+    [SerializeField] private Text _archerText;
 
     [SerializeField] private Text _goldText;
     [SerializeField] private Text _meatText;
@@ -25,6 +26,7 @@ public class HUDGame : MonoBehaviour
     {
         _workerText.text = $"{Population.WorkersCount}/{Population.WorkersCountTotal}";
         _wariorText.text = $"{Population.WarriorsCount}/{Population.WarriorsCountTotal}";
+        _archerText.text = $"{Population.ArcherCount}/{Population.ArcherCountTotal}";
 
         _goldText.text = $"{Storage.Gold} +({Population.CountGoldWorker * _playerData.goldMiningPerCycle})";
         _meatText.text = $"{Storage.Meat} +({Population.CountMeatWorker * _playerData.meatMiningPerCycle})|-({Population.WarriorsCount * _playerData.warriorEatUpCycle})";

@@ -21,6 +21,7 @@ public class TrainigButton : MonoBehaviour
     [SerializeField] private Enums.UnitType _unitType;
     [SerializeField] private PlayerData _playerData;
     private SoundClip _sound;
+    [SerializeField] private AudioClip _clipSoundEntityFull;
 
     private float _workTrainingTimer;
     private float _workProgress;
@@ -97,13 +98,44 @@ public class TrainigButton : MonoBehaviour
     {
         GetCurrentResource();
 
-        if (_countResource >= _trainigPrice)
+        bool full = false;
+        CheckPopulation(out full);
+
+        if (_countResource >= _trainigPrice && !full)
         {
             TrainigButtonActive(active:true);
         }
         else
         {
             TrainigButtonActive(active:false);
+        }
+    }
+
+    private void CheckPopulation(out bool full)
+    {
+        full = false;
+        switch (_unitType)
+        {
+            case Enums.UnitType.Gold:
+                if (Population.WorkersCount >= Population.WorkersCountTotal)
+                    full = true;
+                break;
+            case Enums.UnitType.Meat:
+                if (Population.WorkersCount >= Population.WorkersCountTotal)
+                    full = true;
+                break;
+            case Enums.UnitType.Wood:
+                if (Population.WorkersCount >= Population.WorkersCountTotal)
+                    full = true;
+                break;
+            case Enums.UnitType.Knight:
+                if (Population.WarriorsCount >= Population.WarriorsCountTotal)
+                    full = true;
+                break;
+            case Enums.UnitType.Archer:
+                if (Population.ArcherCount >= Population.ArcherCountTotal)
+                    full = true;
+                break;
         }
     }
 
@@ -121,6 +153,15 @@ public class TrainigButton : MonoBehaviour
 
     public void TrainigWorking()
     {
+        bool full = false;
+        CheckPopulation(out full);
+
+        if (full)
+        {
+            _sound.PlaySound(_clipSoundEntityFull);
+            return;
+        }
+
         if (!_isActiveTrainig)
         {
             PlaySoundNeedGold();
@@ -148,15 +189,15 @@ public class TrainigButton : MonoBehaviour
    
     private void AnimationTraining()
     {
+        if (IsReload)
+        {
+            ReloadProgressTraining();
+            UpdateInfo();
+            return;
+        }
+
         if (_isTrainig && _isActiveTrainig)
         {
-            if (IsReload)
-            {
-                ReloadProgressTraining();
-                UpdateInfo();
-                return;
-            }
-
             UpdateProgress(ref _workProgress, _workTrainingTimer, _trainigProgressPanel);
             if (_workProgress <= 0)
             {
