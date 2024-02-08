@@ -15,7 +15,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private Text _cycleWaveText;
     [SerializeField] private Text _countEnemysText;
     [SerializeField] private Text _waveText;
-    [SerializeField] private SoundSpawn _sound;
+    private SoundSpawn _sound;
     [SerializeField] private GameObject _waveInfoCanvas;
 
     private float _currentTime;
@@ -28,6 +28,11 @@ public class Spawner : MonoBehaviour
     private Random _randomEnemy;
 
     private void Awake()
+    {
+        Initialized();
+    }
+
+    public void Initialized()
     {
         _randomEnemy = new Random();
         _playerData.numberWave = 1;
@@ -58,6 +63,8 @@ public class Spawner : MonoBehaviour
     public void UpdateSpawn()
     {
         if (GameMenu.isPaused) return;
+        if (Storage.Gold <= 50) return;
+
         _currentTime += Time.deltaTime;
         _timeSpawn = _playerData.waveCycleTime - _currentTime;
 

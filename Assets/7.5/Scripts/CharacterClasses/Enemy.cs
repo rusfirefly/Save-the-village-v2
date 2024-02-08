@@ -14,18 +14,34 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
     private void Update()
     {
         if (_isDie) return;
+        DetectEntity();
+        DetectHitEntity();
+    }
 
-        Entity playerEntity = FindEntity();
-        if (playerEntity != null)
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if ((collision.gameObject.layer & (1 << _layerMask.value)) == 0)
         {
-            MoveToEntity(playerEntity);
+            MoveToEntity(collision.gameObject.transform.position);
         }
         else
         {
-           GoBackPosition();
+            GoBackPosition();
         }
-        
-        DetectHitEntity();
+    }
+
+    private void DetectEntity()
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _distanceFindEntity, _layerMask);
+        foreach (Collider2D collider in colliders)
+        {
+            MoveToEntity(collider.transform.position);
+        }
+
+        if (colliders.Length == 0)
+        {
+            GoBackPosition();
+        }
     }
 
     protected override void Die()
@@ -37,13 +53,23 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
 
     public TypeEnym GetTypeEnemy() => _typeEnym;
 
-    private void MoveToEntity(Entity entity)
+    private void MoveToEntity(Vector3 enemy)
     {
-        float dist = GetDistanceToEntity(entity);
+        float dist = GetDistanceToEntity(enemy);
         if (CheckDistanceToEntity(dist, _distanceFindEntity))
         {
-            RunToEntity(entity);
+            GoToEntity(enemy);
         }
+    }
+    private float GetDistanceToEntity(Vector3 enemyPosition)
+    {
+        return Vector2.Distance(gameObject.transform.position, enemyPosition);
+    }
+
+    private void GoToEntity(Vector3 enemyPosition)
+    {
+        _speedEntity = _stepEntity * Time.deltaTime;
+        gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, enemyPosition, _speedEntity);
     }
 
     private bool CheckDistanceToEntity(float currentDistance, float distance)

@@ -3,11 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+[RequireComponent(typeof(Animator))]
 
 public class House : MonoBehaviour,ISelecteble
 {
     public static event Action BuildComplete;
+    public static event Action<Vector3> NeedEngineer;
     [SerializeField] private Material _outlineMaterial;
+    [SerializeField] private Text _priceText;
     private Material _default;
     private SpriteRenderer _spriteRender;
     private SoundClip _sound;
@@ -16,11 +21,16 @@ public class House : MonoBehaviour,ISelecteble
     private bool _isComplete;
     private float _currentTime;
     [SerializeField] private float _timeBulding;
+    [SerializeField] private Animator _animator;
+    [SerializeField] private AudioClip _needWoodSound;
+    [SerializeField] private AudioClip _buildingComplete;
+    [SerializeField] private Canvas _canvas;
+    [SerializeField] private int _priceBuilding;
 
     private void Start()
     {
         _sound = gameObject.GetComponent<SoundClip>();
-
+        _priceText.text = $"{_priceBuilding}";
     }
 
     private void Update()
@@ -28,16 +38,21 @@ public class House : MonoBehaviour,ISelecteble
         BuldingHouse();
     }
 
+    private void OnValidate()
+    {
+        _animator ??= gameObject.GetComponent<Animator>();
+        _priceText.text = $"{_priceBuilding}";
+    }
     private void BuldingHouse()
     {
         if (_isComplete) return;
         if (!_isBulding) return;
         _currentTime += Time.deltaTime;
-        Debug.Log($"{(_timeBulding - _currentTime):F0}");
         if(_currentTime>=_timeBulding)
         {
-            //построить
-            //увеличить кол-во воинов и рабочих
+            _canvas.gameObject.SetActive(false);
+            _animator.SetBool("CompleteBuild", true);
+            _sound.PlaySound(_buildingComplete);
             BuildComplete?.Invoke();
             _currentTime -= _timeBulding;
             _isComplete = true;
@@ -45,10 +60,26 @@ public class House : MonoBehaviour,ISelecteble
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "worker"&& !_isBulding)
+        {
+            _isBulding = true;
+        }
+    }
+
     private void OnMouseDown()
     {
-        if(!_isBulding)
-            _isBulding = true;
+        if (Storage.Wood < _priceBuilding)
+        {
+            _sound.PlaySound(_needWoodSound);
+            return;
+        }
+        if (!_isBulding)
+        {
+            //_isBulding = true;
+            NeedEngineer?.Invoke(gameObject.transform.position);
+        }
     }
 
     public void DeSelected()
@@ -63,7 +94,6 @@ public class House : MonoBehaviour,ISelecteble
         if (!_isSelected)
         {
             _isSelected = true;
-            _sound.PlaySound();
             _spriteRender.material = _outlineMaterial;
             SelectedBuilding.OnSelected(gameObject);
         }
@@ -71,6 +101,8 @@ public class House : MonoBehaviour,ISelecteble
 
     public void Reload()
     {
+        _canvas.gameObject.SetActive(true);
+        _animator.SetBool("CompleteBuild", false);
         _isComplete = false;
     }
 

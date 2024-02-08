@@ -24,6 +24,7 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
     private Warrior _warrior;
     private Archer _archer;
     private SoundClip _sound;
+    [SerializeField] private AudioClip _audioSelectBuild;
 
     [SerializeField] private GameObject _pointPref;
     [SerializeField] private GameObject _archerPointPref;
@@ -94,7 +95,7 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
         if (!_isSelected)
         {
             _isSelected = true;
-            _sound.PlaySound();
+            _sound.PlaySound(_audioSelectBuild);
             _spriteRender.material = _outlineMaterial;
             ShowWorkerPanel();
             SelectedBuilding.OnSelected(gameObject);

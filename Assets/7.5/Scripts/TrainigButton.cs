@@ -22,7 +22,7 @@ public class TrainigButton : MonoBehaviour
     [SerializeField] private PlayerData _playerData;
     private SoundClip _sound;
     [SerializeField] private AudioClip _clipSoundEntityFull;
-
+    [SerializeField] private AudioClip _audioNeedResources;
     private float _workTrainingTimer;
     private float _workProgress;
 
@@ -117,23 +117,23 @@ public class TrainigButton : MonoBehaviour
         switch (_unitType)
         {
             case Enums.UnitType.Gold:
-                if (Population.WorkersCount >= Population.WorkersCountTotal)
+                if (Population.WorkersCount == Population.WorkersCountTotal)
                     full = true;
                 break;
             case Enums.UnitType.Meat:
-                if (Population.WorkersCount >= Population.WorkersCountTotal)
+                if (Population.WorkersCount == Population.WorkersCountTotal)
                     full = true;
                 break;
             case Enums.UnitType.Wood:
-                if (Population.WorkersCount >= Population.WorkersCountTotal)
+                if (Population.WorkersCount == Population.WorkersCountTotal)
                     full = true;
                 break;
             case Enums.UnitType.Knight:
-                if (Population.WarriorsCount >= Population.WarriorsCountTotal)
+                if (Population.WarriorsCount == Population.WarriorsCountTotal)
                     full = true;
                 break;
             case Enums.UnitType.Archer:
-                if (Population.ArcherCount >= Population.ArcherCountTotal)
+                if (Population.ArcherCount == Population.ArcherCountTotal)
                     full = true;
                 break;
         }
@@ -182,7 +182,7 @@ public class TrainigButton : MonoBehaviour
         SetColdownText($"{_workProgress:F0}s");
     }
 
-    private void PlaySoundNeedGold() => _sound.PlaySound();
+    private void PlaySoundNeedGold() => _sound.PlaySound(_audioNeedResources);
 
     private void OnBountenInvoke(Enums.UnitType type) => Bounten?.Invoke(type);
     public  void OnTarianigFinish(Enums.UnitType unitType) => Traiding?.Invoke(unitType);

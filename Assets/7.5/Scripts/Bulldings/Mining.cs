@@ -14,7 +14,8 @@ public class Mining : MonoBehaviour
     [SerializeField] private Canvas _inMineCanvas;
     [SerializeField] private float _mineTimerCycle;
     [SerializeField] private int _countResources;
-    [SerializeField] protected SoundClip _soundClip; 
+    [SerializeField] protected AudioClip _audioMiningFinish;
+    protected SoundClip _soundClip; 
 
     private float _mineTimer;
     private bool _isAnimation;
@@ -101,5 +102,5 @@ public class Mining : MonoBehaviour
     public void MineCanvas(bool show) => _inMineCanvas.gameObject.SetActive(show);
     public void MinerResourcesPerCycleToText(int count) => _mineCountText.text = $"+{count}";
 
-    protected virtual void PlaySoundMinig()=>_soundClip.PlaySound();
+    protected virtual void PlaySoundMinig()=>_soundClip.PlaySound(_audioMiningFinish);
 }

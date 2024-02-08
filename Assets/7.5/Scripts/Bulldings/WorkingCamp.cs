@@ -12,8 +12,9 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
     [SerializeField] private GameObject _prefWorker;
     [SerializeField] private Material _outlineMaterial;
     [SerializeField] private Transform _castlePoints;
-    [SerializeField] private SoundClip _sound;
-    
+    private SoundClip _sound;
+    [SerializeField] private AudioClip _audioSelectBuild;
+    [SerializeField] private WorkManEngineer _enginerPrefab;
     public Transform GoldPosition { get; set; }
     public Transform MeatPosition { get; set; }
     public Transform WoodPosition { get; set; }
@@ -28,12 +29,17 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
         SetDefaultMaterial();
         GetWorkerPosition();
         _sound = gameObject.GetComponent<SoundClip>();
-
+        House.NeedEngineer += OnNeedEngineerEvent;
     }
 
     private void GetWorkerPosition()
     {
         _workerPanelPosition = _workerPanel.GetComponent<RectTransform>();
+    }
+
+    private void OnNeedEngineerEvent(Vector3 targetPosition)
+    {
+        Instantiate(_enginerPrefab, _spawnPosition.transform.position, Quaternion.identity);
     }
 
     public void Training(Enums.UnitType type)
@@ -97,7 +103,7 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
     {
         if (!_isSelected)
         {
-            _sound.PlaySound();
+            _sound.PlaySound(_audioSelectBuild);
             _isSelected = true;
             _spriteRender.material = _outlineMaterial;
             ShowWorkerPanel();

@@ -49,7 +49,6 @@ public class GameManager : MonoBehaviour
     {
         SelectedBuilding.Selected += OnSelectedCampEvent;
         TrainigButton.Traiding += OnTarianigFinishEvent;
-        WorkMan.Working += OnWorkingEvent;
         Castle.Attacked += OnCastleAttakedEvent;
         Castle.Destroyed += OnCastleDestroyedEvent;
         Enemy.Deathing += OnEnemiesDestroyedEvent;
@@ -58,9 +57,7 @@ public class GameManager : MonoBehaviour
     private void RemoveListenerEvents()
     {
         SelectedBuilding.Selected -= OnSelectedCampEvent;
-
         TrainigButton.Traiding -= OnTarianigFinishEvent;
-        WorkMan.Working -= OnWorkingEvent;
         Castle.Attacked -= OnCastleAttakedEvent;
         Castle.Destroyed -= OnCastleDestroyedEvent;
         Enemy.Deathing -= OnEnemiesDestroyedEvent;
@@ -107,7 +104,7 @@ public class GameManager : MonoBehaviour
 
     private void CreatePlayerBase()
     {
-        _playerBase = new PlayerBase(_playerData, initGoldCount: 10, initMeatCount: 10, initWoodCount: 0);
+        _playerBase = new PlayerBase(_playerData, initGoldCount: 12, initMeatCount: 0, initWoodCount: 0);
     }
 
     private void OnSelectedCampEvent(GameObject gameObject)
@@ -131,34 +128,6 @@ public class GameManager : MonoBehaviour
         }
 
         _playerBase.AddUnitToBase(type);
-    }
-
-    private void OnWorkingEvent(GameObject workMan, Collider2D collider)
-    {
-        string tag = collider.gameObject.tag;
-        switch (tag)
-        {
-            case "GoldMine":
-                StartMining(collider, _playerData.goldMiningPerCycle * Population.CountGoldWorker);
-                Destroy(workMan);
-                break;
-            case "MeatMine":
-                StartMining(collider, _playerData.meatMiningPerCycle * Population.CountMeatWorker);
-                Destroy(workMan);
-                break;
-            case "WoodMine":
-                StartMining(collider, _playerData.woodMiningPerCycle * Population.CountWoodWorker);
-                Destroy(workMan);
-                break;
-        }
-    }
-   
-    private void StartMining(Collider2D collider, int countResourcePerCycle)
-    {
-        Mining mining = collider.gameObject.GetComponent<Mining>();
-        mining.InMine = true;
-        mining.MinerResourcesPerCycleToText(countResourcePerCycle);
-        mining.MineCanvas(true);
     }
 
     public void DefaultStatePanel()

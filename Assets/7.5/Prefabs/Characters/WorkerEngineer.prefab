@@ -11,15 +11,15 @@ GameObject:
   - component: {fileID: 7773453780433030978}
   - component: {fileID: 7773453780433030979}
   - component: {fileID: 7773453780433030980}
-  - component: {fileID: 1107008442901153303}
   - component: {fileID: -295019285124392658}
   - component: {fileID: 2666630716210622364}
   - component: {fileID: 2505166776305680404}
   - component: {fileID: 5366129585701055827}
   - component: {fileID: -5856432334920460842}
-  - component: {fileID: 8150825289502336747}
+  - component: {fileID: 5374676890079728244}
+  - component: {fileID: 1015086624840017624}
   m_Layer: 0
-  m_Name: Worker
+  m_Name: WorkerEngineer
   m_TagString: worker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -113,18 +113,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1107008442901153303
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7773453780433030981}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f95a6feea8ed7c42bded4be32c2d99b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!58 &-295019285124392658
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -138,9 +126,9 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.042490244}
   serializedVersion: 2
-  m_Radius: 0.11086261
+  m_Radius: 0.2205149
 --- !u!195 &2666630716210622364
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -296,7 +284,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &8150825289502336747
+--- !u!114 &5374676890079728244
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -305,14 +293,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 7773453780433030981}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7febef8906f10d94b982e5a42887f2c0, type: 3}
+  m_Script: {fileID: 11500000, guid: 10d208c2b01b1064cac8d7b79e1e519c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1015086624840017624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7773453780433030981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ecdeee325e7b2145abc6c63f43c313a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _audioSource: {fileID: -5856432334920460842}
-  volume: 0.5
-  _newEntitySound:
-  - {fileID: 8300000, guid: 9ba1e275d1a6cf148ad09cbfb97c699c, type: 3}
-  - {fileID: 8300000, guid: 3dd652448ab0ea843816866cf83aecea, type: 3}
-  _hitSound: {fileID: 0}
-  _attackSound: {fileID: 0}
-  _deathSound: {fileID: 0}
+  volume: 0.3

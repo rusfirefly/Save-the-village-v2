@@ -20,6 +20,8 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
     private float _currentTimeEat;
     [SerializeField] private int _eatUp;
     [SerializeField] private float _eatUpCycle;
+    private Vector3 _target;
+    private bool _buffUse;
 
     protected override void Awake()
     {
@@ -33,26 +35,44 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         HealthBarAmountFillAmount(_health);
     }
 
+    protected override void OnDrawGizmos()
+    {
+        base.OnDrawGizmos();
+        Gizmos.DrawLine(_attackPoint.position, _target);
+    }
+
     private void Update()
     {
         if (_isDie) return;
-        Enemy enemy = FindEnemy();
-        if (enemy != null)
+        DetectEntity();
+        DetectHitEntity();
+        EatUpCycle();
+    }
+    
+    private void DetectEntity()
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _distanceFindEntity, _layerMask);
+        foreach(Collider2D collider in colliders)
         {
-            MoveToEnemy(enemy);
+            MoveToEntity(collider.transform.position);
         }
-        else
+
+        if(colliders.Length==0)
         {
             GoBackPosition();
         }
-
-        DetectHitEntity();
-        EatUpCycle();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        DetectHitEntity();
+        if ((collision.gameObject.layer & (1 << _layerMask.value)) == 0)
+        {
+            _target = collision.gameObject.transform.position;
+            MoveToEntity(collision.gameObject.transform.position);
+        }else
+        {
+            GoBackPosition();
+        }
     }
 
     protected override void Die()
@@ -73,13 +93,13 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         }
     }
 
-    private void MoveToEnemy(Enemy enemy)
+    private void MoveToEntity(Vector3 enemy)
     {
-        float dist = GetDistanceToEnmy(enemy);
-
+        float dist = GetDistanceToEntity(enemy);
         if (CheckDistanceToEnemy(dist, _distanceFindEntity))
         {
-            GoToEnemy(enemy);
+            _target = enemy;
+            GoToEntity(enemy);
         }
     }
 
@@ -91,15 +111,15 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
 
     private Enemy FindEnemy() => FindObjectOfType<Enemy>();
 
-    private void GoToEnemy(Enemy enemy)
+    private void GoToEntity(Vector3 enemyPosition)
     {
         _speedEntity = _stepEntity * Time.deltaTime;
-        gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, enemy.gameObject.transform.position, _speedEntity);
+        gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, enemyPosition, _speedEntity);
     }
 
-    private float GetDistanceToEnmy(Enemy enemy)
+    private float GetDistanceToEntity(Vector3 enemyPosition)
     {
-        return Vector2.Distance(gameObject.transform.position, enemy.gameObject.transform.position);
+        return Vector2.Distance(gameObject.transform.position, enemyPosition);
     }
 
     public void Attack(Collider2D unit)
@@ -107,7 +127,6 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         _nextAttackTime += Time.deltaTime;
         if (_nextAttackTime >= _attackSpeed)
         {
-            BaffSatiety();
             SetTriggerAnimation("Attack1");
             unit.GetComponent<Enemy>().TakeDamage(_attack + _baffAttack);
             PlaySoundAttack();
@@ -127,8 +146,9 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
                 EatUp?.Invoke(_eatUp);
             }
             else
+            {
                 Debug.Log("закончилась еда, показатели воинов снижены");
-
+            }
             _currentTimeEat -= _eatUpCycle;
         }
     }
@@ -136,16 +156,29 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
 
     private void BaffSatiety()
     {
-        if(Storage.Meat>=_eatUpCycle)
+        if(Storage.Meat>=0)
         {
-            _baffAttack = _attack*0.15f;
-            _baffDefence = _defence * 0.15f;
-            _baffHealth = _health*0.5f;
-        }else
+            _baffAttack = _attack*0.55f;
+            _baffDefence = _defence * 0.55f;
+            _baffHealth = _health*0.55f;
+            
+
+            if (!_buffUse)
+            {
+                _health += _baffHealth;
+                _buffUse = true;
+            }
+        }
+        else
         {
-            _baffAttack = _attack * 0.15f * -1;
-            _baffDefence = _defence * 0.15f * -1;
-            _baffHealth = _health * 0.5f * -1;
+            _baffAttack = 0;
+            _baffDefence = 0;
+            _baffHealth = 0;
+            if (_buffUse)
+            {
+                _health = 8;
+                _buffUse = false;
+            }
         }
     }
 

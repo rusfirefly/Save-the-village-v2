@@ -71,6 +71,7 @@ public class Entity : MonoBehaviour
         _spriteRander.sortingOrder = layerLevel;
         _hud.sortingOrder = layerLevel;
     }
+
     public Enums.TypeEntity GetEntityType() => _typeEntity;
     protected void GetSoundEntity() => _soundEntity = gameObject.GetComponent<SoundEntity>();
     protected void PlaySoundNewEntity() => _soundEntity.PlaySoundNewEntity();

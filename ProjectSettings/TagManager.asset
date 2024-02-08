@@ -16,6 +16,7 @@ TagManager:
   - Enemy
   - Camp
   - tower
+  - worker
   layers:
   - Default
   - TransparentFX

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class WorkMan : Unit
 {
-    public static Action<GameObject, Collider2D> Working;
+    public static Action<Collider2D> Working;
 
     
     public override void StartedWork(Collider2D collider)
@@ -15,21 +15,23 @@ public class WorkMan : Unit
         {
             case "GoldMine":
                 Debug.Log("работник пошел добывать золото");
-                Working?.Invoke(gameObject, collider);
+                Working?.Invoke(collider);
                 break;
             case "MeatMine":
                 Debug.Log("работник пошел добывать мясо");
-                Working?.Invoke(gameObject, collider);
+                Working?.Invoke(collider);
                 break;
             case "WoodMine":
                 Debug.Log("работник пошел добывать дерево");
-                Working?.Invoke(gameObject, collider);
+                Working?.Invoke(collider);
                 break;
             case "Castle":
                 Debug.Log("работник принес ресурсы в замок!");
-                Working?.Invoke(gameObject, collider);
+                Working?.Invoke(collider);
                 break;
         }
+
+        Destroy(gameObject);
     }
 
     public void SetNewPosition(Transform position)

@@ -76,6 +76,7 @@ GameObject:
   - component: {fileID: -2332940945183332863}
   - component: {fileID: 823733483}
   - component: {fileID: 823733482}
+  - component: {fileID: 1144229235}
   m_Layer: 0
   m_Name: House_Blue 1
   m_TagString: Camp
@@ -337,6 +338,22 @@ MonoBehaviour:
   _audioSource: {fileID: 823733483}
   volume: 0.5
   _clip: {fileID: 8300000, guid: 4dcdfdd1039d4cd4abd32a4bed6899bd, type: 3}
+--- !u!114 &1144229235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1135366252090125171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fa0352a4d56abd42ad2fc69deb72448, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Size: {x: 0.8683193, y: 0.7980379, z: 4}
+  m_Center: {x: 0.00000011920929, y: -0.33341056, z: 0}
+  m_Area: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &4164177715801911165
 GameObject:
   m_ObjectHideFlags: 0

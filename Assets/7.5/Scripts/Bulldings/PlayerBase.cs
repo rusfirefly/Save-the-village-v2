@@ -8,14 +8,22 @@ public class Storage
     public static int Meat { get; private set; }
     public static int Wood { get; private set; }
 
+    private int _defGoldCount;
+    private int _defMeatCount;
+    private int _defWoodCount;
+
     public Storage(int gold, int meat, int wood)
     {
         Gold = gold;
         Meat = meat;
         Wood = wood;
+
+        _defGoldCount = gold;
+        _defMeatCount = meat;
+        _defWoodCount = wood;
     }
-    
-    public void AddGold(int newGoldCount1)=>Gold += newGoldCount1;
+
+public void AddGold(int newGoldCount1)=>Gold += newGoldCount1;
 
     public void AddMeat(int newMeatCount)=>Meat += newMeatCount;
 
@@ -26,6 +34,13 @@ public class Storage
     public void UseWood(int price) => Wood -= price;
 
     public void UseMeat(int eatUp) => Meat -= eatUp;
+
+    public void Reload()
+    {
+        Gold = _defGoldCount;
+        Meat = _defMeatCount;
+        Wood = _defWoodCount;
+    }
 }
 
 public class Population
@@ -115,11 +130,15 @@ public class PlayerBase
         TrainigButton.Bounten += OnBountenEvent;
         Warrior.Deathing += OnDeathWarriorEvent;
         Archer.Deathing += OnDeathArcherEvent;
-        WorkMan.Working += OnWorkingEvent;
         House.BuildComplete += BuildCompleteEvent;
+        WorkMan.Working += OnWorkingEvent;
     }
 
-    public void ReloadValue() => _population.ReloadValue();
+    public void ReloadValue()
+    {
+        _population.ReloadValue();
+        _storage.Reload();
+    }
 
     private void OnFinishMiningEvent(string tag)
     {
@@ -141,26 +160,35 @@ public class PlayerBase
         }
     }
 
-    private void BuildCompleteEvent()
-    {
-        _population.UpPopulation();
-    }
+    private void BuildCompleteEvent()=>_population.UpPopulation();
 
-    private void OnWorkingEvent(GameObject workMan, Collider2D collider)
+    private void OnWorkingEvent(Collider2D collider)
     {
         string tag = collider.gameObject.tag;
         switch (tag)
         {
             case "GoldMine":
                 _population.AddOneGoldWorker();
+                StartMining(collider, _playerData.goldMiningPerCycle * Population.CountGoldWorker);
                 break;
             case "MeatMine":
                 _population.AddOneMeatWorker();
+                StartMining(collider, _playerData.meatMiningPerCycle * Population.CountMeatWorker);
                 break;
             case "WoodMine":
                 _population.AddOneWoodWorker();
+                StartMining(collider, _playerData.woodMiningPerCycle * Population.CountWoodWorker);
                 break;
         }
+    }
+
+    private void StartMining(Collider2D collider, int countResourcePerCycle)
+    {
+        Mining mining = collider.gameObject.GetComponent<Mining>();
+        if (!mining) return;
+        mining.InMine = true;
+        mining.MinerResourcesPerCycleToText(countResourcePerCycle);
+        mining.MineCanvas(true);
     }
 
     private void OnBountenEvent(Enums.UnitType type)

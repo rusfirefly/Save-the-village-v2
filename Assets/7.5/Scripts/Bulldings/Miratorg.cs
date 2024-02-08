@@ -11,6 +11,7 @@ public class Miratorg : Mining
     private int _maxIntervalTime = 5;
 
     private Random _random;
+    [SerializeField] private AudioClip _audioSheep;
 
     protected override void Start()
     {
@@ -47,6 +48,6 @@ public class Miratorg : Mining
 
     private void SheepSoundPlay()
     {
-        _soundClip.PlaySound();
+        _soundClip.PlaySound(_audioSheep);
     }
 }
