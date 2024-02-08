@@ -142,7 +142,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 140257693
   m_SortingLayer: 7
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 21c6684ac3402654f929d22286d93ec9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -226,7 +226,8 @@ MonoBehaviour:
   _prefWorker: {fileID: 7773453780433030981, guid: 0b4bd3f0ada846c49a798e1b501ef66d, type: 3}
   _outlineMaterial: {fileID: 2100000, guid: 6cd70cf2393d8cf429a93a920f751f23, type: 2}
   _castlePoints: {fileID: 0}
-  _sound: {fileID: 0}
+  _audioSelectBuild: {fileID: 0}
+  _enginerPrefab: {fileID: 0}
 --- !u!82 &823733483
 AudioSource:
   m_ObjectHideFlags: 0
@@ -337,7 +338,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _audioSource: {fileID: 823733483}
   volume: 0.5
-  _clip: {fileID: 8300000, guid: 4dcdfdd1039d4cd4abd32a4bed6899bd, type: 3}
 --- !u!114 &1144229235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -365,7 +365,7 @@ GameObject:
   - component: {fileID: 2965692200865223471}
   - component: {fileID: 7609319899382588904}
   m_Layer: 0
-  m_Name: Resource (2)
+  m_Name: ResourceWood
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -426,7 +426,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 140257693
   m_SortingLayer: 7
-  m_SortingOrder: 1
+  m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: d9504816718f8df4698db4e6a6a77dc6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -510,7 +510,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 140257693
   m_SortingLayer: 7
-  m_SortingOrder: 1
+  m_SortingOrder: 3
   m_Sprite: {fileID: -923573479, guid: 2013558a8ad4a0e49a0562ab5aa7a95f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -533,7 +533,7 @@ GameObject:
   - component: {fileID: 2012854532394838155}
   - component: {fileID: 8877553407558047483}
   m_Layer: 0
-  m_Name: Resource
+  m_Name: ResourceGold
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -594,7 +594,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 140257693
   m_SortingLayer: 7
-  m_SortingOrder: 1
+  m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: 1b679732d899f8d4794652de502504b6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -617,7 +617,7 @@ GameObject:
   - component: {fileID: 5921633943426940984}
   - component: {fileID: 1860065883636155237}
   m_Layer: 0
-  m_Name: Resource (1)
+  m_Name: ResourceMeat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -678,7 +678,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 140257693
   m_SortingLayer: 7
-  m_SortingOrder: 1
+  m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: 585f89b508e47bd40a78a7330e6d00e3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -766,7 +766,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 140257693
   m_SortingLayer: 7
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 05bd930048440754f8e80ee81258dc14, type: 3}
   m_Color: {r: 0.564115, g: 0.52910286, b: 0.7735849, a: 1}
   m_FlipX: 0

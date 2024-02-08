@@ -25,7 +25,7 @@ public class Unit : MonoBehaviour
     
     private void InitAgent()
     {
-        _agent = GetComponent<NavMeshAgent>();
+        _agent = gameObject.GetComponent<NavMeshAgent>();
 
         _agent.updateRotation = false;
         _agent.updateUpAxis = false;

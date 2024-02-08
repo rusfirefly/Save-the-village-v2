@@ -5,6 +5,8 @@ using UnityEngine;
 [CreateAssetMenu]
 public class PlayerData : ScriptableObject
 {
+    [Header("Tutorial")]
+    public bool viewTutorial;
     [Header("Цена найма юнитов")]
     public int goldUnitTrainigPrice;
     public int meatUnitTrainigPrice;

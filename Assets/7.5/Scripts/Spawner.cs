@@ -42,7 +42,7 @@ public class Spawner : MonoBehaviour
         _countEnemysText.text = $"Врагов в следующем набеге: {_countStekEnemy}";
         _waveText.text = $"Волна: {_playerData.numberWave}";
         _sound = gameObject.GetComponent<SoundSpawn>();
-        WaveCanvasVisible(true);
+        WaveCanvasVisible(false);
         _random = new Random();
     }
 
@@ -64,6 +64,7 @@ public class Spawner : MonoBehaviour
     {
         if (GameMenu.isPaused) return;
         if (Storage.Gold <= 50) return;
+        WaveCanvasVisible(true);
 
         _currentTime += Time.deltaTime;
         _timeSpawn = _playerData.waveCycleTime - _currentTime;

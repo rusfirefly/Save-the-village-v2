@@ -260,7 +260,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 140257693
   m_SortingLayer: 7
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 1135518753, guid: fc5fd5bc944141b43b296af52a5a6a6c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -314,7 +314,7 @@ NavMeshAgent:
   m_Height: 0.1
   m_BaseOffset: 0.64
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 1
+  m_ObstacleAvoidanceType: 2
 --- !u!114 &2906337237758671785
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -347,12 +347,12 @@ MonoBehaviour:
   _hud: {fileID: 3824072896315504840}
   _distanceFindEntity: 3
   _arrowPrefab: {fileID: 8694111705678344236, guid: 2203ecd47f85758419258a93ae7690a9, type: 3}
-  _baffAttack: 0
-  _baffDefence: 0
-  _baffHealth: 0
   _needMeat: {fileID: 0}
   _eatBar: {fileID: 451317799697969381}
   _playerData: {fileID: 11400000, guid: 0fe396b4a36645042aba21e9fdf365bd, type: 2}
+  _baffHealth: 0
+  _baffDefence: 0
+  _baffAttack: 0
   _eatUp: 0
   _eatUpCycle: 0
 --- !u!82 &8518209198840608152

@@ -2,113 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Storage
-{
-    public static int Gold { get; private set; }
-    public static int Meat { get; private set; }
-    public static int Wood { get; private set; }
-
-    private int _defGoldCount;
-    private int _defMeatCount;
-    private int _defWoodCount;
-
-    public Storage(int gold, int meat, int wood)
-    {
-        Gold = gold;
-        Meat = meat;
-        Wood = wood;
-
-        _defGoldCount = gold;
-        _defMeatCount = meat;
-        _defWoodCount = wood;
-    }
-
-public void AddGold(int newGoldCount1)=>Gold += newGoldCount1;
-
-    public void AddMeat(int newMeatCount)=>Meat += newMeatCount;
-
-    public void AddWood(int newWoodCount)=>Wood += newWoodCount;
-
-    public void SpendGold(int price) => Gold -= price;
-
-    public void UseWood(int price) => Wood -= price;
-
-    public void UseMeat(int eatUp) => Meat -= eatUp;
-
-    public void Reload()
-    {
-        Gold = _defGoldCount;
-        Meat = _defMeatCount;
-        Wood = _defWoodCount;
-    }
-}
-
-public class Population
-{
-    public static int WorkersCount { get; private set; }
-    public static int WorkersCountTotal { get; private set; }
-    public static int WarriorsCount { get; private set; }
-    public static int WarriorsCountTotal { get; private set; }
-    public static int ArcherCount { get; private set; }
-    public static int ArcherCountTotal { get; private set; }
-    public static int WarriorsCountDeath { get; private set; }
-
-    public static int CountGoldWorker { get; private set; }
-    public static int CountMeatWorker { get; private set; }
-    public static int CountWoodWorker { get; private set; }
-
-    public Population() => ReloadValue();
-
-    public void AddOneWorker() => WorkersCount++;
-
-    public void AddOneGoldWorker() => CountGoldWorker++;
-
-    public void AddOneMeatWorker() => CountMeatWorker++;
-
-    public void AddOneWoodWorker() => CountWoodWorker++;
-
-    public void AddOneWarrior()
-    {
-        WarriorsCount++;
-    }
-    public void AddOneArcher()
-    {
-        ArcherCount++;
-    }
-    public void DeathWarrior()
-    {
-        WarriorsCount--;
-        WarriorsCountDeath++;
-    }
-
-    public void DeathArcher()
-    {
-        ArcherCount--;
-        WarriorsCountDeath++;
-    }
-
-    public void ReloadValue()
-    {
-        WorkersCount = 0;
-        WarriorsCount = 0;
-        CountGoldWorker = 0;
-        CountMeatWorker = 0;
-        CountWoodWorker = 0;
-        ArcherCount = 0;
-
-        WorkersCountTotal = 10;
-        WarriorsCountTotal = 10;
-        ArcherCountTotal = 1;
-    }
-
-    public void UpPopulation()
-    {
-        WarriorsCountTotal += 5;
-        WorkersCountTotal += 5;
-        ArcherCountTotal += 1;
-    }
-}
-
 public class PlayerBase
 {
     private Storage _storage;
@@ -122,7 +15,17 @@ public class PlayerBase
         _playerData = playerData;
 
         ReloadValue();
+        CreateListenerEvents();
+    }
 
+    public void ReloadValue()
+    {
+        _population.ReloadValue();
+        _storage.Reload();
+    }
+    
+    private void CreateListenerEvents()
+    {
         Castle.Repair += OnRepairEvent;
         Warrior.EatUp += OnEatUpEvent;
         Archer.EatUp += OnEatUpEvent;
@@ -134,10 +37,17 @@ public class PlayerBase
         WorkMan.Working += OnWorkingEvent;
     }
 
-    public void ReloadValue()
+    public void RemoveListenerEvents()
     {
-        _population.ReloadValue();
-        _storage.Reload();
+        Castle.Repair -= OnRepairEvent;
+        Warrior.EatUp -= OnEatUpEvent;
+        Archer.EatUp -= OnEatUpEvent;
+        Mining.Work -= OnFinishMiningEvent;
+        TrainigButton.Bounten -= OnBountenEvent;
+        Warrior.Deathing -= OnDeathWarriorEvent;
+        Archer.Deathing -= OnDeathArcherEvent;
+        House.BuildComplete -= BuildCompleteEvent;
+        WorkMan.Working -= OnWorkingEvent;
     }
 
     private void OnFinishMiningEvent(string tag)

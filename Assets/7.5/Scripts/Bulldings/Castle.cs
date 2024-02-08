@@ -27,7 +27,6 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 
     private SpriteRenderer _spriteRender;
     private Material _default;
-
     private SoundCastle _soundCastle;
 
     private float _timeRepair = 10f;
@@ -51,15 +50,19 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 
     public void Reload()
     {
-        _isRepair = false;
-        _currentTime = 0;
-
+        DefaultValue();
         SetDefauldMaterial();
         SetBoolAnimation("IsDestroed", false);
         SetCurrentHealthFull();
         SetCastleFire(false);
         SetCastleHealth();
         RepairBarVisible(false);
+    }
+    
+    private void DefaultValue()
+    {
+        _isRepair = false;
+        _currentTime = 0;
     }
 
     private void GetSoundComponent()=> _soundCastle = gameObject.GetComponent<SoundCastle>();
@@ -94,6 +97,8 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 
         IsGameOver();
     }
+
+    public void SetTriggerAnimation(string animation) => _animator.SetTrigger(animation);
 
     private void PlayeSoundCastleInFire()=> _soundCastle.PlaySoundCastleInFire();
 
@@ -188,7 +193,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 
     private void GetAnimation() => _animator ??= GetComponent<Animator>();
 
-    public void SetTriggerAnimation(string animation) => _animator.SetTrigger(animation);
+
 
     private void SetBoolAnimation(string animation, bool value) => _animator.SetBool(animation, value);
 
@@ -204,11 +209,6 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
             PlayeSoundNeedWood();
         }
     }
-
-    private void PlayeSoundNeedWood()=> _soundCastle.PlayeSoundNeedWood();
-    private void SpendWoodOnRepairs() => Repair?.Invoke(_countWoodForRepairPrice);
-    
-    private void PorgressBarVisible(bool visible)=> _repairBarPanel.SetActive(visible);
 
     public void Selected()
     {
@@ -229,19 +229,25 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
         _repairButton.gameObject.SetActive(true);
         _repairPriceText.text = $"Ремонт:\n{_countWoodForRepairPrice}";
     }
+    public void ArcherOnCastle(Archer archer)
+    {
+        archer.transform.position = _positionArcher.position;
+    }
+    private void PlayeSoundNeedWood() => _soundCastle.PlayeSoundNeedWood();
+
+    private void SpendWoodOnRepairs() => Repair?.Invoke(_countWoodForRepairPrice);
+
+    private void PorgressBarVisible(bool visible) => _repairBarPanel.SetActive(visible);
 
     private void HideRepairButton()
     {
         _repairButton.gameObject.SetActive(false);
     }
+
     private void SetDefaultMaterial()
     {
         _spriteRender = gameObject.GetComponent<SpriteRenderer>();
         _default = _spriteRender.material;
     }
 
-    public void ArcherOnCastle(Archer archer)
-    {
-        archer.transform.position = _positionArcher.position;
-    }
 }

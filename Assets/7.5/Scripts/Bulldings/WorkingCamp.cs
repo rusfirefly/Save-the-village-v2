@@ -39,7 +39,8 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
 
     private void OnNeedEngineerEvent(Vector3 targetPosition)
     {
-        Instantiate(_enginerPrefab, _spawnPosition.transform.position, Quaternion.identity);
+        WorkManEngineer unit = Instantiate(_enginerPrefab, _spawnPosition.transform.position, Quaternion.identity).GetComponent<WorkManEngineer>();
+        unit.Move(targetPosition);
     }
 
     public void Training(Enums.UnitType type)
