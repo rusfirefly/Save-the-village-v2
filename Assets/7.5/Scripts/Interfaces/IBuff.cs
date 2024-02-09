@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Camp
+public interface IBuff
 {
-
+    void SetBuff(Buff buff);
 }

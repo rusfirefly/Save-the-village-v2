@@ -37,15 +37,39 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     private float _currentTime;
     private float _percentHealth;
     private Animator _animator;
+    private BuffSkill _buffSkill;
+    private bool _useBuff;
+    private int _newWarrior;
+
 
     public void Start()
     {
+        GetSoundComponent();
         SetDefaultMaterial();
         CreateListenerEvent();
         SetFullHealth();
         SetCastleHealth();
         SetRepairText();
-        GetSoundComponent();
+        InitCastleSkill();
+    }
+
+    private void Update()
+    {
+        CastleBuff();
+        CheckStateRepairButton();
+        if (!_isRepair) return;
+        RepairCastle();
+    }
+
+    private void OnMouseDown()
+    {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+        Selected();
+    }
+
+    private void OnValidate()
+    {
+        GetAnimation();
     }
 
     public void Reload()
@@ -58,30 +82,57 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
         SetCastleHealth();
         RepairBarVisible(false);
     }
-    
-    private void DefaultValue()
+
+    private void GetAnimation() => _animator ??= GetComponent<Animator>();
+
+    private void GetSoundComponent() => _soundCastle = gameObject.GetComponent<SoundCastle>();
+
+    private void SetDefaultMaterial()
     {
-        _isRepair = false;
-        _currentTime = 0;
+        _spriteRender = gameObject.GetComponent<SpriteRenderer>();
+        _default = _spriteRender.material;
     }
 
-    private void GetSoundComponent()=> _soundCastle = gameObject.GetComponent<SoundCastle>();
-    
+    private void CreateListenerEvent() => _repairButton.onClick.AddListener(RepearCastle);
+
+    private void SetFullHealth() => _fullHealth = _health;
     private void SetCastleHealth()
     {
         _percentHealth = _health / _fullHealth * 100;
         _castleInfoText.text = $"Замок:\nHP:{_percentHealth:F0}%";
     }
 
-    private void SetDefauldMaterial() => _spriteRender.material = _default;
-    
-    private void SetCurrentHealthFull() => _health = _fullHealth;
-
-    private void SetFullHealth() => _fullHealth = _health;
-
     private void SetRepairText() => _repairPriceText.text = $"Ремонт:\n{_countWoodForRepairPrice}";
 
-    private void CreateListenerEvent() => _repairButton.onClick.AddListener(RepearCastle);
+    private void InitCastleSkill()
+    {
+        _buffSkill = gameObject.GetComponent<BuffSkill>();
+        _buffSkill.BuffVisible(false);
+    }
+
+    private void DefaultValue()
+    {
+        _isRepair = false;
+        _currentTime = 0;
+    }
+
+    private void SetDefauldMaterial() => _spriteRender.material = _default;
+
+    private void SetBoolAnimation(string animation, bool value) => _animator.SetBool(animation, value);
+
+    private void SetCurrentHealthFull() => _health = _fullHealth;
+
+    private void SetCastleFire(bool isFire)
+    {
+        _fire.gameObject.SetActive(isFire);
+        _isFire = isFire;
+    }
+
+    private void RepairBarVisible(bool visible)
+    {
+        _repairBar.fillAmount = 0;
+        _repairBarPanel.SetActive(visible);
+    }
 
     public void TakeDamage(float damage)
     {
@@ -102,11 +153,39 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 
     private void PlayeSoundCastleInFire()=> _soundCastle.PlaySoundCastleInFire();
 
-    private void Update()
+
+    private void CastleBuff()
     {
-        CheckStateRepairButton();
-        if (!_isRepair) return;
-        RepairCastle();
+        if (Storage.Meat > 0)
+        {
+            Warrior[] warriors = FindObjectsOfType<Warrior>();
+            Archer[] archers = FindObjectsOfType<Archer>();
+            if ((_newWarrior > (warriors.Length + archers.Length)) || (_newWarrior < (warriors.Length + archers.Length)))
+            {
+                _useBuff = false;
+                if (!_useBuff)
+                {
+                    _useBuff = true;
+                    _buffSkill.BuffVisible(true);
+                    _newWarrior = warriors.Length;
+                    AllWarriorUseBuff(warriors);
+                    _newWarrior += archers.Length;
+                    foreach (Archer archer in archers)
+                        archer.EatBuff(_buffSkill.GetBuff());
+                }
+            }
+        }else
+        {
+            _newWarrior = 0;
+            _useBuff = false;
+            _buffSkill.BuffVisible(false);
+        }
+
+    }
+    private void AllWarriorUseBuff(Warrior[] warriors)
+    {
+        foreach (Warrior warrior in warriors)
+            warrior.EatBuff(_buffSkill.GetBuff());
     }
 
     private void RepairCastle()
@@ -124,12 +203,6 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
             _currentTime -= _timeRepair;
             _isRepair = false;
         }
-    }
-    
-    private void RepairBarVisible(bool visible)
-    {
-        _repairBar.fillAmount = 0;
-        _repairBarPanel.SetActive(visible);
     }
     
     private void PlaySoundRepairComplete()=> _soundCastle.PlayeSoundCastleRepair();
@@ -169,33 +242,18 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     {
         if (_health <= 0)
         {
+            DeathArcherInCastle();
             SetBoolAnimation("IsDestroed", true);
             Destroyed?.Invoke();
         }
     }
 
-    private void OnMouseDown()
+    private void DeathArcherInCastle()
     {
-        if (EventSystem.current.IsPointerOverGameObject()) return;
-        Selected();
+        Archer[] archers = FindObjectsOfType<Archer>();
+        foreach (Archer archer in archers)
+            archer.TakeDamage(1000);
     }
-
-    private void SetCastleFire(bool isFire)
-    {
-        _fire.gameObject.SetActive(isFire);
-        _isFire = isFire;
-    }
-
-    private void OnValidate()
-    {
-        GetAnimation();
-    }
-
-    private void GetAnimation() => _animator ??= GetComponent<Animator>();
-
-
-
-    private void SetBoolAnimation(string animation, bool value) => _animator.SetBool(animation, value);
 
     private void RepearCastle()
     {
@@ -243,11 +301,4 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     {
         _repairButton.gameObject.SetActive(false);
     }
-
-    private void SetDefaultMaterial()
-    {
-        _spriteRender = gameObject.GetComponent<SpriteRenderer>();
-        _default = _spriteRender.material;
-    }
-
 }

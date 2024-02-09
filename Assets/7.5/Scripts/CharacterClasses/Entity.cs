@@ -95,7 +95,7 @@ public class Entity : MonoBehaviour
         RunAgent();
     }
 
-    protected void HealthBarAmountFillAmount(float value) => _hpBar.fillAmount = value / (_healthFull);
+    protected void HealthBarAmountFillAmount(float value, float buffHP=0) => _hpBar.fillAmount = value / (_healthFull + buffHP);
 
     protected Collider2D[] HitEntity() => Physics2D.OverlapCircleAll(_attackPoint.position, _attackRange, _layerMask);
 
@@ -138,6 +138,7 @@ public class Entity : MonoBehaviour
     {
         _isDie = true;
         _agent.enabled = false;
+        _hud.gameObject.SetActive(false);
         PlaySoundDie();
         SetBoolAnimation("IsDie", true);
         
@@ -155,4 +156,5 @@ public class Entity : MonoBehaviour
     public void SetTriggerAnimation(string animation) => _animator.SetTrigger(animation);
 
     private void SetBoolAnimation(string animation, bool value) => _animator.SetBool(animation, value);
+    
 }

@@ -58,5 +58,6 @@ public class PlayerData : ScriptableObject
         numberWave = 0;
         countEnemyNextWave = 1;
     }
+
 }
 

@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviour
     {
         Warrior[] warriors = FindObjectsOfType<Warrior>();
         foreach (Warrior knight in warriors)
-            knight.FindEnemyPosition();
+            knight.FindEnemyPosition(_castlePosition.position);
     }
 
     private void OnCastleDestroyedEvent()
@@ -138,6 +138,7 @@ public class GameManager : MonoBehaviour
 
     public void ReloadGame()
     {
+        DefaultStatePanel();
 
         Mining[] miningBuilds = FindObjectsOfType<Mining>();
         foreach (Mining bulding in miningBuilds)
@@ -166,11 +167,11 @@ public class GameManager : MonoBehaviour
 
     private void GameOver(string title)
     {
+        
         string statistic = $"Итоги игры:\n" +
                            $"Волн пережито: {_playerData.numberWave}\n" +
                            $"Врагов уничтожено:{_enemiesDestroyed}\n"+
-                           $"Нанято воинов: {Population.WarriorsCountTotal}\n" +
-                           $"Воинов выжило: {Population.WarriorsCount}\n" +
+                           $"Нанято воинов: {Population.WarriorHired + Population.ArcherHired}\n" +
                            $"Воинов погибло:{Population.WarriorsCountDeath}\n" +
                            $"Рабочих нанято:{Population.WorkersCount}\n" +
                            $"Собрано золота:{Storage.Gold}\n" +

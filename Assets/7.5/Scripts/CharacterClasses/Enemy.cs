@@ -100,14 +100,11 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
     private void DetectHitEntity()
     {
         Collider2D[] hitEntities = HitEntity();
-        //foreach (Collider2D entity in hitEntities)
-        //{
-        if (hitEntities.Length > 0)
+        foreach (Collider2D entity in hitEntities)
         {
             StopAgent();
-            Attack(hitEntities[0]);
+            Attack(entity);
         }
-        //}
     }
 
     public void Attack(Collider2D unit)

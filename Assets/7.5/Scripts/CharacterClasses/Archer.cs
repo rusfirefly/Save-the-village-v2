@@ -24,7 +24,9 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
     private float _satiety = 100;
     private float _currentTimeEat;
     private Vector3 _target;
-
+    private bool _buffUse;
+    private Collider2D colider;
+    private Buff _eatBuff;
     protected override void Awake()
     {
         base.Awake();
@@ -52,7 +54,7 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
         EatUpCycle();
     }
 
-    Collider2D colider;
+
     protected void DetectEnemy()
     {
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Vector2.down, _attackRange, _layerMask);
@@ -70,13 +72,6 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
         {
             collision.GetComponent<Castle>().ArcherOnCastle(this);  
         }
-    }
-
-    IEnumerator ArachOnCastle()
-    {
-        //gameObject
-        yield return new WaitForSeconds(1f);
-
     }
 
     private void FlipArcher(float x)
@@ -106,7 +101,6 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
             ArrowShoot(unit.gameObject.transform.position);
             PlaySoundAttack();
             colider = null;
-            //_target = gameObject.transform.position;
             _nextAttackTime = 0;
         }
     }
@@ -124,7 +118,7 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
         if (_currentTimeEat >= _eatUpCycle)
         {
             BaffSatiety();
-            if (Storage.Meat >= 0)
+            if (Storage.Meat > 0)
             {
                 EatUp?.Invoke(_eatUp);
             }
@@ -138,17 +132,29 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
 
     private void BaffSatiety()
     {
-        if (Storage.Meat >= _eatUpCycle)
+        if (Storage.Meat > _eatUp)
         {
-            _baffAttack = _attack * 0.15f;
-            _baffDefence = _defence * 0.15f;
-            _baffHealth = _health * 0.5f;
+            _baffAttack = _attack * _eatBuff.Attack;
+            _baffDefence = _defence * _eatBuff.Defence;
+            _baffHealth = _health * _eatBuff.Health;
+
+
+            if (!_buffUse)
+            {
+                _health += _baffHealth;
+                _buffUse = true;
+            }
         }
         else
         {
-            _baffAttack = _attack * 0.15f * -1;
-            _baffDefence = _defence * 0.15f * -1;
-            _baffHealth = _health * 0.5f * -1;
+            _baffAttack = 0;
+            _baffDefence = 0;
+            _baffHealth = 0;
+            if (_buffUse)
+            {
+                _health = _healthFull;
+                _buffUse = false;
+            }
         }
     }
 
@@ -198,5 +204,11 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
         {
             _agent.destination = enemy.gameObject.transform.position;
         }
+    }
+
+    public void EatBuff(Buff buff)
+    {
+        _eatBuff = buff;
+        Debug.Log(_eatBuff);
     }
 }

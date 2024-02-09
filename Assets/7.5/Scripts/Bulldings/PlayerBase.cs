@@ -144,5 +144,8 @@ public class PlayerBase
         };
     }
     private void OnRepairEvent(int price) => _storage.UseWood(price);
-    private void OnEatUpEvent(int eatUp) => _storage.UseMeat(eatUp);
+    private void OnEatUpEvent(int eatUp)
+    {
+        _storage.UseMeat(eatUp);
+    }
 }

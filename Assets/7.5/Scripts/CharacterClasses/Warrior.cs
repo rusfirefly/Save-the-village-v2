@@ -16,12 +16,14 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
     [SerializeField] private Image _eatBar;
     [SerializeField] private PlayerData _playerData;
 
-    private float _satiety = 100;
-    private float _currentTimeEat;
     [SerializeField] private int _eatUp;
     [SerializeField] private float _eatUpCycle;
+    private float _currentTimeEat;
+    private float _satiety = 100;
+
     private Vector3 _target;
     private bool _buffUse;
+    private Buff _eatBuff;
 
     protected override void Awake()
     {
@@ -29,12 +31,12 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         _eatUpCycle = _playerData.warriorEatTimer;
         _eatUp = _playerData.warriorEatUpCycle;
         PlaySoundNewEntity();
-        _healthFull = _health + _baffHealth;
-        BaffSatiety();
+        _healthFull = _health;
+        //BaffSatiety();
         EatBarAmountFillAmount(_satiety);
         HealthBarAmountFillAmount(_health);
     }
-
+    
     protected override void OnDrawGizmos()
     {
         base.OnDrawGizmos();
@@ -44,6 +46,7 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
     private void Update()
     {
         if (_isDie) return;
+        BaffSatiety();
         DetectEntity();
         DetectHitEntity();
         EatUpCycle();
@@ -140,8 +143,8 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         EatBarAmountFillAmount(_eatUpCycle - _currentTimeEat);
         if (_currentTimeEat >= _eatUpCycle)
         {
-            BaffSatiety();
-            if (Storage.Meat >= 0)
+            //BaffSatiety();
+            if (Storage.Meat > 0)
             {
                 EatUp?.Invoke(_eatUp);
             }
@@ -156,12 +159,11 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
 
     private void BaffSatiety()
     {
-        if(Storage.Meat>=0)
+        if(Storage.Meat > _eatUp)
         {
-            _baffAttack = _attack*0.55f;
-            _baffDefence = _defence * 0.55f;
-            _baffHealth = _health*0.55f;
-            
+            _baffAttack = _attack* _eatBuff.Attack;
+            _baffDefence = _defence * _eatBuff.Defence;
+            _baffHealth = _health*_eatBuff.Health;
 
             if (!_buffUse)
             {
@@ -174,9 +176,10 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
             _baffAttack = 0;
             _baffDefence = 0;
             _baffHealth = 0;
+
             if (_buffUse)
             {
-                _health = 8;
+                _health = _healthFull;
                 _buffUse = false;
             }
         }
@@ -188,7 +191,7 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         SetTriggerAnimation("Hit");
         if (damage <= 0) return;
         _health -= DamageÑalculation(damage);
-        HealthBarAmountFillAmount(_health);
+        HealthBarAmountFillAmount(_health, _eatBuff.Health);
         if (_health <= 0)
         {
             Die();
@@ -220,12 +223,14 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         Move(_tagetPosition);
     }
 
-    public void FindEnemyPosition()
+    public void FindEnemyPosition(Vector3 castlePosition)
     {
-        Enemy[] enemys = GameObject.FindObjectsOfType<Enemy>();
-        foreach (Enemy enemy in enemys)
-        {
-            _agent.destination = enemy.gameObject.transform.position;
-        }
+        Move(castlePosition);
+    }
+
+    public void EatBuff(Buff buff)
+    {
+        _eatBuff = buff;
+        BaffSatiety();
     }
 }

@@ -26,6 +26,7 @@ public class Spawner : MonoBehaviour
     private TimeSpan _time;
     private Random _random;
     private Random _randomEnemy;
+    private bool _waveInfoVisible;
 
     private void Awake()
     {
@@ -42,7 +43,7 @@ public class Spawner : MonoBehaviour
         _countEnemysText.text = $"Врагов в следующем набеге: {_countStekEnemy}";
         _waveText.text = $"Волна: {_playerData.numberWave}";
         _sound = gameObject.GetComponent<SoundSpawn>();
-        WaveCanvasVisible(false);
+        WaveCanvasVisible(true);
         _random = new Random();
     }
 
@@ -63,8 +64,8 @@ public class Spawner : MonoBehaviour
     public void UpdateSpawn()
     {
         if (GameMenu.isPaused) return;
-        if (Storage.Gold <= 50) return;
-        WaveCanvasVisible(true);
+        if (Storage.Gold <= _random.Next(50, 150)) return;
+
 
         _currentTime += Time.deltaTime;
         _timeSpawn = _playerData.waveCycleTime - _currentTime;
@@ -78,7 +79,7 @@ public class Spawner : MonoBehaviour
                 SpawnEnemy(_countStekEnemy);
 
             _sound.PlaySound();
-            _countStekEnemy++;
+            _countStekEnemy = _random.Next(0, 3) + _playerData.numberWave;
             _playerData.numberWave++;
             _countEnemysText.text = $"Врагов в следующем набеге: {_countStekEnemy}";
             _waveText.text =$"Волна: {_playerData.numberWave}";
@@ -87,7 +88,7 @@ public class Spawner : MonoBehaviour
     }
     private void WaveCanvasVisible(bool visible)
     {
-        if(visible)
+        if(visible&& !_waveInfoVisible)
         {
             _waveInfoCanvas.transform.localPosition = new Vector3(_waveInfoCanvas.transform.localPosition.x, _waveInfoCanvas.transform.localPosition.y-198);
         }

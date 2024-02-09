@@ -196,7 +196,7 @@ GameObject:
   - component: {fileID: 7281159507612072995}
   - component: {fileID: 780104401718777139}
   - component: {fileID: 1899036589212321885}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Archer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -303,7 +303,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: -1372625422
   m_Radius: 0.4
-  m_Speed: 3.5
+  m_Speed: 1.8
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -335,7 +335,7 @@ MonoBehaviour:
   _layerMask:
     serializedVersion: 2
     m_Bits: 64
-  _attackSpeed: 2
+  _attackSpeed: 1.8
   _drawGizmo: 1
   _hpBar: {fileID: 7203741346024115428}
   _typeEntity: 0
@@ -353,8 +353,8 @@ MonoBehaviour:
   _baffHealth: 0
   _baffDefence: 0
   _baffAttack: 0
-  _eatUp: 0
-  _eatUpCycle: 0
+  _eatUp: 5
+  _eatUpCycle: 15
 --- !u!82 &8518209198840608152
 AudioSource:
   m_ObjectHideFlags: 0
@@ -520,7 +520,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2906337238813677457}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: attackPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}

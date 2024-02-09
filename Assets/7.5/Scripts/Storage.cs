@@ -25,7 +25,11 @@ public class Storage
 
     public void AddGold(int newGoldCount1) => Gold += newGoldCount1;
 
-    public void AddMeat(int newMeatCount) => Meat += newMeatCount;
+    public void AddMeat(int newMeatCount)
+    {
+        Meat += newMeatCount;
+
+    }
 
     public void AddWood(int newWoodCount) => Wood += newWoodCount;
 
@@ -33,7 +37,12 @@ public class Storage
 
     public void UseWood(int price) => Wood -= price;
 
-    public void UseMeat(int eatUp) => Meat -= eatUp;
+    public void UseMeat(int eatUp)
+    {
+        Meat -= eatUp;
+        if (Meat < 0)
+            Meat = 0;
+    }
 
     public void Reload()
     {

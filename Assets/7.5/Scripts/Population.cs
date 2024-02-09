@@ -7,6 +7,9 @@ public class Population
     public static int WorkersCount { get; private set; }
     public static int WorkersCountTotal { get; private set; }
     public static int WarriorsCount { get; private set; }
+    public static int WarriorHired { get; private set; }
+    public static int ArcherHired { get; private set; }
+
     public static int WarriorsCountTotal { get; private set; }
     public static int ArcherCount { get; private set; }
     public static int ArcherCountTotal { get; private set; }
@@ -32,10 +35,12 @@ public class Population
     public void AddOneWarrior()
     {
         WarriorsCount++;
+        WarriorHired++;
     }
     public void AddOneArcher()
     {
         ArcherCount++;
+        ArcherHired++;
     }
     public void DeathWarrior()
     {
@@ -57,7 +62,8 @@ public class Population
         CountMeatWorker = 0;
         CountWoodWorker = 0;
         ArcherCount = 0;
-
+        WarriorHired = 0;
+        ArcherHired = 0;
         WorkersCountTotal = 10;
         WarriorsCountTotal = 10;
         ArcherCountTotal = 1;

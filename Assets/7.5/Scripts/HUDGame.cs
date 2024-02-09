@@ -16,7 +16,6 @@ public class HUDGame : MonoBehaviour
     
     public void Initialize()
     {
-        //UpdateStoragePanel();
         StartCoroutine(UpdatePanels());
     }
 
@@ -27,16 +26,13 @@ public class HUDGame : MonoBehaviour
         StartCoroutine(UpdatePanels());
     }
 
-    //private void FixedUpdate() => UpdateStoragePanel();
-
     private void UpdateStoragePanel()
     {
         _workerText.text = $"{Population.WorkersCount}/{Population.WorkersCountTotal}";
         _wariorText.text = $"{Population.WarriorsCount}/{Population.WarriorsCountTotal}";
         _archerText.text = $"{Population.ArcherCount}/{Population.ArcherCountTotal}";
         _goldText.text = $"{Storage.Gold} +({Population.CountGoldWorker * _playerData.goldMiningPerCycle})";
-        _meatText.text = $"{Storage.Meat} +({Population.CountMeatWorker * _playerData.meatMiningPerCycle})|" +
-                         $"-({Population.WarriorsCount * _playerData.warriorEatUpCycle})";
+        _meatText.text = $"{Storage.Meat} +({Population.CountMeatWorker * _playerData.meatMiningPerCycle})";
         _woodText.text = $"{Storage.Wood} +({Population.CountWoodWorker * _playerData.woodMiningPerCycle})";
         _engineerText.text = $"{WorkManEngineer.CountWork}/{Population.EngineerCountTotal}";
     }

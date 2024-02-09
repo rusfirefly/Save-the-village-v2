@@ -12,14 +12,19 @@ public class GameMenu: MonoBehaviour
     [SerializeField] private Canvas _gameOverCanvas;
     [SerializeField] private Text _statisticText;
     [SerializeField] private Text _titleGameOver;
+    [SerializeField] private Tutorial _tutorial;
+
+    [SerializeField] private PlayerData _playerData;
+
     public static bool isPaused;
     private bool _isMainMenu;
     private bool _isSoundOff;
     public static GameMenu menuInstance;
     
 
-    public void Initialize()
+    public void Initialize(Tutorial tutorial)
     {
+        _tutorial = tutorial;
         _isSoundOff = true;
         InitMenu();
         isPaused = true;
@@ -50,6 +55,7 @@ public class GameMenu: MonoBehaviour
                 VisibleCanvas(_hudGame, true);
                 _isMainMenu = false;
                 isPaused = false;
+                
             }
         }
     }
@@ -60,7 +66,6 @@ public class GameMenu: MonoBehaviour
         VisibleCanvas(_HUDMenu, isShow:isPaused);
         VisibleCanvas(_pauseMenu, isShow:isPaused);
     }
-
 
     public void ShowGameOverMenu(string statisticText, string gameOverTitileText)
     {
@@ -74,6 +79,20 @@ public class GameMenu: MonoBehaviour
     public void ShowMainMenu()
     {
 
+    }
+
+    public void ShowTutorial()
+    {
+        ChangeGameTimeState();
+        VisibleCanvas(_HUDMenu, true);
+        _tutorial.Initialize();
+    }
+
+    public void ExitTutorial()
+    {
+        ChangeGameTimeState();
+        VisibleCanvas(_HUDMenu, false);
+        _tutorial.ExitTutorial();
     }
 
     private void ChangeGameTimeState()
