@@ -314,7 +314,7 @@ NavMeshAgent:
   m_Height: 0.1
   m_BaseOffset: 0.64
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 2
+  m_ObstacleAvoidanceType: 0
 --- !u!114 &2906337237758671785
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,7 +335,7 @@ MonoBehaviour:
   _layerMask:
     serializedVersion: 2
     m_Bits: 64
-  _attackSpeed: 1.8
+  _attackSpeed: 1.3
   _drawGizmo: 1
   _hpBar: {fileID: 7203741346024115428}
   _typeEntity: 0

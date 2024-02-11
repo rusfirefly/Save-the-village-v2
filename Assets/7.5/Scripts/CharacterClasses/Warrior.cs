@@ -19,21 +19,29 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
     [SerializeField] private int _eatUp;
     [SerializeField] private float _eatUpCycle;
     private float _currentTimeEat;
-    private float _satiety = 100;
 
     private Vector3 _target;
     private bool _buffUse;
     private Buff _eatBuff;
+    
+    private const int _xRandomMin = -5;
+    private const int _xRandomMax = 6;
+    private const float _xKoef = 0.1f;
+    private const float _xOffset = 0.6f;
+
+    private const int _yRandomMin = -2;
+    private const int _yRandomMax = 3;
+    private const float _yKoef = 0.1f;
+    private const float _yOffset = 0.3f;
+
 
     protected override void Awake()
     {
         base.Awake();
-        _eatUpCycle = _playerData.warriorEatTimer;
-        _eatUp = _playerData.warriorEatUpCycle;
+        SetStartValueEat();
         PlaySoundNewEntity();
         _healthFull = _health;
-        //BaffSatiety();
-        EatBarAmountFillAmount(_satiety);
+        EatBarAmountFillAmount(_eatUpCycle);
         HealthBarAmountFillAmount(_health);
     }
     
@@ -51,7 +59,24 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         DetectHitEntity();
         EatUpCycle();
     }
-    
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if ((collision.gameObject.layer & (1 << _layerMask.value)) == 0)
+        {
+            _target = collision.gameObject.transform.position;
+            MoveToEntity(collision.gameObject.transform.position);
+        }
+        else
+        {
+            GoBackPosition();
+        }
+    }
+    private void SetStartValueEat()
+    {
+        _eatUpCycle = _playerData.warriorEatTimer;
+        _eatUp = _playerData.warriorEatUpCycle;
+    }
     private void DetectEntity()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _distanceFindEntity, _layerMask);
@@ -61,18 +86,6 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         }
 
         if(colliders.Length==0)
-        {
-            GoBackPosition();
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if ((collision.gameObject.layer & (1 << _layerMask.value)) == 0)
-        {
-            _target = collision.gameObject.transform.position;
-            MoveToEntity(collision.gameObject.transform.position);
-        }else
         {
             GoBackPosition();
         }
@@ -112,8 +125,7 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         else return false;
     }
 
-    private Enemy FindEnemy() => FindObjectOfType<Enemy>();
-
+   
     private void GoToEntity(Vector3 enemyPosition)
     {
         _speedEntity = _stepEntity * Time.deltaTime;
@@ -143,7 +155,6 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         EatBarAmountFillAmount(_eatUpCycle - _currentTimeEat);
         if (_currentTimeEat >= _eatUpCycle)
         {
-            //BaffSatiety();
             if (Storage.Meat > 0)
             {
                 EatUp?.Invoke(_eatUp);
@@ -156,7 +167,6 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         }
     }
         
-
     private void BaffSatiety()
     {
         if(Storage.Meat > _eatUp)
@@ -216,11 +226,17 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
 
     private void EatBarAmountFillAmount(float value) => _eatBar.fillAmount = value / _eatUpCycle;
 
+
     public void GoToNewTargetPosition(Transform newPosition)
     {
-        Vector3 newPoint = new Vector3(newPosition.position.x + (_random.Next(-5, 6) + 0.1f) * 0.6f, newPosition.position.y + (_random.Next(-2, 3) + 0.1f) * 0.3f);
+        Vector3 newPoint = GetOffsetRandomPosition(newPosition.position);
         _tagetPosition = newPoint;
         Move(_tagetPosition);
+    }
+
+    private Vector3 GetOffsetRandomPosition(Vector3 position)
+    {
+        return new Vector3(position.x + (_random.Next(_xRandomMin, _xRandomMax) + _xKoef) * _xOffset, position.y + (_random.Next(_yRandomMin, _yRandomMax) +_yKoef) * _yOffset);
     }
 
     public void FindEnemyPosition(Vector3 castlePosition)

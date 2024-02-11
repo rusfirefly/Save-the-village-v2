@@ -103,6 +103,7 @@ public class PlayerBase
 
     private void OnBountenEvent(Enums.UnitType type)
     {
+        AddUnitToBase(type);
         int price = GetPrice(type);
         _storage.SpendGold(price);
     }
@@ -143,6 +144,7 @@ public class PlayerBase
                 break;
         };
     }
+
     private void OnRepairEvent(int price) => _storage.UseWood(price);
     private void OnEatUpEvent(int eatUp)
     {

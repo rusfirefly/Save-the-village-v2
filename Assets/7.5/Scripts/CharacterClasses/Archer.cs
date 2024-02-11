@@ -21,23 +21,38 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
     [SerializeField] private int _eatUp;
     [SerializeField] private float _eatUpCycle;
 
-    private float _satiety = 100;
     private float _currentTimeEat;
     private Vector3 _target;
     private bool _buffUse;
     private Collider2D colider;
     private Buff _eatBuff;
+
+
+    private const int _xRandomMin = 1;
+    private const int _xRandomMax = 2;
+    private const float _xKoef = 0.1f;
+    private const float _xOffset = 0.6f;
+
+
+
     protected override void Awake()
     {
         base.Awake();
-        _eatUpCycle = _playerData.archerEatTimer;
-        _eatUp = _playerData.archerEatUpCycle;
+        SetStartValueEat();
         PlaySoundNewEntity();
-        _healthFull = _health + _baffHealth;
         BaffSatiety();
-        EatBarAmountFillAmount(_satiety);
+        _healthFull = _health + _baffHealth;
+        EatBarAmountFillAmount(_healthFull);
         HealthBarAmountFillAmount(_health);
-        _archer = gameObject.GetComponent<SpriteRenderer>();
+        GetSpriteRenderArcher();
+    }
+
+    private void Update()
+    {
+        if (_isDie) return;
+        DetectEnemy();
+        //Attack(colider);
+        EatUpCycle();
     }
 
     protected override void OnDrawGizmos()
@@ -46,23 +61,40 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
         Gizmos.DrawLine(_attackPoint.position, _target);
     }
 
-    private void Update()
+    private void GetSpriteRenderArcher()
     {
-        if (_isDie) return;
-        DetectEnemy();
-        Attack(colider);
-        EatUpCycle();
+        _archer = gameObject.GetComponent<SpriteRenderer>();
     }
 
+    private void SetStartValueEat()
+    {
+        _eatUpCycle = _playerData.archerEatTimer;
+        _eatUp = _playerData.archerEatUpCycle;
+    }
 
     protected void DetectEnemy()
     {
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Vector2.down, _attackRange, _layerMask);
+        int index = 0;
+        foreach(RaycastHit2D hit in hits)
+        {
+           float dist = GetDistanceToEntity(hit.transform.position);
+            if (dist <= _attackRange)
+            {
+                _target = hits[index].collider.gameObject.transform.position;
+                colider = hits[index].collider;
+                Attack(colider);
+                //ArrowShoot(colider.gameObject.transform.position);
+                break;
+            }
+           index++;
+        }
+
         if (hits.Length > 0 && colider == null)
         {
-            _target = hits[0].collider.gameObject.transform.position;
-            colider = hits[0].collider;
-            ArrowShoot(colider.gameObject.transform.position);
+            //_target = hits[index].collider.gameObject.transform.position;
+            //colider = hits[index].collider;
+            //ArrowShoot(colider.gameObject.transform.position);
         }
     }
 
@@ -72,6 +104,10 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
         {
             collision.GetComponent<Castle>().ArcherOnCastle(this);  
         }
+    }
+    private float GetDistanceToEntity(Vector3 enemyPosition)
+    {
+        return Vector2.Distance(gameObject.transform.position, enemyPosition);
     }
 
     private void FlipArcher(float x)
@@ -192,9 +228,13 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
 
     public void GoToNewTargetPosition(Transform newPosition)
     {
-        //Vector3 newPoint = new Vector3(newPosition.position.x + (_random.Next(-5, 6) + 0.1f) * 0.6f, newPosition.position.y + (_random.Next(-2, 3) + 0.1f) * 0.3f);
-       // _tagetPosition = newPoint;
-        Move(newPosition.position);
+        Vector3 newPoint = GetOffsetRandomPosition(newPosition.position);
+        // _tagetPosition = newPoint;
+        Move(newPoint);
+    }
+    private Vector3 GetOffsetRandomPosition(Vector3 position)
+    {
+        return new Vector3(position.x + (_random.Next(_xRandomMin, _xRandomMax) + _xKoef) * _xOffset, position.y);
     }
 
     public void FindEnemyPosition()
@@ -209,6 +249,5 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
     public void EatBuff(Buff buff)
     {
         _eatBuff = buff;
-        Debug.Log(_eatBuff);
     }
 }

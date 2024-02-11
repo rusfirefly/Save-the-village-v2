@@ -35,8 +35,6 @@ public class Arrow : MonoBehaviour
 
     private void GetRigidbody2D() => _rigidbody2D ??= GetComponent<Rigidbody2D>();
 
-
-
     public void ShootArrow(float attack, Vector3 targetPosition)
     {
         _attack = attack;
@@ -55,6 +53,7 @@ public class Arrow : MonoBehaviour
                 _collider2d.enabled = false;
                 enemy.TakeDamage(_attack);
                 _rigidbody2D.Sleep();
+                enabled = false;
                 //_rigidbody2D.bodyType = RigidbodyType2D.Static;
             }
         }

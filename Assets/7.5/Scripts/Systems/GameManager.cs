@@ -127,7 +127,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
-        _playerBase.AddUnitToBase(type);
+        //_playerBase.AddUnitToBase(type);
     }
 
     public void DefaultStatePanel()
