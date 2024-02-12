@@ -1,10 +1,11 @@
 using UnityEngine;
 
+/// <summary>
+/// 
+/// </summary>
 [CreateAssetMenu]
 public class PlayerData : ScriptableObject
 {
-    [Header("Tutorial")]
-    public bool viewTutorial;
     [Header("Цена найма юнитов")]
     public int goldUnitTrainigPrice;
     public int meatUnitTrainigPrice;
@@ -23,8 +24,10 @@ public class PlayerData : ScriptableObject
 
     [Header("Цикл потребляемой еды юнита")]
     public float warriorEatTimer;
-    public int warriorEatUpCycle;
     public float archerEatTimer;
+    
+    [Header("Кол-во потребляеомй еды юнита за цикл")]
+    public int warriorEatUpCycle;
     public int archerEatUpCycle;
 
     [Header("Количество добываемого ресурса за цикл")]

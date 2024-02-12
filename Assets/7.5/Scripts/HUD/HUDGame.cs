@@ -13,10 +13,12 @@ public class HUDGame : MonoBehaviour
     [SerializeField] private Text _meatText;
     [SerializeField] private Text _woodText;
     [SerializeField] private PlayerData _playerData;
-    
+
     public void Initialize()
     {
         CreateListerEvents();
+        UpdateStoragePanel();
+        UpdatePopulationPanel();
     }
 
     private void OnDestroy()
