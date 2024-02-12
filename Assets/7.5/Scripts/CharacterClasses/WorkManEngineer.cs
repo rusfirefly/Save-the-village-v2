@@ -1,22 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(Animator))]
 public class WorkManEngineer : MonoBehaviour, IMovable
 {
-    private NavMeshAgent _agent;
+    
     public static int CountWork { get; private set; }
-    [SerializeField]private Animator _animator;
-    private Vector3 _targetPosition;
+    public static Action PopulationUpdate;
+    [SerializeField] private Animator _animator;
     private Vector3 _spawnPosition;
     private bool _complete;
-    
+    private NavMeshAgent _agent;
+
     private void Awake()
     {
         InitAgent();
         CountWork++;
+        PopulationUpdate?.Invoke();
     }
 
     private void Start()
@@ -40,25 +41,23 @@ public class WorkManEngineer : MonoBehaviour, IMovable
 
     public void Move(Vector3 position)
     {
-        _targetPosition = position;
-
         if (_agent)
             _agent.destination = position;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-
         if (collision.tag == "Camp" && _complete)
         {
             CountWork--;
+            PopulationUpdate?.Invoke();
             Destroy(gameObject);
         }
     }
 
     public void GoToNewTargetPosition(Transform newPosition)
     {
-        
+        Move(newPosition.position);
     }
 
     public void StartWork()

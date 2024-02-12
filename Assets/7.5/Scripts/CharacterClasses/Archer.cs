@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.UI;
 
 public class Archer : Entity, IDamageable, IAttack, IMovable
@@ -27,13 +24,10 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
     private Collider2D colider;
     private Buff _eatBuff;
 
-
     private const int _xRandomMin = 1;
     private const int _xRandomMax = 2;
     private const float _xKoef = 0.1f;
     private const float _xOffset = 0.6f;
-
-
 
     protected override void Awake()
     {
@@ -51,7 +45,6 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
     {
         if (_isDie) return;
         DetectEnemy();
-        //Attack(colider);
         EatUpCycle();
     }
 
@@ -84,17 +77,9 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
                 _target = hits[index].collider.gameObject.transform.position;
                 colider = hits[index].collider;
                 Attack(colider);
-                //ArrowShoot(colider.gameObject.transform.position);
                 break;
             }
            index++;
-        }
-
-        if (hits.Length > 0 && colider == null)
-        {
-            //_target = hits[index].collider.gameObject.transform.position;
-            //colider = hits[index].collider;
-            //ArrowShoot(colider.gameObject.transform.position);
         }
     }
 
@@ -105,6 +90,7 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
             collision.GetComponent<Castle>().ArcherOnCastle(this);  
         }
     }
+
     private float GetDistanceToEntity(Vector3 enemyPosition)
     {
         return Vector2.Distance(gameObject.transform.position, enemyPosition);
@@ -207,7 +193,6 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
         }
     }
 
-
     public void Move(Vector3 position)
     {
         if (_isRun && position != null)
@@ -229,7 +214,6 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
     public void GoToNewTargetPosition(Transform newPosition)
     {
         Vector3 newPoint = GetOffsetRandomPosition(newPosition.position);
-        // _tagetPosition = newPoint;
         Move(newPoint);
     }
     private Vector3 GetOffsetRandomPosition(Vector3 position)

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Random = System.Random;
 
@@ -8,11 +6,11 @@ public class SoundSpawn : Sound
     [SerializeField] private AudioClip[] _clip;
     private Random _random;
 
-    protected override void Start()
+    private void Awake()
     {
         _random = new Random();
     }
-
+    
     public void PlaySound()
     {
         int index = _random.Next(_clip.Length);

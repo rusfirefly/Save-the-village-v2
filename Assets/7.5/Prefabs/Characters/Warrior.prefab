@@ -633,11 +633,10 @@ MonoBehaviour:
   _agent: {fileID: 0}
   _attackPoint: {fileID: 372542132}
   _attackRange: 0.5
-  _healthImage: {fileID: 0}
   _layerMask:
     serializedVersion: 2
     m_Bits: 320
-  _attackSpeed: 0.8
+  _attackSpeed: 0.75
   _drawGizmo: 1
   _hpBar: {fileID: 8866699653209410340}
   _typeEntity: 0

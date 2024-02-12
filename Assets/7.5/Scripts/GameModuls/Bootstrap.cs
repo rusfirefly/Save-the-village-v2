@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Bootstrap : MonoBehaviour
@@ -17,6 +15,4 @@ public class Bootstrap : MonoBehaviour
         _hudSystem.Initialize();
         _gameMenuSystem.Initialize(_tutorial);
     }
-
-
 }

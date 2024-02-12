@@ -1,13 +1,9 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Animator))]
-
-public class House : MonoBehaviour,ISelecteble
+public class House : MonoBehaviour, ISelecteble
 {
     public static event Action BuildComplete;
     public static event Action<Vector3> NeedEngineer;
@@ -29,12 +25,11 @@ public class House : MonoBehaviour,ISelecteble
     [SerializeField] private int _priceBuilding;
     [SerializeField] private Text _progressBuildingText;
     private WorkManEngineer unit;
-    
 
     private void Start()
     {
-        _sound = gameObject.GetComponent<SoundClip>();
-        _priceText.text = $"{_priceBuilding}";
+        GetSoundComponent();
+        SetPriceText($"{_priceBuilding}");
     }
 
     private void Update()
@@ -44,37 +39,52 @@ public class House : MonoBehaviour,ISelecteble
 
     private void OnValidate()
     {
-        _animator ??= gameObject.GetComponent<Animator>();
-        _priceText.text = $"{_priceBuilding}";
+        GetAnimatorComponent();
+        SetPriceText($"{_priceBuilding}");
     }
+
+    private void GetSoundComponent()=> _sound = gameObject.GetComponent<SoundClip>();
+
     private void BuldingHouse()
     {
         if (_isComplete) return;
         if (!_isBulding) return;
+
         _currentTime += Time.deltaTime;
-        _progressBuildingText.text = $"{(_timeBulding - _currentTime):F0}s";
+        SetProgressBuldingText($"{(_timeBulding - _currentTime):F0}s");
         if (_currentTime>=_timeBulding)
         {
-            _canvasPrice.gameObject.SetActive(false);
-            _canvasProgress.gameObject.SetActive(false);
-            _animator.SetBool("CompleteBuild", true);
-            _sound.PlaySound(_buildingComplete);
-            unit.StopWork();
             BuildComplete?.Invoke();
-            _currentTime -= _timeBulding;
+
+            CanvasPriceTextVisible(false);
+            CanvasProgressVisible(false);
+            PlayAnimationComplete();
+            PlaySoundBuildingComplite();
+            unit.StopWork();
+
             _isComplete = true;
             _isBulding = false;
+
+            _currentTime -= _timeBulding;
         }
     }
 
+    private void CanvasPriceTextVisible(bool visible) => _canvasPrice.gameObject.SetActive(visible);
+
+    private void CanvasProgressVisible(bool visible)=> _canvasProgress.gameObject.SetActive(visible);
+
+    private void PlayAnimationComplete()=> _animator.SetBool("CompleteBuild", true);
+
+    private void PlaySoundBuildingComplite() => _sound.PlaySound(_buildingComplete);
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "worker"&& !_isBulding && _isSelected)
+        if (collision.gameObject.tag == "worker" && !_isBulding && _isSelected)
         {
             _isBulding = true;
             _canvasPrice.gameObject.SetActive(false);
             _canvasProgress.gameObject.SetActive(true);
-            _progressBuildingText.gameObject.SetActive(true);
+            ProgressBuildingTextVisible(true);
             unit = collision.gameObject.GetComponent<WorkManEngineer>();
             unit.StartWork();
         }
@@ -91,7 +101,6 @@ public class House : MonoBehaviour,ISelecteble
 
         if (!_isBulding)
         {
-            //_isBulding = true;
             _isSelected = true;
             NeedEngineer?.Invoke(gameObject.transform.position);
         }
@@ -122,4 +131,11 @@ public class House : MonoBehaviour,ISelecteble
         _isComplete = false;
     }
 
+    private void SetProgressBuldingText(string text)=> _progressBuildingText.text = text;
+
+    private void ProgressBuildingTextVisible(bool visible) => _progressBuildingText.gameObject.SetActive(visible);
+
+    private void SetPriceText(string text) => _priceText.text = text;
+
+    private void GetAnimatorComponent()=> _animator ??= gameObject.GetComponent<Animator>();
 }

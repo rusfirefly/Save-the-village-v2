@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
@@ -11,10 +9,6 @@ public class Sound : MonoBehaviour
     private void OnValidate()
     {
         GetAudioSouceComponent();
-    }
-
-    protected virtual void Start()
-    {
     }
 
     private void GetAudioSouceComponent() => _audioSource ??= GetComponent<AudioSource>();

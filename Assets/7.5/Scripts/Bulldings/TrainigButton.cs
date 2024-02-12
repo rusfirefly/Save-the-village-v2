@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -31,7 +29,6 @@ public class TrainigButton : MonoBehaviour
 
     private const byte _activeButton = 0;
     private const byte _deActiveButton = 1;
-
 
     private void Start()
     {
@@ -89,7 +86,6 @@ public class TrainigButton : MonoBehaviour
                 trainigPrice = _playerData.archerTrainigPrice;
                 break;
         }
-
     }
 
     private void SetTextPrice(Text trainigPriceText) => trainigPriceText.text = _trainigPrice.ToString();

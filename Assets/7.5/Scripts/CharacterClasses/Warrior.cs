@@ -34,7 +34,6 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
     private const float _yKoef = 0.1f;
     private const float _yOffset = 0.3f;
 
-
     protected override void Awake()
     {
         base.Awake();
@@ -72,11 +71,13 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
             GoBackPosition();
         }
     }
+
     private void SetStartValueEat()
     {
         _eatUpCycle = _playerData.warriorEatTimer;
         _eatUp = _playerData.warriorEatUpCycle;
     }
+
     private void DetectEntity()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _distanceFindEntity, _layerMask);
@@ -124,7 +125,6 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         if (currentDistance <= distance) return true;
         else return false;
     }
-
    
     private void GoToEntity(Vector3 enemyPosition)
     {
@@ -226,15 +226,14 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
 
     private void EatBarAmountFillAmount(float value) => _eatBar.fillAmount = value / _eatUpCycle;
 
-
     public void GoToNewTargetPosition(Transform newPosition)
     {
-        Vector3 newPoint = GetOffsetRandomPosition(newPosition.position);
+        Vector3 newPoint = SetRandomPosition(newPosition.position);
         _tagetPosition = newPoint;
         Move(_tagetPosition);
     }
 
-    private Vector3 GetOffsetRandomPosition(Vector3 position)
+    private Vector3 SetRandomPosition(Vector3 position)
     {
         return new Vector3(position.x + (_random.Next(_xRandomMin, _xRandomMax) + _xKoef) * _xOffset, position.y + (_random.Next(_yRandomMin, _yRandomMax) +_yKoef) * _yOffset);
     }

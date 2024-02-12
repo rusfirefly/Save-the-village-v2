@@ -1,10 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.UI;
-using TypeEnym = Enums.TypeEnym;
+using TypeEnym = Enums.TypeEnemy;
 
 public class Enemy : Entity, IDamageable, IMovable, IAttack
 {
@@ -61,6 +57,7 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
             GoToEntity(enemy);
         }
     }
+
     private float GetDistanceToEntity(Vector3 enemyPosition)
     {
         return Vector2.Distance(gameObject.transform.position, enemyPosition);
@@ -76,25 +73,6 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
     {
         if (currentDistance <= distance) return true;
         else return false;
-    }
-
-    private Entity FindEntity()
-    {
-        Entity entity = GameObject.FindObjectOfType<Entity>();
-        if (entity.GetEntityType() == Enums.TypeEntity.Player)
-            return entity;
-        else return null;
-    }
-
-    private void RunToEntity(Entity entity)
-    {
-        _speedEntity = _stepEntity * Time.deltaTime;
-        gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, entity.gameObject.transform.position, _speedEntity);
-    }
-
-    private float GetDistanceToEntity(Entity entity)
-    {
-        return Vector2.Distance(gameObject.transform.position, entity.gameObject.transform.position);
     }
 
     private void DetectHitEntity()
@@ -132,7 +110,6 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
     
     private void TakeDamage(Collider2D unit)
     {
-       
         if (unit.gameObject.tag == "Castle")
         {
             unit.GetComponent<Castle>().TakeDamage(_attack);
@@ -147,7 +124,6 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
             Archer archer = unit.GetComponent<Archer>();
             if (archer)
                 archer.TakeDamage(_attack);
-
         }
     }
 
@@ -198,7 +174,6 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
         else
             return (_defence  - damage) / _health;
     }
-
     
     public void Move(Vector3 position)
     {

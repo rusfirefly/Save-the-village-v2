@@ -10,12 +10,6 @@ public class SoundEntity : Sound
     private Random _random;
     protected int _indexSound;
 
-    protected override void Start()
-    {
-        base.Start();
-
-    }
-
     public void PlaySoundHit()
     {
         _audioSource.clip = _hitSound;

@@ -1,22 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public struct Buff
 {
     public float Attack { get; set; }
-    public float Defence { get; set; }
-    public float Health { get; set; }
 
+    public float Defence { get; set; }
+
+    public float Health { get; set; }
 }
 
 public class BuffSkill : MonoBehaviour
 {
-    [SerializeField] public Canvas _canvasSkill;
+    [SerializeField] private Canvas _canvasSkill;
     [SerializeField] private Image _buffImage;
     [SerializeField] private Text _textBuff;
     private Buff _eatBuff;
+    private int _percent=100; 
 
     private void Awake()
     {
@@ -31,7 +31,7 @@ public class BuffSkill : MonoBehaviour
 
     private void UpdateTextSkill()
     {
-        _textBuff.text = $"БАФФ насыщения\n+{_eatBuff.Health * 100}% hp\n+{_eatBuff.Attack * 100}% atk +{_eatBuff.Defence * 100}% def";
+        _textBuff.text = $"БАФФ насыщения\n+{_eatBuff.Health * _percent}% hp\n+{_eatBuff.Attack * _percent}% atk +{_eatBuff.Defence * _percent}% def";
     }
 
     private void OnValidate()

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SoundCastle : Sound
@@ -10,7 +8,6 @@ public class SoundCastle : Sound
     [SerializeField] private AudioClip _clipWarning;
     [SerializeField] private AudioClip _clipNeedWood;
     
-
     public void PlaySoundCastleInFire()
     {
         SetAudioClip(_clipCastleFire);

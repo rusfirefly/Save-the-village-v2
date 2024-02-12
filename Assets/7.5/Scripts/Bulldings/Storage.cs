@@ -25,11 +25,7 @@ public class Storage
 
     public void AddGold(int newGoldCount1) => Gold += newGoldCount1;
 
-    public void AddMeat(int newMeatCount)
-    {
-        Meat += newMeatCount;
-
-    }
+    public void AddMeat(int newMeatCount) => Meat += newMeatCount;
 
     public void AddWood(int newWoodCount) => Wood += newWoodCount;
 

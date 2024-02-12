@@ -14,8 +14,6 @@ public class GameMenu: MonoBehaviour
     [SerializeField] private Text _titleGameOver;
     [SerializeField] private Tutorial _tutorial;
 
-    [SerializeField] private PlayerData _playerData;
-
     public static bool isPaused;
     private bool _isMainMenu;
     private bool _isSoundOff;
@@ -55,7 +53,6 @@ public class GameMenu: MonoBehaviour
                 VisibleCanvas(_hudGame, true);
                 _isMainMenu = false;
                 isPaused = false;
-                
             }
         }
     }
@@ -74,11 +71,6 @@ public class GameMenu: MonoBehaviour
         ChangeGameTimeState();
         VisibleCanvas(_HUDMenu, true);
         VisibleCanvas(_gameOverCanvas, isShow: isPaused);
-    }
-
-    public void ShowMainMenu()
-    {
-
     }
 
     public void ShowTutorial()

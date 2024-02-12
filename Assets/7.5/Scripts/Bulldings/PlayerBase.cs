@@ -1,9 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
-
 public class PlayerBase
 {
+    public static event Action StorageUpdate;
+    public static event Action PopulationUpdate;
+
     private Storage _storage;
     private Population _population;
     private PlayerData _playerData;
@@ -23,7 +24,7 @@ public class PlayerBase
         _population.ReloadValue();
         _storage.Reload();
     }
-    
+
     private void CreateListenerEvents()
     {
         Castle.Repair += OnRepairEvent;
@@ -68,9 +69,17 @@ public class PlayerBase
                 _storage.AddWood(mining);
                 break;
         }
+
+        StorageUpdate?.Invoke();
+
     }
 
-    private void BuildCompleteEvent()=>_population.UpPopulation();
+    private void BuildCompleteEvent()
+    {
+        _population.UpPopulation();
+        PopulationUpdate?.Invoke();
+    }
+    
 
     private void OnWorkingEvent(Collider2D collider)
     {
@@ -90,6 +99,8 @@ public class PlayerBase
                 StartMining(collider, _playerData.woodMiningPerCycle * Population.CountWoodWorker);
                 break;
         }
+
+        PopulationUpdate?.Invoke();
     }
 
     private void StartMining(Collider2D collider, int countResourcePerCycle)
@@ -99,6 +110,7 @@ public class PlayerBase
         mining.InMine = true;
         mining.MinerResourcesPerCycleToText(countResourcePerCycle);
         mining.MineCanvas(true);
+        StorageUpdate?.Invoke();
     }
 
     private void OnBountenEvent(Enums.UnitType type)
@@ -143,11 +155,15 @@ public class PlayerBase
                 _population.AddOneArcher();
                 break;
         };
+
+        PopulationUpdate?.Invoke();
     }
 
     private void OnRepairEvent(int price) => _storage.UseWood(price);
+
     private void OnEatUpEvent(int eatUp)
     {
         _storage.UseMeat(eatUp);
+        StorageUpdate?.Invoke();
     }
 }

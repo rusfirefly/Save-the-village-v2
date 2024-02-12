@@ -1,9 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
 {
@@ -111,7 +107,4 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
     {
         _warriorPanelPosition.localPosition = new Vector3(450, _warriorPanel.transform.localPosition.y);
     }
-
-
-
 }

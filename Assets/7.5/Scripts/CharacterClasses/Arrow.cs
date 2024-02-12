@@ -1,19 +1,16 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Random = System.Random;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Arrow : MonoBehaviour
 {
-    public float speedArrow;
-    private Vector2 _targetPosition;
+    [SerializeField] private float _speedArrow;
     [SerializeField] private Rigidbody2D _rigidbody2D;
     [SerializeField] private LayerMask _layerMask;
     private BoxCollider2D _collider2d;
     private float _attack;
     private Random _random;
-
 
     private void Start()
     {
@@ -40,7 +37,7 @@ public class Arrow : MonoBehaviour
         _attack = attack;
         Vector3 shotDirection = targetPosition - transform.position;
         transform.right = shotDirection;
-        _rigidbody2D.AddForce(shotDirection * speedArrow, ForceMode2D.Impulse);
+        _rigidbody2D.AddForce(shotDirection * _speedArrow, ForceMode2D.Impulse);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -54,11 +51,8 @@ public class Arrow : MonoBehaviour
                 enemy.TakeDamage(_attack);
                 _rigidbody2D.Sleep();
                 enabled = false;
-                //_rigidbody2D.bodyType = RigidbodyType2D.Static;
             }
         }
-
-
     }
 
     IEnumerator DestroyArrow()
@@ -66,5 +60,4 @@ public class Arrow : MonoBehaviour
         yield return new WaitForSeconds(_random.Next(1, 5)*0.4f);
         Destroy(gameObject);
     }
-
 }

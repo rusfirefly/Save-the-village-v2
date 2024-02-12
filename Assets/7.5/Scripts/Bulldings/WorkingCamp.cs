@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -30,6 +27,11 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
         GetWorkerPosition();
         _sound = gameObject.GetComponent<SoundClip>();
         House.NeedEngineer += OnNeedEngineerEvent;
+    }
+
+    private void OnDestroy()
+    {
+        House.NeedEngineer -= OnNeedEngineerEvent;
     }
 
     private void GetWorkerPosition()
@@ -63,8 +65,8 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
     }
 
     private void TargetForWork(Transform position)=> _working.SetNewPosition(position);
+
     public void NewSpawnPosition(Transform newSpawnPosition)=>_spawnPosition = newSpawnPosition;
-    public bool IsSelected()=> _isSelected;
 
     public void DeSelected()
     {
@@ -121,6 +123,4 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
     {
         _workerPanelPosition.localPosition = new Vector3(450, _workerPanel.transform.localPosition.y);
     }
-
-
 }

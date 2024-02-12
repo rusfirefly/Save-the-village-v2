@@ -1,13 +1,15 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class WorkMan : Unit
 {
     public static Action<Collider2D> Working;
 
-    
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        StartedWork(collision);
+    }
+
     public override void StartedWork(Collider2D collider)
     {
         string tag = collider.gameObject.tag;
@@ -40,19 +42,8 @@ public class WorkMan : Unit
             Destroy(gameObject);
     }
 
-    public void SetNewPosition(Transform position)
-    {
-        MoveTo(position);
-    }
+    public void SetNewPosition(Transform position) => MoveTo(position);
 
-    public void GoCastle(Transform castlePosition)
-    {
-        MoveTo(castlePosition);
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        StartedWork(collision);
-    }
+    public void GoCastle(Transform castlePosition) => MoveTo(castlePosition);
 
 }

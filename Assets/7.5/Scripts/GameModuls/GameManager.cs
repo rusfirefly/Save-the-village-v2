@@ -1,10 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -20,8 +14,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform _goldMinePosition;
     [SerializeField] private Transform _meatPosition;
     [SerializeField] private Transform _woodPosition;
-    [SerializeField] private Transform _warriorPosition;
-    [SerializeField] private Transform _archerPosition;
 
     private int _enemiesDestroyed;
 
@@ -61,6 +53,7 @@ public class GameManager : MonoBehaviour
         Castle.Attacked -= OnCastleAttakedEvent;
         Castle.Destroyed -= OnCastleDestroyedEvent;
         Enemy.Deathing -= OnEnemiesDestroyedEvent;
+        _playerBase.RemoveListenerEvents();
     }
 
     private void OnEnemiesDestroyedEvent()
@@ -126,8 +119,6 @@ public class GameManager : MonoBehaviour
                 _workingCamps.Training(type);
                 break;
         }
-
-        //_playerBase.AddUnitToBase(type);
     }
 
     public void DefaultStatePanel()

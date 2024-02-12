@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class Mining : MonoBehaviour
 {
     public static event Action<string> Work;
@@ -58,7 +57,7 @@ public class Mining : MonoBehaviour
             {
                 FinishMining(gameObject.tag);
                 _isAnimation = true;
-                _mineTimer = 0;
+                _mineTimer -= _mineTimerCycle;
             }
             ProgressFillAmount(_mineTimer);
             SetColdownText(_mineTimerCycle - _mineTimer);
@@ -74,6 +73,7 @@ public class Mining : MonoBehaviour
     }
 
     private void SetColdownText(float time) => _coldownTimeText.text = $"{time:F0}";
+
     private void ProgressFillAmount(float currentTime) => _progress.fillAmount = currentTime / _mineTimerCycle;
 
     private void AnimationMineText()
@@ -95,11 +95,12 @@ public class Mining : MonoBehaviour
             _mineCountText.gameObject.SetActive(false);
             _mineCountText.rectTransform.position = _defaulPosition;
             _positionText = _mineCountText.rectTransform.position.y;
-            _startTimeAnimation = 0;
+            _startTimeAnimation -= _timeAnimation;
         }
     }
 
     public void MineCanvas(bool show) => _inMineCanvas.gameObject.SetActive(show);
+
     public void MinerResourcesPerCycleToText(int count) => _mineCountText.text = $"+{count}";
 
     protected virtual void PlaySoundMinig()=>_soundClip.PlaySound(_audioMiningFinish);

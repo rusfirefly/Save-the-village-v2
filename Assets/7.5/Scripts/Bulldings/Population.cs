@@ -37,11 +37,13 @@ public class Population
         WarriorsCount++;
         WarriorHired++;
     }
+
     public void AddOneArcher()
     {
         ArcherCount++;
         ArcherHired++;
     }
+
     public void DeathWarrior()
     {
         WarriorsCount--;

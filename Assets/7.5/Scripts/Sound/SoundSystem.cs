@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
@@ -8,9 +6,6 @@ public class SoundSystem : MonoBehaviour
     public static SoundSystem soundInstance { get; private set; }
     private AudioSource[] _allAudio;
     
-    //[SerializeField] [Range(0, 1)] private float _effectVolume = 0.5f;
-    //[SerializeField] [Range(0, 1)] private float _musicVolume = 0.9f;
-
     public void Initialize()
     {
         soundInstance ??= FindAnyObjectByType<SoundSystem>();
@@ -34,7 +29,6 @@ public class SoundSystem : MonoBehaviour
 
     private AudioSource[] FindAllAudioSource()
     {
-        return GameObject.FindObjectsOfType<AudioSource>();
+        return  FindObjectsOfType<AudioSource>();
     }
-
 }

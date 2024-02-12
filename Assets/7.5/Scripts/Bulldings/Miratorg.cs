@@ -20,12 +20,6 @@ public class Miratorg : Mining
         TimeRandomNext();
     }
 
-
-    protected override void PlaySoundMinig()
-    {
-        
-    }
-
     protected override void Update()
     {
         base.Update();

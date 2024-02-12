@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -13,7 +11,6 @@ public struct Leson
 }
 
 [RequireComponent(typeof(VideoPlayer))]
-
 public class Tutorial : MonoBehaviour
 {
     [SerializeField] private Canvas _hudBlur;
@@ -21,9 +18,7 @@ public class Tutorial : MonoBehaviour
     [SerializeField] private Button _nextPageButton;
     [SerializeField] private Button _exitButton;
     [SerializeField] private Text _textLesson;
-
     [SerializeField] private Text _pages;
-
     [SerializeField] private VideoPlayer _videoPlayer;
     [SerializeField] private Leson[] _lesons;
     private int _currentPage;
@@ -34,67 +29,80 @@ public class Tutorial : MonoBehaviour
         _prevPageButton.gameObject.SetActive(false);
         _currentPage = 0;
         _hudBlur.gameObject.SetActive(true);
-        PageText(_currentPage);
-        SelectPage(_currentPage);
+        int index = GetIndexLesson(_currentPage);
+        SetVisibleButtons(index);
+        SetPageText(index);
+        LoadLeson(index);
     }
 
     public void Next()
     {
-        _currentPage++;
-        SelectPage(_currentPage);
+        int index = GetIndexLesson(++_currentPage);
+        Debug.Log(index);
+        SetVisibleButtons(index);
+        SetPageText(index);
+        LoadLeson(index);
     }
+
     public void Previous()
     {
-        _currentPage--;
-        SelectPage(_currentPage);
+        int index = GetIndexLesson(--_currentPage);
+        Debug.Log(index);
+        SetVisibleButtons(index);
+        SetPageText(index);
+        LoadLeson(index);
     }
-    private void SelectPage(int currentPage)
+
+    private int GetIndexLesson(int currentPage)
     {
-        int page = Math.Clamp(currentPage, 0, _lesons.Length - 1);
-        PageText(page);
-
-        if(page > 0 && page < _lesons.Length)
-        {
-            PageActive(_prevPageButton, true);
-            PageActive(_nextPageButton, true);
-        }
-
-        if (page == 0)
-        {
-            PageActive(_prevPageButton, false);
-            PageActive(_nextPageButton, true);
-        }
-        if (page == _lesons.Length - 1)
-        {
-            PageActive(_prevPageButton, true);
-            PageActive(_nextPageButton, false);
-        }
-
-        LoadLeson(page);
-        _currentPage = page;
+        int index = Math.Clamp(currentPage, 0, _lesons.Length - 1);
+        return index;
     }
     
+    private void SetVisibleButtons(int index)
+    {
+        if (index > 0 && index < _lesons.Length)
+        {
+            ButtonPageActive(_prevPageButton, true);
+            ButtonPageActive(_nextPageButton, true);
+        }
+
+        if (index == 0)
+        {
+            ButtonPageActive(_prevPageButton, false);
+            ButtonPageActive(_nextPageButton, true);
+        }
+
+        if (index == _lesons.Length - 1)
+        {
+            ButtonPageActive(_prevPageButton, true);
+            ButtonPageActive(_nextPageButton, false);
+        }
+    }
+
     public void ExitTutorial()
     {
         _hudBlur.gameObject.SetActive(false);
         gameObject.SetActive(false);
     }
 
-    private void PageText(int page) => _pages.text = $"{page+1}/{_lesons.Length}";
+    private void GetVideoPlayer() => _videoPlayer ??= gameObject.GetComponent<VideoPlayer>();
+
+    private void SetPageText(int page) => _pages.text = $"{page+1}/{_lesons.Length}";
+
     private void LoadLeson(int index)
     {
         _textLesson.text = _lesons[index].text;
         PlayVideoClip(_lesons[index].videoClip);
     }
 
-    private void PageActive(Button button, bool active)=> button.gameObject.SetActive(active);
+    private void ButtonPageActive(Button button, bool active)=> button.gameObject.SetActive(active);
 
     private void OnValidate()
     {
         GetVideoPlayer();
     }
 
-    private void GetVideoPlayer() => _videoPlayer ??= gameObject.GetComponent<VideoPlayer>();
     private void PlayVideoClip(VideoClip videoClip)
     {
         _videoPlayer.clip = videoClip;

@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -38,9 +36,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     private float _percentHealth;
     private Animator _animator;
     private BuffSkill _buffSkill;
-    private bool _useBuff;
     private int _newWarrior;
-
 
     public void Start()
     {
@@ -153,7 +149,6 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 
     private void PlayeSoundCastleInFire()=> _soundCastle.PlaySoundCastleInFire();
 
-
     private void CastleBuff()
     {
         if (Storage.Meat > 0)
@@ -162,26 +157,22 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
             Archer[] archers = FindObjectsOfType<Archer>();
             if ((_newWarrior > (warriors.Length + archers.Length)) || (_newWarrior < (warriors.Length + archers.Length)))
             {
-                _useBuff = false;
-                if (!_useBuff)
-                {
-                    _useBuff = true;
-                    _buffSkill.BuffVisible(true);
-                    _newWarrior = warriors.Length;
-                    AllWarriorUseBuff(warriors);
-                    _newWarrior += archers.Length;
-                    foreach (Archer archer in archers)
-                        archer.EatBuff(_buffSkill.GetBuff());
-                }
+                BuffShowInHud();
+                _newWarrior = warriors.Length;
+                AllWarriorUseBuff(warriors);
+                _newWarrior += archers.Length;
+                foreach (Archer archer in archers)
+                   archer.EatBuff(_buffSkill.GetBuff());
             }
         }else
         {
             _newWarrior = 0;
-            _useBuff = false;
             _buffSkill.BuffVisible(false);
         }
-
     }
+
+    private void BuffShowInHud() => _buffSkill.BuffVisible(true);
+
     private void AllWarriorUseBuff(Warrior[] warriors)
     {
         foreach (Warrior warrior in warriors)

@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -15,7 +12,6 @@ public class Entity : MonoBehaviour
     [SerializeField] protected NavMeshAgent _agent;
     [SerializeField] protected Transform _attackPoint;
     [SerializeField] protected float _attackRange = 0.5f;
-    [SerializeField] private Image _healthImage;
     [SerializeField] protected LayerMask _layerMask;
     [SerializeField] protected float _attackSpeed = 0.5f;
     [SerializeField] private bool _drawGizmo;
@@ -120,7 +116,6 @@ public class Entity : MonoBehaviour
             _isRun = true;
         }
     }
-
 
     private void GetAniamtion() => _animator ??= gameObject.GetComponent<Animator>();
 
