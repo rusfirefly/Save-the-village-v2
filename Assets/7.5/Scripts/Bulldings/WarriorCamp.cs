@@ -22,7 +22,7 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
     private SoundClip _sound;
     [SerializeField] private AudioClip _audioSelectBuild;
 
-    [SerializeField] private GameObject _pointPref;
+    [SerializeField] private GameObject _warriorPointPref;
     [SerializeField] private GameObject _archerPointPref;
 
     void Start()
@@ -52,14 +52,16 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
 
     private void CreateNewKnight()
     {
-        _warrior = Instantiate(_prefKnight, _spawnPosition.transform.position, Quaternion.identity).GetComponent<Warrior>(); 
-        _warrior.GoToNewTargetPosition(_pointPref.transform);
+        _warrior = Instantiate(_prefKnight, _spawnPosition.transform.position, Quaternion.identity).GetComponent<Warrior>();
+        _warrior.GoToNewTargetPosition(_warriorPointPref.transform);
     }
+
     private void CreateNewArch()
     {
         _archer = Instantiate(_prefArch, _spawnPosition.transform.position, Quaternion.identity).GetComponent<Archer>(); 
         _archer.GoToNewTargetPosition(_archerPointPref.transform);
     }
+
 
     public bool IsSelected()
     {

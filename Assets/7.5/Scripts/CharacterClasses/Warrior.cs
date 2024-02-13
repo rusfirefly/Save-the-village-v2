@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.UI;
+using Random = System.Random;
 
 public class Warrior : Entity, IDamageable, IMovable, IAttack
 {
@@ -34,6 +34,8 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
     private const float _yKoef = 0.1f;
     private const float _yOffset = 0.3f;
 
+    private Random _randomPosition;
+
     protected override void Awake()
     {
         base.Awake();
@@ -42,6 +44,7 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         _healthFull = _health;
         EatBarAmountFillAmount(_eatUpCycle);
         HealthBarAmountFillAmount(_health);
+        _randomPosition = new Random();
     }
     
     protected override void OnDrawGizmos()
@@ -235,7 +238,7 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
 
     private Vector3 SetRandomPosition(Vector3 position)
     {
-        return new Vector3(position.x + (_random.Next(_xRandomMin, _xRandomMax) + _xKoef) * _xOffset, position.y + (_random.Next(_yRandomMin, _yRandomMax) +_yKoef) * _yOffset);
+        return new Vector3(position.x + (_randomPosition.Next(_xRandomMin, _xRandomMax) + _xKoef) * _xOffset, position.y + (_randomPosition.Next(_yRandomMin, _yRandomMax) +_yKoef) * _yOffset);
     }
 
     public void FindEnemyPosition(Vector3 castlePosition)

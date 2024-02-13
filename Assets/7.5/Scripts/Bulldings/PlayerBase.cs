@@ -36,6 +36,7 @@ public class PlayerBase
         Archer.Deathing += OnDeathArcherEvent;
         House.BuildComplete += BuildCompleteEvent;
         WorkMan.Working += OnWorkingEvent;
+        House.HouseBought += OnHouseBought;
     }
 
     public void RemoveListenerEvents()
@@ -49,6 +50,7 @@ public class PlayerBase
         Archer.Deathing -= OnDeathArcherEvent;
         House.BuildComplete -= BuildCompleteEvent;
         WorkMan.Working -= OnWorkingEvent;
+        House.HouseBought -= OnHouseBought;
     }
 
     private void OnFinishMiningEvent(string tag)
@@ -79,7 +81,6 @@ public class PlayerBase
         _population.UpPopulation();
         PopulationUpdate?.Invoke();
     }
-    
 
     private void OnWorkingEvent(Collider2D collider)
     {
@@ -118,10 +119,20 @@ public class PlayerBase
         AddUnitToBase(type);
         int price = GetPrice(type);
         _storage.SpendGold(price);
+        StorageUpdate?.Invoke();
     }
 
     private void OnDeathWarriorEvent() => _population.DeathWarrior();
+
     private void OnDeathArcherEvent() => _population.DeathArcher();
+
+    private void OnHouseBought(int price)
+    {
+        _storage.UseWood(price);
+        StorageUpdate?.Invoke();
+    }
+    
+
     private int GetPrice(Enums.UnitType type)
     {
         return type switch

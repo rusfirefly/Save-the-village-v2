@@ -5,4 +5,6 @@ public class Enums
     public enum TypeEnemy { Knight, TNT, Torch};
 
     public enum TypeEntity { Player, Enemy}
+
+    public enum GameOverType {Lose, Victory}
 }

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = System.Random;
 
 public class Archer : Entity, IDamageable, IAttack, IMovable
 {
@@ -23,11 +24,13 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
     private bool _buffUse;
     private Collider2D colider;
     private Buff _eatBuff;
+    private bool _archerInCastle;
 
-    private const int _xRandomMin = 1;
-    private const int _xRandomMax = 2;
-    private const float _xKoef = 0.1f;
-    private const float _xOffset = 0.6f;
+    private const int _xRandomMin = -1;
+    private const int _xRandomMax = 1;
+    private const float _xKoef = 0.2f;
+    private const float _xOffset = 0.5f;
+    private Random _randomPosition;
 
     protected override void Awake()
     {
@@ -39,6 +42,7 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
         EatBarAmountFillAmount(_healthFull);
         HealthBarAmountFillAmount(_health);
         GetSpriteRenderArcher();
+        _randomPosition = new Random();
     }
 
     private void Update()
@@ -85,6 +89,7 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (_archerInCastle) return;
         if(collision.gameObject.tag == "Castle")
         {
             collision.GetComponent<Castle>().ArcherOnCastle(this);  
@@ -151,7 +156,7 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
         }
     }
 
-
+    //---- â êëàññ ñ áàôôàìè
     private void BaffSatiety()
     {
         if (Storage.Meat > _eatUp)
@@ -201,6 +206,7 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
         }
     }
 
+    // â entity
     private float DamageÑalculation(float damage)
     {
         if (damage > (_defence + _baffDefence))
@@ -214,11 +220,13 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
     public void GoToNewTargetPosition(Transform newPosition)
     {
         Vector3 newPoint = GetOffsetRandomPosition(newPosition.position);
-        Move(newPoint);
+        _tagetPosition = newPoint;
+        Move(_tagetPosition);
     }
+
     private Vector3 GetOffsetRandomPosition(Vector3 position)
     {
-        return new Vector3(position.x + (_random.Next(_xRandomMin, _xRandomMax) + _xKoef) * _xOffset, position.y);
+        return new Vector3(position.x + (_randomPosition.Next(_xRandomMin, _xRandomMax) + _xKoef) * _xOffset, position.y);
     }
 
     public void FindEnemyPosition()

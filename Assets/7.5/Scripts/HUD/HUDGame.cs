@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class HUDGame : MonoBehaviour
 {
+
     [SerializeField] private Text _workerText;
     [SerializeField] private Text _wariorText;
     [SerializeField] private Text _archerText;
@@ -32,6 +33,7 @@ public class HUDGame : MonoBehaviour
         PlayerBase.PopulationUpdate += OnPopulationUpdate;
         WorkManEngineer.PopulationUpdate += OnPopulationUpdate;
     }
+
     private void DestroyListerEvents()
     {
         PlayerBase.StorageUpdate -= OnStorageUpdate;
@@ -47,6 +49,7 @@ public class HUDGame : MonoBehaviour
     private void OnPopulationUpdate()
     {
         UpdatePopulationPanel();
+
     }
 
     private void UpdateStoragePanel()

@@ -1,8 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// 
-/// </summary>
 [CreateAssetMenu]
 public class PlayerData : ScriptableObject
 {
@@ -46,19 +43,15 @@ public class PlayerData : ScriptableObject
     public int countEnemyNextWave;
 
     [Header("Условия победы")]
-    public int countGolds;
-    public int countMeats;
-    public int countWoods;
-    public int countWarriors;
-    public int countWorkers;
-
-    public int survivedTheWaves;
+    public int numberOfWarriorsHired;
 
     public void SetDefaultValue()
     {
         numberWave = 0;
         countEnemyNextWave = 1;
     }
+
+
 
 }
 

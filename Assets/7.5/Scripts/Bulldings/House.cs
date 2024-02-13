@@ -5,6 +5,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Animator))]
 public class House : MonoBehaviour, ISelecteble
 {
+    public static event Action<int> HouseBought;
     public static event Action BuildComplete;
     public static event Action<Vector3> NeedEngineer;
     [SerializeField] private Material _outlineMaterial;
@@ -102,6 +103,7 @@ public class House : MonoBehaviour, ISelecteble
         if (!_isBulding)
         {
             _isSelected = true;
+            HouseBought?.Invoke(_priceBuilding);
             NeedEngineer?.Invoke(gameObject.transform.position);
         }
     }

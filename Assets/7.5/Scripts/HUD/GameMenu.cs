@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static Enums;
 
 public class GameMenu: MonoBehaviour
 {
@@ -13,6 +14,11 @@ public class GameMenu: MonoBehaviour
     [SerializeField] private Text _statisticText;
     [SerializeField] private Text _titleGameOver;
     [SerializeField] private Tutorial _tutorial;
+
+    [SerializeField] private AudioClip _gameOverSound;
+    [SerializeField] private AudioClip _victorySound;
+
+    private SoundClip _soundClip;
 
     public static bool isPaused;
     private bool _isMainMenu;
@@ -26,9 +32,12 @@ public class GameMenu: MonoBehaviour
         _isSoundOff = true;
         InitMenu();
         isPaused = true;
+        GetSoundClipComponent();
         VisibleCanvas(_HUDMenu, true);
         VisibleMainMenu(true);
     }
+
+    private void GetSoundClipComponent() => _soundClip = gameObject.GetComponent<SoundClip>();
 
     private void InitMenu()
     {
@@ -64,13 +73,43 @@ public class GameMenu: MonoBehaviour
         VisibleCanvas(_pauseMenu, isShow:isPaused);
     }
 
-    public void ShowGameOverMenu(string statisticText, string gameOverTitileText)
+    public void ShowGameOverMenu(string statisticText, GameOverType type)
     {
+        string gameOverTitileText = GetTitleGameOver(type);
+        PlaySound(type);
         SetStatisticText(statisticText);
         _titleGameOver.text = gameOverTitileText;
         ChangeGameTimeState();
         VisibleCanvas(_HUDMenu, true);
         VisibleCanvas(_gameOverCanvas, isShow: isPaused);
+    }
+
+    private string GetTitleGameOver(GameOverType type)
+    {
+        string title = "";
+        switch (type)
+        {
+            case GameOverType.Lose:
+                title= "GAME OVER";
+                break;
+            case GameOverType.Victory:
+                title = "VICTORY";
+                break;
+        }
+        return title;
+    }
+
+    private void PlaySound(GameOverType type)
+    {
+        switch (type)
+        {
+            case GameOverType.Lose:
+                _soundClip.PlaySound(_gameOverSound);
+                break;
+            case GameOverType.Victory:
+                _soundClip.PlaySound(_victorySound);
+                break;
+        }
     }
 
     public void ShowTutorial()

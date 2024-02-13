@@ -13,7 +13,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private Text _cycleWaveText;
     [SerializeField] private Text _countEnemysText;
     [SerializeField] private Text _waveText;
-    [SerializeField] private int _goldPeakEnemyRaid;
+    [SerializeField] private int _warriorPeakEnemyRaid;
     private SoundSpawn _sound;
     [SerializeField] private GameObject _waveInfoCanvas;
 
@@ -26,13 +26,13 @@ public class Spawner : MonoBehaviour
     private Random _randomPosition;
 
     private bool _waveInfoVisible;
-    private const int _xRandomMin = -5;
-    private const int _xRandomMax = 6;
+    private const int _xRandomMin = -2;
+    private const int _xRandomMax = 2;
     private const float _xKoef = 0.1f;
     private const float _xOffset = 0.6f;
 
-    private const int _yRandomMin = -2;
-    private const int _yRandomMax = 3;
+    private const int _yRandomMin = -1;
+    private const int _yRandomMax = 2;
     private const float _yKoef = 0.1f;
     private const float _yOffset = 0.3f;
 
@@ -45,6 +45,7 @@ public class Spawner : MonoBehaviour
     {
         GetSoundComponent();
         _randomEnemy = new Random();
+        _randomPosition = new Random();
         Reload();
         _indexEnemyRand = GetRandomEnemy();
         UpdateEnemyInformation(_countEnemy);
@@ -72,7 +73,7 @@ public class Spawner : MonoBehaviour
     public void UpdateSpawn()
     {
         if (GameMenu.isPaused) return;
-        if (Storage.Gold < _goldPeakEnemyRaid) return;
+        if ((Population.ArcherCount+Population.WarriorsCount) < _warriorPeakEnemyRaid) return;
 
         _currentTime += Time.deltaTime;
         _timeSpawn = _playerData.waveCycleTime - _currentTime;
@@ -82,7 +83,7 @@ public class Spawner : MonoBehaviour
         if (_currentTime>= _playerData.waveCycleTime)
         {
             for(int i = 0; i < _countEnemy; i++)
-                SpawnEnemy(_countEnemy);
+                SpawnEnemy();
 
             _sound.PlaySound();
             _countEnemy =  _playerData.numberWave;
@@ -112,7 +113,7 @@ public class Spawner : MonoBehaviour
             _waveInfoCanvas.transform.localPosition = new Vector3(_waveInfoCanvas.transform.localPosition.x, _waveInfoCanvas.transform.localPosition.y + 198);
         }
     }
-    private void SpawnEnemy(int countEnemy)
+    private void SpawnEnemy()
     {
         Vector3 newPoint = SetRandomPosition(_spawnPosition.position);
         Enemy enemy  = Instantiate(_prefabEnemys[_indexEnemyRand], newPoint, Quaternion.identity).GetComponent<Enemy>();

@@ -15,29 +15,24 @@ MonoBehaviour:
   goldUnitTrainigPrice: 4
   meatUnitTrainigPrice: 4
   woodUnitTrainigPrice: 4
-  warriorTrainigPrice: 1
-  archerTrainigPrice: 1
-  goldWorkTrainingTimer: 0.1
-  meatWorkTrainingTimer: 10
-  woodWorkTrainingTimer: 10
-  warriorTrainingTimer: 1
-  archerTrainingTimer: 1
+  warriorTrainigPrice: 0
+  archerTrainigPrice: 0
+  goldWorkTrainingTimer: 15
+  meatWorkTrainingTimer: 12
+  woodWorkTrainingTimer: 13
+  warriorTrainingTimer: 0
+  archerTrainingTimer: 0
   warriorEatTimer: 25
   archerEatTimer: 25
-  warriorEatUpCycle: 3
+  warriorEatUpCycle: 4
   archerEatUpCycle: 4
-  goldMiningPerCycle: 15
-  meatMiningPerCycle: 2
+  goldMiningPerCycle: 5
+  meatMiningPerCycle: 3
   woodMiningPerCycle: 2
   timeGoldMine: 1
-  timeMeatMine: 10
-  timeWoodMine: 10
+  timeMeatMine: 15
+  timeWoodMine: 0
   numberWave: 1
-  waveCycleTime: 125
+  waveCycleTime: 60
   countEnemyNextWave: 1
-  countGolds: 0
-  countMeats: 0
-  countWoods: 0
-  countWarriors: 0
-  countWorkers: 0
-  survivedTheWaves: 0
+  numberOfWarriorsHired: 20

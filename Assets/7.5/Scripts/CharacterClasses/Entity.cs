@@ -33,7 +33,6 @@ public class Entity : MonoBehaviour
     [SerializeField] private Canvas _hud;
     [SerializeField] protected int _distanceFindEntity = 5;
 
-    protected Random _random;
     protected bool _isDie;
 
     protected virtual void Awake()
@@ -42,7 +41,6 @@ public class Entity : MonoBehaviour
         SetupNavMeshAgent();
         GetSoundEntity();
         _spriteRander = gameObject.GetComponent<SpriteRenderer>();
-        _random = new Random();
         _agent.autoBraking = true;
     }
 
