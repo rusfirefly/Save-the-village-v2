@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static Enums;
 
 public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
 {
@@ -30,6 +31,12 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
         SetDefaultMaterial();
         GetWorkerPosition();
         _sound = gameObject.GetComponent<SoundClip>();
+        TrainigButton.Traiding += OnTarianigFinishEvent;
+    }
+
+    private void OnDestroy()
+    {
+        TrainigButton.Traiding -= OnTarianigFinishEvent;
     }
 
     private void GetWorkerPosition()
@@ -42,12 +49,31 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
         _spawnPosition = newSpawnPosition;
     }
 
-    public void Training(Enums.UnitType type)
+    public void Training(UnitType type)
     {
-        if (type == Enums.UnitType.Archer)
+        if (type == UnitType.Archer)
             CreateNewArch();
         else 
             CreateNewKnight();
+    }
+
+    private void OnTarianigFinishEvent(UnitType type)
+    {
+        UnitType typeUnit = UnitType.None;
+        switch (type)
+        {
+            case UnitType.Knight:
+                typeUnit = type;
+                break;
+            case UnitType.Archer:
+                typeUnit = type;
+                break;
+        }
+
+        if (typeUnit != UnitType.None)
+        {
+            Training(typeUnit);
+        }
     }
 
     private void CreateNewKnight()

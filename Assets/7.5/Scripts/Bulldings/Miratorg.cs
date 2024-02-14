@@ -13,6 +13,11 @@ public class Miratorg : Mining
     private Random _random;
     [SerializeField] private AudioClip _audioSheep;
 
+    private void Awake()
+    {
+        SetCycleMining(_playerData.timeMeatMine);
+    }
+
     protected override void Start()
     {
         base.Start();

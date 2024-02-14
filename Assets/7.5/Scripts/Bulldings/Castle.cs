@@ -6,7 +6,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Animator))]
 public class Castle : MonoBehaviour, IDamageable, ISelecteble
 {
-    public static event Action Attacked;
+    public static event Action<Vector3> Attacked;
     public static event Action Destroyed;
     public static event Action<int> Repair;
 
@@ -21,6 +21,8 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     [SerializeField] private Image _repairBar;
     [SerializeField] private Transform _positionArcher;
     [SerializeField] private int _countWoodForRepairPrice = 100;
+
+    [SerializeField] private PlayerData _playerData;
     private float _fullHealth;
 
     private SpriteRenderer _spriteRender;
@@ -36,7 +38,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     private float _percentHealth;
     private Animator _animator;
     private BuffSkill _buffSkill;
-    private int _newWarrior;
+    private PlayerBase _playerBase;
 
     public void Start()
     {
@@ -47,6 +49,8 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
         SetCastleHealth();
         SetRepairText();
         InitCastleSkill();
+
+        CreatePlayerBase();
     }
 
     private void Update()
@@ -77,6 +81,13 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
         SetCastleFire(false);
         SetCastleHealth();
         RepairBarVisible(false);
+
+        _playerBase.ReloadValue();
+    }
+
+    private void CreatePlayerBase()
+    {
+        _playerBase = new PlayerBase(_playerData, initGoldCount: 12, initMeatCount: 0, initWoodCount: 0);
     }
 
     private void GetAnimation() => _animator ??= GetComponent<Animator>();
@@ -92,6 +103,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     private void CreateListenerEvent() => _repairButton.onClick.AddListener(RepearCastle);
 
     private void SetFullHealth() => _fullHealth = _health;
+
     private void SetCastleHealth()
     {
         _percentHealth = _health / _fullHealth * 100;
@@ -153,31 +165,17 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     {
         if (Storage.Meat > 0)
         {
-            Warrior[] warriors = FindObjectsOfType<Warrior>();
-            Archer[] archers = FindObjectsOfType<Archer>();
-            if ((_newWarrior > (warriors.Length + archers.Length)) || (_newWarrior < (warriors.Length + archers.Length)))
-            {
-                BuffShowInHud();
-                _newWarrior = warriors.Length;
-                AllWarriorUseBuff(warriors);
-                _newWarrior += archers.Length;
-                foreach (Archer archer in archers)
-                   archer.EatBuff(_buffSkill.GetBuff());
-            }
-        }else
+            _buffSkill.EnableBuff();
+            BuffShowInHud();
+        }
+        else
         {
-            _newWarrior = 0;
+            _buffSkill.DisableBuff();
             _buffSkill.BuffVisible(false);
         }
     }
 
     private void BuffShowInHud() => _buffSkill.BuffVisible(true);
-
-    private void AllWarriorUseBuff(Warrior[] warriors)
-    {
-        foreach (Warrior warrior in warriors)
-            warrior.EatBuff(_buffSkill.GetBuff());
-    }
 
     private void RepairCastle()
     {
@@ -197,6 +195,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     }
     
     private void PlaySoundRepairComplete()=> _soundCastle.PlayeSoundCastleRepair();
+
     private void RepairBarFillAmount(float value)=> _repairBar.fillAmount = value / _timeRepair;
 
     private void CheckStateRepairButton()
@@ -224,11 +223,13 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
             SetInAttack();
         }
 
-        Attacked?.Invoke();
+        Attacked?.Invoke(transform.position);
     }
     
     private void PlaySoundCatleInFire()=> _soundCastle.PlayeSoundWarning();
+
     private void SetInAttack()=> _isAttacking = true;
+
     private void IsGameOver()
     {
         if (_health <= 0)

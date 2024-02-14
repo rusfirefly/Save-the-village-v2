@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static Enums;
 
 public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
 {
@@ -12,9 +13,10 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
     private SoundClip _sound;
     [SerializeField] private AudioClip _audioSelectBuild;
     [SerializeField] private WorkManEngineer _enginerPrefab;
-    public Transform GoldPosition { get; set; }
-    public Transform MeatPosition { get; set; }
-    public Transform WoodPosition { get; set; }
+
+    [SerializeField] private Transform _goldPosition;
+    [SerializeField] private Transform _meatPosition;
+    [SerializeField] private Transform _woodPosition;
     
     private SpriteRenderer _spriteRender;
     private Material _default;
@@ -27,11 +29,13 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
         GetWorkerPosition();
         _sound = gameObject.GetComponent<SoundClip>();
         House.NeedEngineer += OnNeedEngineerEvent;
+        TrainigButton.Traiding += OnTarianigFinishEvent;
     }
 
     private void OnDestroy()
     {
         House.NeedEngineer -= OnNeedEngineerEvent;
+        TrainigButton.Traiding -= OnTarianigFinishEvent;
     }
 
     private void GetWorkerPosition()
@@ -45,6 +49,28 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
         unit.Move(targetPosition);
     }
 
+    private void OnTarianigFinishEvent(UnitType type)
+    {
+        UnitType typeUnit = UnitType.None;
+        switch (type)
+        {
+            case UnitType.Gold:
+                typeUnit = type;
+                break;
+            case UnitType.Meat:
+                typeUnit = type;
+                break;
+            case UnitType.Wood:
+                typeUnit = type;
+                break;
+        }
+
+        if (typeUnit != UnitType.None)
+        {
+            Training(typeUnit);
+        }
+    }
+
     public void Training(Enums.UnitType type)
     {
         CreateNewWorker();
@@ -53,13 +79,13 @@ public class WorkingCamp : MonoBehaviour, ICamp, IWorkingPoints, ISelecteble
         TargetForWork(position);
     }
 
-    private Transform GoToTarget(Enums.UnitType type)
+    private Transform GoToTarget(UnitType type)
     {
         return type switch
         {
-            Enums.UnitType.Gold => GoldPosition,
-            Enums.UnitType.Meat => MeatPosition,
-            Enums.UnitType.Wood => WoodPosition,
+            UnitType.Gold => _goldPosition,
+            UnitType.Meat => _meatPosition,
+            UnitType.Wood => _woodPosition,
             _ => _spawnPosition
         };
     }

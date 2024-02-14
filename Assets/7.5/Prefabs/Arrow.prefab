@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee8474a9cd703714c874a3549a821046, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedArrow: 1
+  _speedArrow: 3
   _rigidbody2D: {fileID: -4457508317116679295}
   _layerMask:
     serializedVersion: 2

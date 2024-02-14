@@ -1,17 +1,27 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 public struct Buff
 {
-    public float Attack { get; set; }
+    public float Attack { get; private set; }
 
-    public float Defence { get; set; }
+    public float Defence { get; private set; }
 
-    public float Health { get; set; }
+    public float Health { get; private set; }
+
+    public Buff(float attack, float defence, float health)
+    {
+        Attack = attack;
+        Defence = defence;
+        Health = health;
+    }
 }
 
 public class BuffSkill : MonoBehaviour
 {
+    public static event Action<Buff> EventBuff;
+
     [SerializeField] private Canvas _canvasSkill;
     [SerializeField] private Image _buffImage;
     [SerializeField] private Text _textBuff;
@@ -20,10 +30,7 @@ public class BuffSkill : MonoBehaviour
 
     private void Awake()
     {
-        _eatBuff.Attack = 0.35f;
-        _eatBuff.Defence = 0.25f;
-        _eatBuff.Health = 2f;
-
+        _eatBuff = new Buff(attack: 0.35f, defence: 0.25f,health: 0.2f);
         UpdateTextSkill();
     }
 
@@ -41,4 +48,14 @@ public class BuffSkill : MonoBehaviour
 
     public void BuffVisible(bool visible) => _canvasSkill.gameObject.SetActive(visible);
 
+    public void EnableBuff()
+    {
+        EventBuff?.Invoke(_eatBuff);
+    }
+
+    public void DisableBuff()
+    {
+        Buff deBuff = new Buff(attack: 0,defence: 0,health: 0);
+        EventBuff?.Invoke(deBuff);
+    }
 }

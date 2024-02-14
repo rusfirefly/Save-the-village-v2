@@ -41,7 +41,7 @@ public class TrainigButton : MonoBehaviour
         UpdatePanelInfo(_priceText);
         AnimationTraining();
     }
-    
+
     public TrainigButton(Text coldownText, Image trainigProgress)
     {
         _coldownText = coldownText;
@@ -136,6 +136,7 @@ public class TrainigButton : MonoBehaviour
     }
 
     private void GetCurrentResource()=> _countResource = Storage.Gold;
+
     private void TrainigButtonActive(bool active)
     {
         _trainigProgressPanel.fillAmount = active?_activeButton:_deActiveButton;

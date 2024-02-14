@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// для настройки...всё PUBLIC жуть
+/// </summary>
+
 [CreateAssetMenu]
 public class PlayerData : ScriptableObject
 {
@@ -42,16 +46,8 @@ public class PlayerData : ScriptableObject
     public float waveCycleTime;
     public int countEnemyNextWave;
 
-    [Header("Условия победы")]
-    public int numberOfWarriorsHired;
-
-    public void SetDefaultValue()
-    {
-        numberWave = 0;
-        countEnemyNextWave = 1;
-    }
-
-
+    [Header("Условия победы (выжить в течении N дней)")]
+    public int daysToSurvive;
 
 }
 

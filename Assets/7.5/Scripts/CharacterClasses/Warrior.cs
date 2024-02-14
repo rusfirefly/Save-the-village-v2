@@ -3,14 +3,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = System.Random;
 
-public class Warrior : Entity, IDamageable, IMovable, IAttack
+public class Warrior : Entity, IDamageable, IMovable, IAttack, IBuffable
 {
     public static event Action Deathing;
     public static event Action<int> EatUp;
 
     [SerializeField] private float _baffAttack;
     [SerializeField] private float _baffDefence;
-    [SerializeField] private float _baffHealth;
     [SerializeField] private SoundClip _needMeat;
 
     [SerializeField] private Image _eatBar;
@@ -21,7 +20,6 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
     private float _currentTimeEat;
 
     private Vector3 _target;
-    private bool _buffUse;
     private Buff _eatBuff;
     
     private const int _xRandomMin = -5;
@@ -36,15 +34,20 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
 
     private Random _randomPosition;
 
+    private float _currentHealth;
+
     protected override void Awake()
     {
         base.Awake();
         SetStartValueEat();
         PlaySoundNewEntity();
         _healthFull = _health;
+        _currentHealth = _health;
         EatBarAmountFillAmount(_eatUpCycle);
         HealthBarAmountFillAmount(_health);
         _randomPosition = new Random();
+        BuffSkill.EventBuff += OnEventBuff;
+        Castle.Attacked += OnCastleAttakedEvent;
     }
     
     protected override void OnDrawGizmos()
@@ -56,7 +59,6 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
     private void Update()
     {
         if (_isDie) return;
-        BaffSatiety();
         DetectEntity();
         DetectHitEntity();
         EatUpCycle();
@@ -73,6 +75,28 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
         {
             GoBackPosition();
         }
+    }
+
+    private void OnDestroy()
+    {
+        BuffSkill.EventBuff -= OnEventBuff;
+        Castle.Attacked -= OnCastleAttakedEvent;
+    }
+
+    private void OnCastleAttakedEvent(Vector3 castlePosition)
+    {
+        FindEnemyPosition(castlePosition);
+    }
+
+    private void OnEventBuff(Buff buff)
+    {
+        AddBuff(buff);
+    }
+
+    public void AddBuff(Buff buff)
+    {
+        _eatBuff = buff;
+        UpdateBuff();
     }
 
     private void SetStartValueEat()
@@ -162,48 +186,24 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
             {
                 EatUp?.Invoke(_eatUp);
             }
-            else
-            {
-                Debug.Log("çàêîí÷èëàñü åäà, ïîêàçàòåëè âîèíîâ ñíèæåíû");
-            }
+            
             _currentTimeEat -= _eatUpCycle;
         }
     }
         
-    private void BaffSatiety()
+    public void UpdateBuff()
     {
-        if(Storage.Meat > _eatUp)
-        {
-            _baffAttack = _attack* _eatBuff.Attack;
-            _baffDefence = _defence * _eatBuff.Defence;
-            _baffHealth = _health*_eatBuff.Health;
-
-            if (!_buffUse)
-            {
-                _health += _baffHealth;
-                _buffUse = true;
-            }
-        }
-        else
-        {
-            _baffAttack = 0;
-            _baffDefence = 0;
-            _baffHealth = 0;
-
-            if (_buffUse)
-            {
-                _health = _healthFull;
-                _buffUse = false;
-            }
-        }
+        _baffAttack = _attack * _eatBuff.Attack;
+        _baffDefence = _defence * _eatBuff.Defence;
+        _health = _currentHealth + _currentHealth * _eatBuff.Health;
     }
 
     public void TakeDamage(float damage)
     {
-        BaffSatiety();
         SetTriggerAnimation("Hit");
         if (damage <= 0) return;
         _health -= DamageÑalculation(damage);
+        _currentHealth = _health;
         HealthBarAmountFillAmount(_health, _eatBuff.Health);
         if (_health <= 0)
         {
@@ -244,11 +244,5 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack
     public void FindEnemyPosition(Vector3 castlePosition)
     {
         Move(castlePosition);
-    }
-
-    public void EatBuff(Buff buff)
-    {
-        _eatBuff = buff;
-        BaffSatiety();
     }
 }

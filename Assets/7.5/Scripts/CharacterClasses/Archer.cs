@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = System.Random;
 
-public class Archer : Entity, IDamageable, IAttack, IMovable
+public class Archer : Entity, IDamageable, IAttack, IMovable, IBuffable
 {
     private SpriteRenderer _archer;
     public static event Action Deathing;
@@ -13,7 +13,6 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
     [SerializeField] private SoundClip _needMeat;
     [SerializeField] private Image _eatBar;
     [SerializeField] private PlayerData _playerData;
-    [SerializeField] private float _baffHealth;
     [SerializeField] private float _baffDefence;
     [SerializeField] private float _baffAttack;
     [SerializeField] private int _eatUp;
@@ -21,7 +20,6 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
 
     private float _currentTimeEat;
     private Vector3 _target;
-    private bool _buffUse;
     private Collider2D colider;
     private Buff _eatBuff;
     private bool _archerInCastle;
@@ -32,17 +30,21 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
     private const float _xOffset = 0.5f;
     private Random _randomPosition;
 
+    private float _currentHealth;
+
     protected override void Awake()
     {
         base.Awake();
         SetStartValueEat();
         PlaySoundNewEntity();
-        BaffSatiety();
-        _healthFull = _health + _baffHealth;
+        _healthFull = _health;
+        _currentHealth = _health;
         EatBarAmountFillAmount(_healthFull);
         HealthBarAmountFillAmount(_health);
         GetSpriteRenderArcher();
         _randomPosition = new Random();
+
+        BuffSkill.EventBuff += OnEventBuff;
     }
 
     private void Update()
@@ -56,6 +58,22 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
     {
         base.OnDrawGizmos();
         Gizmos.DrawLine(_attackPoint.position, _target);
+    }
+
+    private void OnDestroy()
+    {
+        BuffSkill.EventBuff -= OnEventBuff;
+    }
+
+    private void OnEventBuff(Buff buff)
+    {
+        AddBuff(buff);
+    }
+
+    public void AddBuff(Buff buff)
+    {
+        _eatBuff = buff;
+        UpdateBuff();
     }
 
     private void GetSpriteRenderArcher()
@@ -123,7 +141,6 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
         _nextAttackTime += Time.deltaTime;
         if (_nextAttackTime >= _attackSpeed)
         {
-            BaffSatiety();
             SetTriggerAnimation("Attack2");
             ArrowShoot(unit.gameObject.transform.position);
             PlaySoundAttack();
@@ -144,50 +161,23 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
         EatBarAmountFillAmount(_eatUpCycle - _currentTimeEat);
         if (_currentTimeEat >= _eatUpCycle)
         {
-            BaffSatiety();
             if (Storage.Meat > 0)
             {
                 EatUp?.Invoke(_eatUp);
             }
-            else
-                Debug.Log("çàêîí÷èëàñü åäà, ïîêàçàòåëè âîèíîâ ñíèæåíû");
-
             _currentTimeEat -= _eatUpCycle;
         }
     }
 
-    //---- â êëàññ ñ áàôôàìè
-    private void BaffSatiety()
+    public void UpdateBuff()
     {
-        if (Storage.Meat > _eatUp)
-        {
-            _baffAttack = _attack * _eatBuff.Attack;
-            _baffDefence = _defence * _eatBuff.Defence;
-            _baffHealth = _health * _eatBuff.Health;
-
-
-            if (!_buffUse)
-            {
-                _health += _baffHealth;
-                _buffUse = true;
-            }
-        }
-        else
-        {
-            _baffAttack = 0;
-            _baffDefence = 0;
-            _baffHealth = 0;
-            if (_buffUse)
-            {
-                _health = _healthFull;
-                _buffUse = false;
-            }
-        }
+        _baffAttack = _attack * _eatBuff.Attack;
+        _baffDefence = _defence * _eatBuff.Defence;
+        _health = _currentHealth + _currentHealth * _eatBuff.Health;
     }
 
     public void TakeDamage(float damage)
     {
-        BaffSatiety();
         SetTriggerAnimation("Hit");
         if (damage <= 0) return;
         _health -= DamageÑalculation(damage);
@@ -206,7 +196,6 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
         }
     }
 
-    // â entity
     private float DamageÑalculation(float damage)
     {
         if (damage > (_defence + _baffDefence))
@@ -236,10 +225,5 @@ public class Archer : Entity, IDamageable, IAttack, IMovable
         {
             _agent.destination = enemy.gameObject.transform.position;
         }
-    }
-
-    public void EatBuff(Buff buff)
-    {
-        _eatBuff = buff;
     }
 }

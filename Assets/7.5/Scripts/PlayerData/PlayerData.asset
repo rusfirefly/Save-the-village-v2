@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2595a897449ace4daad0f0d6883732c, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
-  goldUnitTrainigPrice: 4
-  meatUnitTrainigPrice: 4
-  woodUnitTrainigPrice: 4
-  warriorTrainigPrice: 0
-  archerTrainigPrice: 0
-  goldWorkTrainingTimer: 15
-  meatWorkTrainingTimer: 12
-  woodWorkTrainingTimer: 13
-  warriorTrainingTimer: 0
-  archerTrainingTimer: 0
+  goldUnitTrainigPrice: 1
+  meatUnitTrainigPrice: 1
+  woodUnitTrainigPrice: 1
+  warriorTrainigPrice: 1
+  archerTrainigPrice: 1
+  goldWorkTrainingTimer: 1
+  meatWorkTrainingTimer: 1
+  woodWorkTrainingTimer: 1
+  warriorTrainingTimer: 1
+  archerTrainingTimer: 1
   warriorEatTimer: 25
   archerEatTimer: 25
   warriorEatUpCycle: 4
@@ -29,10 +29,10 @@ MonoBehaviour:
   goldMiningPerCycle: 5
   meatMiningPerCycle: 3
   woodMiningPerCycle: 2
-  timeGoldMine: 1
+  timeGoldMine: 15
   timeMeatMine: 15
-  timeWoodMine: 0
-  numberWave: 1
-  waveCycleTime: 60
+  timeWoodMine: 15
+  numberWave: 5
+  waveCycleTime: 15
   countEnemyNextWave: 1
-  numberOfWarriorsHired: 20
+  daysToSurvive: 5

@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class SawMill : Mining
 {
-    
+    private void Awake()
+    {
+        SetCycleMining(_playerData.timeWoodMine);
+    }
 }

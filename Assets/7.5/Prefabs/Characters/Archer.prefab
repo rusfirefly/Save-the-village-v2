@@ -303,7 +303,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: -1372625422
   m_Radius: 0.1
-  m_Speed: 1.8
+  m_Speed: 2
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -334,7 +334,7 @@ MonoBehaviour:
   _layerMask:
     serializedVersion: 2
     m_Bits: 64
-  _attackSpeed: 1.3
+  _attackSpeed: 1.2
   _drawGizmo: 1
   _hpBar: {fileID: 7203741346024115428}
   _typeEntity: 0
@@ -349,7 +349,6 @@ MonoBehaviour:
   _needMeat: {fileID: 0}
   _eatBar: {fileID: 451317799697969381}
   _playerData: {fileID: 11400000, guid: 0fe396b4a36645042aba21e9fdf365bd, type: 2}
-  _baffHealth: 0
   _baffDefence: 0
   _baffAttack: 0
   _eatUp: 5

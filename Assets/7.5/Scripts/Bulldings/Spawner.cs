@@ -10,22 +10,22 @@ public class Spawner : MonoBehaviour
     [SerializeField] private Transform _spawnPosition;
     [SerializeField] private PlayerData _playerData;
 
-    [SerializeField] private Text _cycleWaveText;
-    [SerializeField] private Text _countEnemysText;
-    [SerializeField] private Text _waveText;
-    [SerializeField] private int _warriorPeakEnemyRaid;
-    private SoundSpawn _sound;
+    [SerializeField] private HUDGame _hudGame;
+
     [SerializeField] private GameObject _waveInfoCanvas;
+    [Header("Кол-во дней до рейда врагов")]
+    [SerializeField] private int _deadlineDay;
+    
+    private SoundSpawn _sound;
+    private int _currentDay;
 
     private float _currentTime;
     private float _timeSpawn;
     private int _countEnemy;
     private int _indexEnemyRand;
-    private TimeSpan _time;
     private Random _randomEnemy;
     private Random _randomPosition;
 
-    private bool _waveInfoVisible;
     private const int _xRandomMin = -2;
     private const int _xRandomMax = 2;
     private const float _xKoef = 0.1f;
@@ -41,6 +41,11 @@ public class Spawner : MonoBehaviour
         Initialized();
     }
 
+    private void OnDestroy()
+    {
+        DayAndNight.NewDay -= OnNewDay;
+    }
+
     public void Initialized()
     {
         GetSoundComponent();
@@ -48,21 +53,28 @@ public class Spawner : MonoBehaviour
         _randomPosition = new Random();
         Reload();
         _indexEnemyRand = GetRandomEnemy();
-        UpdateEnemyInformation(_countEnemy);
-        UpdateWaveInfo(_playerData.numberWave);
-        WaveCanvasVisible(true);
+        _hudGame.UpdateEnemyInformation(_countEnemy);
+        _hudGame.UpdateWaveInfo(_playerData.numberWave);
+        _hudGame.UpdateDayToDeadline(_deadlineDay);
+        DayAndNight.NewDay += OnNewDay;
     }
 
     private int GetRandomEnemy() => _randomEnemy.Next(0, _prefabEnemys.Length);
+
     private void GetSoundComponent() => _sound = gameObject.GetComponent<SoundSpawn>();
+
     public void Reload()
     {
         _countEnemy = 1;
         _currentTime = 0;
         _playerData.numberWave = 1;
+        _currentDay = 1;
 
-        UpdateEnemyInformation(_countEnemy);
-        UpdateWaveInfo(_playerData.numberWave);
+        WaveCanvasVisible(false);
+        _hudGame.UpdateDayToDeadline(_deadlineDay - _currentDay);
+        _hudGame.UpdateNumberDay(_currentDay);
+        _hudGame.UpdateEnemyInformation(_countEnemy);
+        _hudGame.UpdateWaveInfo(_playerData.numberWave);
     }
 
     private void Update()
@@ -73,12 +85,12 @@ public class Spawner : MonoBehaviour
     public void UpdateSpawn()
     {
         if (GameMenu.isPaused) return;
-        if ((Population.ArcherCount+Population.WarriorsCount) < _warriorPeakEnemyRaid) return;
+        if (_currentDay <= _deadlineDay) return;
 
         _currentTime += Time.deltaTime;
         _timeSpawn = _playerData.waveCycleTime - _currentTime;
 
-        SetCycleWaveText(_timeSpawn);
+        _hudGame.SetCycleWaveText(_timeSpawn);
 
         if (_currentTime>= _playerData.waveCycleTime)
         {
@@ -89,30 +101,45 @@ public class Spawner : MonoBehaviour
             _countEnemy =  _playerData.numberWave;
             _playerData.numberWave++;
 
-            UpdateEnemyInformation(_countEnemy);
-            UpdateWaveInfo(_playerData.numberWave);
+            _hudGame.UpdateEnemyInformation(_countEnemy);
+            _hudGame.UpdateWaveInfo(_playerData.numberWave);
 
             _currentTime = 0;
         }
     }
 
-    private void SetCycleWaveText(float timeSpawn)
+    private void OnNewDay(int currentDay)
     {
-        _time = new TimeSpan(0, 0, Mathf.RoundToInt(_timeSpawn));
-        _cycleWaveText.text = $"Время до набега врагов: {_time.Minutes} м {_time.Seconds} с";
+        _currentDay = currentDay;
+        if (_currentDay == _deadlineDay)
+        {
+            WaveCanvasVisible(true);
+        }
+
+        if(_currentDay <= _deadlineDay)
+            _hudGame.UpdateDayToDeadline(_deadlineDay - _currentDay);
+
+        _currentDay++;
+        _hudGame.UpdateNumberDay(_currentDay);
     }
 
     private void WaveCanvasVisible(bool visible)
     {
-        if(visible&& !_waveInfoVisible)
+        if(visible)
         {
-            _waveInfoCanvas.transform.localPosition = new Vector3(_waveInfoCanvas.transform.localPosition.x, _waveInfoCanvas.transform.localPosition.y-198);
+            _waveInfoCanvas.transform.localPosition = SetNewPositionCanvasInfoWave(newPositionY: -198);
         }
         else
         {
-            _waveInfoCanvas.transform.localPosition = new Vector3(_waveInfoCanvas.transform.localPosition.x, _waveInfoCanvas.transform.localPosition.y + 198);
+            _waveInfoCanvas.transform.localPosition = SetNewPositionCanvasInfoWave(newPositionY: 198);
         }
     }
+
+    private Vector3 SetNewPositionCanvasInfoWave(float newPositionY)
+    {
+        return new Vector3(_waveInfoCanvas.transform.localPosition.x, _waveInfoCanvas.transform.localPosition.y + newPositionY);
+    }
+
     private void SpawnEnemy()
     {
         Vector3 newPoint = SetRandomPosition(_spawnPosition.position);
@@ -126,15 +153,5 @@ public class Spawner : MonoBehaviour
     {
         return new Vector3(position.x + (_randomPosition.Next(_xRandomMin, _xRandomMax) + _xKoef) * _xOffset, 
                            position.y + (_randomPosition.Next(_yRandomMin, _yRandomMax) + _yKoef) * _yOffset);
-    }
-
-    private void UpdateEnemyInformation(int countEnemy)
-    {
-        _countEnemysText.text = $"Врагов в следующем набеге: {countEnemy}";
-    }
-
-    private void UpdateWaveInfo(int numberWave)
-    {
-        _waveText.text = $"Волна: {numberWave}";
     }
 }

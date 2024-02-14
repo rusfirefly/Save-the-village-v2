@@ -11,6 +11,9 @@ public class Arrow : MonoBehaviour
     private BoxCollider2D _collider2d;
     private float _attack;
     private Random _random;
+    private int _minPositionY = -9;
+    private int _maxPositionY = -7;
+    private float _offsetY = 0.5f;
 
     private void Start()
     {
@@ -21,7 +24,12 @@ public class Arrow : MonoBehaviour
 
     private void Update()
     {
-      if(transform.position.y <= _random.Next(-9, -7)*0.5f)
+        StopArrow();
+    }
+
+    private void StopArrow()
+    {
+        if (transform.position.y <= _random.Next(_minPositionY, _maxPositionY) * _offsetY)
             _rigidbody2D.Sleep();
     }
 
@@ -37,7 +45,7 @@ public class Arrow : MonoBehaviour
         _attack = attack;
         Vector3 shotDirection = targetPosition - transform.position;
         transform.right = shotDirection;
-        _rigidbody2D.AddForce(shotDirection * _speedArrow, ForceMode2D.Impulse);
+        _rigidbody2D.AddForce(shotDirection * _speedArrow * Time.deltaTime, ForceMode2D.Impulse);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

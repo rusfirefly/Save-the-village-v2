@@ -14,6 +14,8 @@ public class Mining : MonoBehaviour
     [SerializeField] private float _mineTimerCycle;
     [SerializeField] private int _countResources;
     [SerializeField] protected AudioClip _audioMiningFinish;
+    [SerializeField] private protected PlayerData _playerData;
+
     protected SoundClip _soundClip; 
 
     private float _mineTimer;

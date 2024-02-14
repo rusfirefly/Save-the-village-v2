@@ -3,30 +3,21 @@ using static Enums;
 
 public class GameManager : MonoBehaviour
 {
-    private PlayerBase _playerBase;
-    private WorkingCamp _workingCamps;
-    private WarriorCamp _warriorCamp;
-
     [SerializeField] private GameObject _trainigMessageText;
     [Header("Настройки для игры")]
     [SerializeField] private PlayerData _playerData;
-    [Header("Позиции объектов")]
-    [SerializeField] private Transform _castlePosition;
-    [SerializeField] private Transform _goldMinePosition;
-    [SerializeField] private Transform _meatPosition;
-    [SerializeField] private Transform _woodPosition;
+
+
+    private Castle _castle;
+    private Spawner _spawner;
 
     private int _enemiesDestroyed;
+    private int _day;
 
     public void Initialize()
     {
-        CreatePlayerBase();
-        FindCamps();
-        SetPositionResources();
-
-        SetMiningCycleTime<GoldMine>(_playerData.timeGoldMine);
-        SetMiningCycleTime<Miratorg>(_playerData.timeMeatMine);
-        SetMiningCycleTime<SawMill>(_playerData.timeWoodMine);
+        _castle = FindObjectOfType<Castle>();
+        _spawner = FindObjectOfType<Spawner>();
     }
 
     private void OnEnable()
@@ -42,63 +33,17 @@ public class GameManager : MonoBehaviour
     private void CreateListenerEvents()
     {
         SelectedBuilding.Selected += OnSelectedCampEvent;
-        TrainigButton.Traiding += OnTarianigFinishEvent;
-        Castle.Attacked += OnCastleAttakedEvent;
         Castle.Destroyed += OnCastleDestroyedEvent;
         Enemy.Deathing += OnEnemiesDestroyedEvent;
+        DayAndNight.NewDay += OnNewDay;
     }
 
     private void RemoveListenerEvents()
     {
         SelectedBuilding.Selected -= OnSelectedCampEvent;
-        TrainigButton.Traiding -= OnTarianigFinishEvent; 
-        Castle.Attacked -= OnCastleAttakedEvent;
         Castle.Destroyed -= OnCastleDestroyedEvent;
         Enemy.Deathing -= OnEnemiesDestroyedEvent;
-    }
-
-    private void OnEnemiesDestroyedEvent()
-    {
-        _enemiesDestroyed++;
-    }
-
-    private void OnCastleAttakedEvent()
-    {
-        Warrior[] warriors = FindObjectsOfType<Warrior>();
-        foreach (Warrior knight in warriors)
-            knight.FindEnemyPosition(_castlePosition.position);
-    }
-
-    private void OnCastleDestroyedEvent()
-    {
-        GameOver(GameOverType.Lose);
-    }
-
-    private void FindCamps()
-    {
-        _workingCamps = FindObjectOfType<WorkingCamp>();
-        _warriorCamp = FindObjectOfType<WarriorCamp>();
-    }
-
-    private T[] SetMiningCycleTime<T>(float timeMine) where T : UnityEngine.Object
-    {
-        T[] mines = FindObjectsOfType<T>();
-        foreach (T mine in mines)
-            (mine as Mining).SetCycleMining(timeMine);
-
-        return mines;
-    }
-
-    private void SetPositionResources()
-    {
-        _workingCamps.GoldPosition = _goldMinePosition;
-        _workingCamps.MeatPosition = _meatPosition;
-        _workingCamps.WoodPosition = _woodPosition;
-    }
-
-    private void CreatePlayerBase()
-    {
-        _playerBase = new PlayerBase(_playerData, initGoldCount: 12, initMeatCount: 0, initWoodCount: 0);
+        DayAndNight.NewDay -= OnNewDay;
     }
 
     private void OnSelectedCampEvent(GameObject gameObject)
@@ -106,27 +51,40 @@ public class GameManager : MonoBehaviour
         TrainingMessage(show: false);
     }
 
-    private void OnTarianigFinishEvent(Enums.UnitType type)
+    private void OnCastleDestroyedEvent()
     {
-        switch(type)
-        {
-            case UnitType.Knight:
-                _warriorCamp.Training(type);
-                break;
-            case UnitType.Archer:
-                _warriorCamp.Training(type);
-                break;
-            default:
-                _workingCamps.Training(type);
-                break;
-        }
-        ChekVictoryConditions();
+        GameOver(GameOverType.Lose);
     }
 
-    public void DefaultStatePanel()
+    private void OnEnemiesDestroyedEvent()
     {
-       TrainingMessage(show: true);
-       SelectedBuilding.AllCampsDeSelect();
+        _enemiesDestroyed++;
+    }
+
+    private void OnNewDay(int currentDay)
+    {
+        _day = currentDay;
+        if (currentDay == _playerData.daysToSurvive)
+            GameOver(GameOverType.Victory);
+    }
+
+    private void TrainingMessage(bool show) => _trainigMessageText.SetActive(show);
+
+    private void GameOver(GameOverType type)
+    {
+
+        string statistic = $"Итоги игры:\n" +
+                           $"Дней прошло: {_day}" +
+                           $"Волн пережито: {_playerData.numberWave}\n" +
+                           $"Врагов уничтожено:{_enemiesDestroyed}\n" +
+                           $"Нанято воинов: {Population.WarriorHired + Population.ArcherHired}\n" +
+                           $"Воинов погибло:{Population.WarriorsCountDeath}\n" +
+                           $"Рабочих нанято:{Population.WorkersCount}\n" +
+                           $"Собрано золота:{Storage.Gold}\n" +
+                           $"Собрано мяса:{Storage.Meat}\n" +
+                           $"Собрано дерева:{Storage.Wood}";
+
+        GameMenu.menuInstance.ShowGameOverMenu(statistic, type);
     }
 
     public void ReloadGame()
@@ -136,16 +94,20 @@ public class GameManager : MonoBehaviour
         ReloadAllEntity();
         DeselectAllBuild();
         ReloadMenu();
-        ReloadCatle();
+        ReloadCastle();
         ReloadSpawner();
         ReloadHouses();
-        ReloadPlayerBase();
         TrainigReload();
+    }
+
+    public void DefaultStatePanel()
+    {
+        TrainingMessage(show: true);
+        SelectedBuilding.AllCampsDeSelect();
     }
 
     private void ReloadMenu() => GameMenu.menuInstance.Reload();
 
-    private void ReloadPlayerBase() => _playerBase.ReloadValue();
 
     private void DeselectAllBuild() => SelectedBuilding.AllCampsDeSelect();
 
@@ -153,8 +115,7 @@ public class GameManager : MonoBehaviour
 
     private void ReloadSpawner()
     {
-        Spawner spawner = FindObjectOfType<Spawner>();
-        spawner.Reload();
+        _spawner.Reload();
     }
 
     private void ReloadHouses()
@@ -164,10 +125,9 @@ public class GameManager : MonoBehaviour
             hous.Reload();
     }
 
-    private void ReloadCatle()
+    private void ReloadCastle()
     {
-        Castle castle = FindObjectOfType<Castle>();
-        castle.Reload();
+        _castle.Reload();
     }
 
     private void ReloadAllMining()
@@ -184,30 +144,8 @@ public class GameManager : MonoBehaviour
             Destroy(entity.gameObject);
     }
 
-    private void GameOver(GameOverType type)
-    {
-        
-        string statistic = $"Итоги игры:\n" +
-                           $"Волн пережито: {_playerData.numberWave}\n" +
-                           $"Врагов уничтожено:{_enemiesDestroyed}\n"+
-                           $"Нанято воинов: {Population.WarriorHired + Population.ArcherHired}\n" +
-                           $"Воинов погибло:{Population.WarriorsCountDeath}\n" +
-                           $"Рабочих нанято:{Population.WorkersCount}\n" +
-                           $"Собрано золота:{Storage.Gold}\n" +
-                           $"Собрано мяса:{Storage.Meat}\n" +
-                           $"Собрано дерева:{Storage.Wood}";
 
-        GameMenu.menuInstance.ShowGameOverMenu(statistic, type);
-    }
 
-    private void ChekVictoryConditions()
-    {
-        if (Population.WarriorsCount + Population.ArcherCount == _playerData.numberOfWarriorsHired)
-        {
-            GameOver(GameOverType.Victory);
-        }
-    }
 
-    private void TrainingMessage(bool show) =>_trainigMessageText.SetActive(show);
 
 }
