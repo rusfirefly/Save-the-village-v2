@@ -48,6 +48,7 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack, IBuffable
         _randomPosition = new Random();
         BuffSkill.EventBuff += OnEventBuff;
         Castle.Attacked += OnCastleAttakedEvent;
+        GameManager.ReloadAll += OnReloadAll;
     }
     
     protected override void OnDrawGizmos()
@@ -81,6 +82,12 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack, IBuffable
     {
         BuffSkill.EventBuff -= OnEventBuff;
         Castle.Attacked -= OnCastleAttakedEvent;
+        GameManager.ReloadAll -= OnReloadAll;
+    }
+
+    private void OnReloadAll()
+    {
+        Destroy(gameObject);
     }
 
     private void OnCastleAttakedEvent(Vector3 castlePosition)

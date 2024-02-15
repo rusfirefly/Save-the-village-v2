@@ -18,6 +18,9 @@ public class GameMenu: MonoBehaviour
     [SerializeField] private AudioClip _gameOverSound;
     [SerializeField] private AudioClip _victorySound;
 
+    [SerializeField] private AudioClip _pauseSound;
+    [SerializeField] private AudioClip _resumeSound;
+
     private SoundClip _soundClip;
 
     public static bool isPaused;
@@ -46,7 +49,7 @@ public class GameMenu: MonoBehaviour
 
     public void Reload()
     {
-        ChangeGameTimeState();
+        SetPauseGame(isPause: false);
         VisibleCanvas(_HUDMenu, false);
         VisibleCanvas(_gameOverCanvas, false);
     }
@@ -60,31 +63,32 @@ public class GameMenu: MonoBehaviour
                 VisibleCanvas(_HUDMenu, false);
                 VisibleMainMenu(false);
                 VisibleCanvas(_hudGame, true);
+
                 _isMainMenu = false;
                 isPaused = false;
             }
         }
     }
 
-    public void PauseMenu()
+    public void PauseMenu(bool isPause)
     {
-        ChangeGameTimeState();
-        VisibleCanvas(_HUDMenu, isShow:isPaused);
-        VisibleCanvas(_pauseMenu, isShow:isPaused);
+        SetPauseGame(isPause);
+        PlaySound(isPause);
+        VisibleCanvas(_HUDMenu, isShow: isPause);
+        VisibleCanvas(_pauseMenu, isShow: isPause);
     }
 
     public void ShowGameOverMenu(string statisticText, GameOverType type)
     {
-        string gameOverTitileText = GetTitleGameOver(type);
+        SetTitleGameOver(type);
         PlaySound(type);
         SetStatisticText(statisticText);
-        _titleGameOver.text = gameOverTitileText;
-        ChangeGameTimeState();
+        SetPauseGame(isPause: true);
         VisibleCanvas(_HUDMenu, true);
         VisibleCanvas(_gameOverCanvas, isShow: isPaused);
     }
-
-    private string GetTitleGameOver(GameOverType type)
+    
+    private void SetTitleGameOver(GameOverType type)
     {
         string title = "";
         switch (type)
@@ -96,7 +100,7 @@ public class GameMenu: MonoBehaviour
                 title = "VICTORY";
                 break;
         }
-        return title;
+        _titleGameOver.text = title;
     }
 
     private void PlaySound(GameOverType type)
@@ -112,24 +116,32 @@ public class GameMenu: MonoBehaviour
         }
     }
 
+    private void PlaySound(bool isPauseGame)
+    {
+        if (isPauseGame)
+            _soundClip.PlaySound(_pauseSound);
+        else
+            _soundClip.PlaySound(_resumeSound);
+    }
+
     public void ShowTutorial()
     {
-        ChangeGameTimeState();
+        SetPauseGame(isPause: true);
         VisibleCanvas(_HUDMenu, true);
         _tutorial.Initialize();
     }
 
     public void ExitTutorial()
     {
-        ChangeGameTimeState();
+        SetPauseGame(isPause: false);
         VisibleCanvas(_HUDMenu, false);
         _tutorial.ExitTutorial();
     }
 
-    private void ChangeGameTimeState()
+    private void SetPauseGame(bool isPause)
     {
-        isPaused = !isPaused;
-        if (isPaused)
+        isPaused = isPause;
+        if (isPause)
         {
             Time.timeScale = 0;
         }
@@ -141,7 +153,7 @@ public class GameMenu: MonoBehaviour
 
     public void ResumeGame()
     {
-        PauseMenu();
+        PauseMenu(false);
     }
 
     private void VisibleMainMenu(bool isShow)
@@ -159,6 +171,7 @@ public class GameMenu: MonoBehaviour
         }
         else
         {
+                        
             SoundSystem.soundInstance.AllSoundOn();
             buttonText.text = "Отключить\nзвук";
         }

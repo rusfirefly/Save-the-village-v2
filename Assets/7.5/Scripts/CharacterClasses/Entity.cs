@@ -54,7 +54,7 @@ public class Entity : MonoBehaviour
         if (_attackPoint == null || !IsDrawGizmo()) return;
         DrawAttackRange();
     }
-  
+
     private void OnTriggerExit2D(Collider2D collision)
     {
         RunAgent();

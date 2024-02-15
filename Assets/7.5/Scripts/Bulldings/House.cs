@@ -31,6 +31,8 @@ public class House : MonoBehaviour, ISelecteble
     {
         GetSoundComponent();
         SetPriceText($"{_priceBuilding}");
+
+        GameManager.ReloadAll += OnReloadAll;
     }
 
     private void Update()
@@ -42,6 +44,67 @@ public class House : MonoBehaviour, ISelecteble
     {
         GetAnimatorComponent();
         SetPriceText($"{_priceBuilding}");
+    }
+
+    private void OnMouseDown()
+    {
+        if (WorkManEngineer.CountWork == Population.EngineerCountTotal) return;
+        if (Storage.Wood < _priceBuilding)
+        {
+            _sound.PlaySound(_needWoodSound);
+            return;
+        }
+
+        if (!_isBulding)
+        {
+            _isSelected = true;
+            HouseBought?.Invoke(_priceBuilding);
+            NeedEngineer?.Invoke(gameObject.transform.position);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.ReloadAll -= OnReloadAll;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "worker" && !_isBulding && _isSelected)
+        {
+            _isBulding = true;
+            _canvasPrice.gameObject.SetActive(false);
+            _canvasProgress.gameObject.SetActive(true);
+            ProgressBuildingTextVisible(true);
+            unit = collision.gameObject.GetComponent<WorkManEngineer>();
+            unit.StartWork();
+        }
+    }
+
+
+    public void DeSelected()
+    {
+        _isSelected = false;
+        _spriteRender.material = _default;
+        SelectedBuilding.selectedObject = null;
+    }
+
+    public void Selected()
+    {
+        if (!_isSelected)
+        {
+            _isSelected = true;
+            _spriteRender.material = _outlineMaterial;
+            SelectedBuilding.OnSelected(gameObject);
+        }
+    }
+
+    public void Reload()
+    {
+        _canvasPrice.gameObject.SetActive(true);
+        _canvasProgress.gameObject.SetActive(false);
+        _animator.SetBool("CompleteBuild", false);
+        _isComplete = false;
     }
 
     private void GetSoundComponent()=> _sound = gameObject.GetComponent<SoundClip>();
@@ -70,6 +133,11 @@ public class House : MonoBehaviour, ISelecteble
         }
     }
 
+    private void OnReloadAll()
+    {
+        Reload();
+    }
+
     private void CanvasPriceTextVisible(bool visible) => _canvasPrice.gameObject.SetActive(visible);
 
     private void CanvasProgressVisible(bool visible)=> _canvasProgress.gameObject.SetActive(visible);
@@ -77,61 +145,6 @@ public class House : MonoBehaviour, ISelecteble
     private void PlayAnimationComplete()=> _animator.SetBool("CompleteBuild", true);
 
     private void PlaySoundBuildingComplite() => _sound.PlaySound(_buildingComplete);
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.tag == "worker" && !_isBulding && _isSelected)
-        {
-            _isBulding = true;
-            _canvasPrice.gameObject.SetActive(false);
-            _canvasProgress.gameObject.SetActive(true);
-            ProgressBuildingTextVisible(true);
-            unit = collision.gameObject.GetComponent<WorkManEngineer>();
-            unit.StartWork();
-        }
-    }
-
-    private void OnMouseDown()
-    {
-        if (WorkManEngineer.CountWork == Population.EngineerCountTotal) return;
-        if (Storage.Wood < _priceBuilding)
-        {
-            _sound.PlaySound(_needWoodSound);
-            return;
-        }
-
-        if (!_isBulding)
-        {
-            _isSelected = true;
-            HouseBought?.Invoke(_priceBuilding);
-            NeedEngineer?.Invoke(gameObject.transform.position);
-        }
-    }
-
-    public void DeSelected()
-    {
-        _isSelected = false;
-        _spriteRender.material = _default;
-        SelectedBuilding.selectedObject = null;
-    }
-
-    public void Selected()
-    {
-        if (!_isSelected)
-        {
-            _isSelected = true;
-            _spriteRender.material = _outlineMaterial;
-            SelectedBuilding.OnSelected(gameObject);
-        }
-    }
-
-    public void Reload()
-    {
-        _canvasPrice.gameObject.SetActive(true);
-        _canvasProgress.gameObject.SetActive(false);
-        _animator.SetBool("CompleteBuild", false);
-        _isComplete = false;
-    }
 
     private void SetProgressBuldingText(string text)=> _progressBuildingText.text = text;
 

@@ -6,7 +6,12 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
 {
     public static event Action Deathing;
     [SerializeField] private TypeEnym _typeEnym;
-   
+
+    private void Start()
+    {
+        GameManager.ReloadAll += OnReloadAll;
+    }
+
     private void Update()
     {
         if (_isDie) return;
@@ -24,6 +29,16 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
         {
             GoBackPosition();
         }
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.ReloadAll -= OnReloadAll;
+    }
+
+    private void OnReloadAll()
+    {
+        Destroy(gameObject);
     }
 
     private void DetectEntity()

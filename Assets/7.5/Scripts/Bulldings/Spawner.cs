@@ -39,11 +39,19 @@ public class Spawner : MonoBehaviour
     private void Awake()
     {
         Initialized();
+        WaveCanvasVisible(true);
+        GameManager.ReloadAll += OnReloadAll;
+    }
+    
+    private void Update()
+    {
+        UpdateSpawn();
     }
 
     private void OnDestroy()
     {
         DayAndNight.NewDay -= OnNewDay;
+        GameManager.ReloadAll -= OnReloadAll;
     }
 
     public void Initialized()
@@ -59,10 +67,6 @@ public class Spawner : MonoBehaviour
         DayAndNight.NewDay += OnNewDay;
     }
 
-    private int GetRandomEnemy() => _randomEnemy.Next(0, _prefabEnemys.Length);
-
-    private void GetSoundComponent() => _sound = gameObject.GetComponent<SoundSpawn>();
-
     public void Reload()
     {
         _countEnemy = 1;
@@ -77,11 +81,6 @@ public class Spawner : MonoBehaviour
         _hudGame.UpdateWaveInfo(_playerData.numberWave);
     }
 
-    private void Update()
-    {
-        UpdateSpawn();
-    }
-
     public void UpdateSpawn()
     {
         if (GameMenu.isPaused) return;
@@ -92,13 +91,13 @@ public class Spawner : MonoBehaviour
 
         _hudGame.SetCycleWaveText(_timeSpawn);
 
-        if (_currentTime>= _playerData.waveCycleTime)
+        if (_currentTime >= _playerData.waveCycleTime)
         {
-            for(int i = 0; i < _countEnemy; i++)
+            for (int i = 0; i < _countEnemy; i++)
                 SpawnEnemy();
 
             _sound.PlaySound();
-            _countEnemy =  _playerData.numberWave;
+            _countEnemy = _playerData.numberWave;
             _playerData.numberWave++;
 
             _hudGame.UpdateEnemyInformation(_countEnemy);
@@ -108,12 +107,22 @@ public class Spawner : MonoBehaviour
         }
     }
 
+    private void OnReloadAll()
+    {
+        Reload();
+    }
+
+    private int GetRandomEnemy() => _randomEnemy.Next(0, _prefabEnemys.Length);
+
+    private void GetSoundComponent() => _sound = gameObject.GetComponent<SoundSpawn>();
+
     private void OnNewDay(int currentDay)
     {
         _currentDay = currentDay;
         if (_currentDay == _deadlineDay)
         {
             WaveCanvasVisible(true);
+            _hudGame.HideTextDayToDeadline();
         }
 
         if(_currentDay <= _deadlineDay)

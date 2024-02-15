@@ -398,7 +398,6 @@ MonoBehaviour:
   _agent: {fileID: 0}
   _attackPoint: {fileID: 5739161013661083936}
   _attackRange: 0.5
-  _healthImage: {fileID: 0}
   _layerMask:
     serializedVersion: 2
     m_Bits: 128

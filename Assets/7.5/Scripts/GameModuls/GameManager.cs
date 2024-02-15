@@ -10,21 +10,10 @@ public class GameManager : MonoBehaviour
     [Header("Настройки для игры")]
     [SerializeField] private PlayerData _playerData;
 
-    private Castle _castle;
-    private Spawner _spawner;
-
     private int _enemiesDestroyed;
     private int _day;
-    private DayAndNight _dayNight;
 
     public void Initialize()
-    {
-        _castle = FindObjectOfType<Castle>();
-        _spawner = FindObjectOfType<Spawner>();
-        _dayNight = FindObjectOfType<DayAndNight>();
-    }
-
-    private void OnEnable()
     {
         CreateListenerEvents();
     }
@@ -78,7 +67,7 @@ public class GameManager : MonoBehaviour
     {
 
         string statistic = $"Итоги игры:\n" +
-                           $"Дней прошло: {_day}" +
+                           $"Дней прошло: {_day}\n" +
                            $"Волн пережито: {_playerData.numberWave}\n" +
                            $"Врагов уничтожено:{_enemiesDestroyed}\n" +
                            $"Нанято воинов: {Population.WarriorHired + Population.ArcherHired}\n" +
@@ -94,32 +83,15 @@ public class GameManager : MonoBehaviour
     public void ReloadGame()
     {
         DefaultStatePanel();
-       // DeselectAllBuild();
-
-        ReloadAll?.Invoke();
-
-
-        ReloadAllMining();
-        ReloadAllEntity();
-
         ReloadMenu();
-        ReloadCastle();
-        ReloadSpawner();
-        ReloadHouses();
         TrainigReload();
-
-        _dayNight.Reload();
-
-        WorkMan[] allWorkingMan = FindObjectsOfType<WorkMan>();
-        foreach (WorkMan workman in allWorkingMan)
-            Destroy(workman.gameObject);
-
+        ReloadAll?.Invoke();
     }
 
     public void DefaultStatePanel()
     {
         TrainingMessage(show: true);
-        SelectedBuilding.AllCampsDeSelect();
+        DeselectAllBuild();
     }
 
     private void ReloadMenu() => GameMenu.menuInstance.Reload();
@@ -127,40 +99,5 @@ public class GameManager : MonoBehaviour
     private void DeselectAllBuild() => SelectedBuilding.AllCampsDeSelect();
 
     private void TrainigReload() => TrainigButton.IsReload = true;
-
-    private void ReloadSpawner()
-    {
-        _spawner.Reload();
-    }
-
-    private void ReloadHouses()
-    {
-        House[] houses = FindObjectsOfType<House>();
-        foreach (House hous in houses)
-            hous.Reload();
-    }
-
-    private void ReloadCastle()
-    {
-        _castle.Reload();
-    }
-
-    private void ReloadAllMining()
-    {
-        Mining[] miningBuilds = FindObjectsOfType<Mining>();
-        foreach (Mining bulding in miningBuilds)
-            bulding.Reload();
-    }
-
-    private void ReloadAllEntity()
-    {
-        Entity[] entitys = FindObjectsOfType<Entity>();
-        foreach (Entity entity in entitys)
-            Destroy(entity.gameObject);
-    }
-
-
-
-
 
 }

@@ -5,7 +5,6 @@ using UnityEngine.AI;
 [RequireComponent(typeof(Animator))]
 public class WorkManEngineer : MonoBehaviour, IMovable
 {
-    
     public static int CountWork { get; private set; }
     public static Action PopulationUpdate;
     [SerializeField] private Animator _animator;
@@ -17,6 +16,9 @@ public class WorkManEngineer : MonoBehaviour, IMovable
     {
         InitAgent();
         CountWork++;
+
+        GameManager.ReloadAll += OnReloadAll;
+
         PopulationUpdate?.Invoke();
     }
 
@@ -31,6 +33,27 @@ public class WorkManEngineer : MonoBehaviour, IMovable
     {
         _animator ??= gameObject.GetComponent<Animator>();
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Camp" && _complete)
+        {
+            CountWork--;
+            PopulationUpdate?.Invoke();
+            Destroy(gameObject);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.ReloadAll -= OnReloadAll;
+    }
+
+    private void OnReloadAll()
+    {
+        Destroy(gameObject);
+    }
+
     private void InitAgent()
     {
         _agent = gameObject.GetComponent<NavMeshAgent>();
@@ -43,16 +66,6 @@ public class WorkManEngineer : MonoBehaviour, IMovable
     {
         if (_agent)
             _agent.destination = position;
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.tag == "Camp" && _complete)
-        {
-            CountWork--;
-            PopulationUpdate?.Invoke();
-            Destroy(gameObject);
-        }
     }
 
     public void GoToNewTargetPosition(Transform newPosition)

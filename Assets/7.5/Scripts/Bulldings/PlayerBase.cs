@@ -23,6 +23,8 @@ public class PlayerBase
     {
         _population.ReloadValue();
         _storage.Reload();
+        StorageUpdate?.Invoke();
+        PopulationUpdate?.Invoke();
     }
 
     private void CreateListenerEvents()

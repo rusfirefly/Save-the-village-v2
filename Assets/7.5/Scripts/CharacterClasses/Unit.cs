@@ -11,6 +11,8 @@ public class Unit : MonoBehaviour
     private void Awake()
     {
         NewStartPosition(_startPosition);
+
+        GameManager.ReloadAll += OnReloadAll;
     }
 
     private void Start()
@@ -20,7 +22,17 @@ public class Unit : MonoBehaviour
         GetSoundEntity();
         PlaySoundNewEntity();
     }
-    
+
+    private void Update()
+    {
+        AgentMove();
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.ReloadAll -= OnReloadAll;
+    }
+
     private void InitAgent()
     {
         _agent = gameObject.GetComponent<NavMeshAgent>();
@@ -28,12 +40,7 @@ public class Unit : MonoBehaviour
         _agent.updateRotation = false;
         _agent.updateUpAxis = false;
     }
-
-    private void Update()
-    {
-        AgentMove();
-    }
-
+    
     public void MoveTo(Transform point)
     {
         _targetPosition = point;
@@ -43,26 +50,32 @@ public class Unit : MonoBehaviour
     {
         _startPosition = startPoint;
     }
+    
+    public virtual void StartedWork(Collider2D collider)
+    {
+        Debug.Log("Работать!!!");
+    }
 
     private void GetSoundEntity() => _soundEntity = gameObject.GetComponent<SoundEntity>();
+    
     private void PlaySoundNewEntity() => _soundEntity.PlaySoundNewEntity();
 
     private void SetStartPosition()
     {
         transform.position = _startPosition.transform.position;
     }
-
-    public virtual void StartedWork(Collider2D collider)
-    {
-        Debug.Log("Работать!!!");
-    }
-
+    
     private void AgentMove()
     {
         if (_targetPosition != null)
         {
             _agent.destination = _targetPosition.transform.position;
         }
+    }
+
+    private void OnReloadAll()
+    {
+        Destroy(gameObject);
     }
 
 }

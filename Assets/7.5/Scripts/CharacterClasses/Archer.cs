@@ -45,6 +45,7 @@ public class Archer : Entity, IDamageable, IAttack, IMovable, IBuffable
         _randomPosition = new Random();
 
         BuffSkill.EventBuff += OnEventBuff;
+        GameManager.ReloadAll += OnReloadAll;
     }
 
     private void Update()
@@ -63,17 +64,22 @@ public class Archer : Entity, IDamageable, IAttack, IMovable, IBuffable
     private void OnDestroy()
     {
         BuffSkill.EventBuff -= OnEventBuff;
+        GameManager.ReloadAll -= OnReloadAll;
+    }
+    public void AddBuff(Buff buff)
+    {
+        _eatBuff = buff;
+        UpdateBuff();
     }
 
     private void OnEventBuff(Buff buff)
     {
         AddBuff(buff);
     }
-
-    public void AddBuff(Buff buff)
+    
+    private void OnReloadAll()
     {
-        _eatBuff = buff;
-        UpdateBuff();
+        Destroy(gameObject);
     }
 
     private void GetSpriteRenderArcher()

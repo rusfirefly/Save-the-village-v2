@@ -11,18 +11,48 @@ public class DayAndNight : MonoBehaviour
     private const float _positionNewDay = -62f;
     private bool _isStart;
     private int _currentDay;
+    private Vector3 _defaulPosition;
 
     private void Start()
     {
         Initialize();
+
+        GameManager.ReloadAll += OnReloadAll;
+    }
+    
+    private void Update()
+    {
+        CycleDayAndNight();
     }
 
+    private void OnDestroy()
+    {
+        GameManager.ReloadAll -= OnReloadAll;
+    }
+    
     public void Initialize()
     {
         _positionStartX = transform.localPosition.x;
+        _defaulPosition = transform.localPosition;
         _positionEndX = _positionNewDay;
         _isStart = true;
         _currentDay = 1;
+    }
+    
+    public void Reload()
+    {
+        _currentDay = 1;
+        transform.localPosition = _defaulPosition;
+    }
+
+    public void SetNewSpeedTime(int newSpeedTime)
+    {
+        _speedTime = newSpeedTime;
+    }
+
+    private void OnReloadAll()
+    {
+        Reload();
     }
 
     private void CycleDayAndNight()
@@ -41,19 +71,5 @@ public class DayAndNight : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-         CycleDayAndNight();
-    }
 
-    public void Reload()
-    {
-        _isStart = false;
-        _currentDay = 1;
-    }
-
-    public void SetNewSpeedTime(int newSpeedTime)
-    {
-        _speedTime = newSpeedTime;
-    }
 }

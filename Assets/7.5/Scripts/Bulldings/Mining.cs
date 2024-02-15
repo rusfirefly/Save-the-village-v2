@@ -32,8 +32,21 @@ public class Mining : MonoBehaviour
         _defaulPosition = _mineCountText.rectTransform.position;
         _positionText = _mineCountText.rectTransform.position.y;
         _soundClip = gameObject.GetComponent<SoundClip>();
+
+        GameManager.ReloadAll += OnReloadAll;
     }
-    
+
+    protected virtual void Update()
+    {
+        Mine();
+        AnimationMineText();
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.ReloadAll -= OnReloadAll;
+    }
+
     public void Reload()
     {
         InMine = false;
@@ -43,10 +56,9 @@ public class Mining : MonoBehaviour
         MineCanvas(false);
     }
 
-    protected virtual void Update()
+    private void OnReloadAll()
     {
-        Mine();
-        AnimationMineText();
+        Reload();
     }
 
     private void Mine()

@@ -51,6 +51,8 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
         InitCastleSkill();
 
         CreatePlayerBase();
+
+        GameManager.ReloadAll += OnReloadAll;
     }
 
     private void Update()
@@ -72,6 +74,11 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
         GetAnimation();
     }
 
+    private void OnDestroy()
+    {
+        GameManager.ReloadAll -= OnReloadAll;
+    }
+
     public void Reload()
     {
         DefaultValue();
@@ -83,6 +90,11 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
         RepairBarVisible(false);
 
         _playerBase.ReloadValue();
+    }
+
+    private void OnReloadAll()
+    {
+        Reload();
     }
 
     private void CreatePlayerBase()

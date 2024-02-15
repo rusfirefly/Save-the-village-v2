@@ -33,12 +33,22 @@ public class HUDGame : MonoBehaviour
         UpdateStoragePanel();
         UpdatePopulationPanel();
         UpdateQustText();
+
+        GameManager.ReloadAll += OnReloadAll;
     }
 
     private void OnDestroy()
     {
         DestroyListerEvents();
+
+        GameManager.ReloadAll -= OnReloadAll;
     }
+
+    private void OnReloadAll()
+    {
+        Reload();
+    }
+
 
     public void SetCycleWaveText(float time)
     {
@@ -66,11 +76,16 @@ public class HUDGame : MonoBehaviour
         _numberDaydeadlineText.text = $"До набега врагов: {daysLeft} д";
     }
 
+    public void HideTextDayToDeadline() => _numberDaydeadlineText.enabled = false;
+
     public void Reload()
     {
         UpdateStoragePanel();
         UpdatePopulationPanel();
+        ShowTextDayToDeadline();
     }
+
+    private void ShowTextDayToDeadline()=> _numberDaydeadlineText.enabled = true;
 
     private void UpdateQustText()
     {
