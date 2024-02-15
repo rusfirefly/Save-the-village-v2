@@ -11,6 +11,7 @@ public class DayAndNight : MonoBehaviour
     private const float _positionNewDay = -62f;
     private bool _isStart;
     private int _currentDay;
+
     private void Start()
     {
         Initialize();

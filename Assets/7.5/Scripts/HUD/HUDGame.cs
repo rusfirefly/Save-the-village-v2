@@ -66,6 +66,12 @@ public class HUDGame : MonoBehaviour
         _numberDaydeadlineText.text = $"До набега врагов: {daysLeft} д";
     }
 
+    public void Reload()
+    {
+        UpdateStoragePanel();
+        UpdatePopulationPanel();
+    }
+
     private void UpdateQustText()
     {
         _quesText.text = $"Задание:\n-выжить в течении {_playerData.daysToSurvive} д";

@@ -1,23 +1,27 @@
+using System;
 using UnityEngine;
 using static Enums;
 
 public class GameManager : MonoBehaviour
 {
+    public static event Action ReloadAll;
+
     [SerializeField] private GameObject _trainigMessageText;
     [Header("Настройки для игры")]
     [SerializeField] private PlayerData _playerData;
-
 
     private Castle _castle;
     private Spawner _spawner;
 
     private int _enemiesDestroyed;
     private int _day;
+    private DayAndNight _dayNight;
 
     public void Initialize()
     {
         _castle = FindObjectOfType<Castle>();
         _spawner = FindObjectOfType<Spawner>();
+        _dayNight = FindObjectOfType<DayAndNight>();
     }
 
     private void OnEnable()
@@ -90,14 +94,26 @@ public class GameManager : MonoBehaviour
     public void ReloadGame()
     {
         DefaultStatePanel();
+       // DeselectAllBuild();
+
+        ReloadAll?.Invoke();
+
+
         ReloadAllMining();
         ReloadAllEntity();
-        DeselectAllBuild();
+
         ReloadMenu();
         ReloadCastle();
         ReloadSpawner();
         ReloadHouses();
         TrainigReload();
+
+        _dayNight.Reload();
+
+        WorkMan[] allWorkingMan = FindObjectsOfType<WorkMan>();
+        foreach (WorkMan workman in allWorkingMan)
+            Destroy(workman.gameObject);
+
     }
 
     public void DefaultStatePanel()
@@ -107,7 +123,6 @@ public class GameManager : MonoBehaviour
     }
 
     private void ReloadMenu() => GameMenu.menuInstance.Reload();
-
 
     private void DeselectAllBuild() => SelectedBuilding.AllCampsDeSelect();
 
