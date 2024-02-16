@@ -13,9 +13,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private HUDGame _hudGame;
 
     [SerializeField] private GameObject _waveInfoCanvas;
-    [Header("Кол-во дней до рейда врагов")]
-    [SerializeField] private int _deadlineDay;
-    
+   
     private SoundSpawn _sound;
     private int _currentDay;
 
@@ -41,6 +39,7 @@ public class Spawner : MonoBehaviour
         Initialized();
         WaveCanvasVisible(true);
         GameManager.ReloadAll += OnReloadAll;
+        DayAndNight.NewDay += OnNewDay;
     }
     
     private void Update()
@@ -63,8 +62,7 @@ public class Spawner : MonoBehaviour
         _indexEnemyRand = GetRandomEnemy();
         _hudGame.UpdateEnemyInformation(_countEnemy);
         _hudGame.UpdateWaveInfo(_playerData.numberWave);
-        _hudGame.UpdateDayToDeadline(_deadlineDay);
-        DayAndNight.NewDay += OnNewDay;
+        _hudGame.UpdateDayToDeadline(_playerData.deadlineDay);
     }
 
     public void Reload()
@@ -75,7 +73,7 @@ public class Spawner : MonoBehaviour
         _currentDay = 1;
 
         WaveCanvasVisible(false);
-        _hudGame.UpdateDayToDeadline(_deadlineDay - _currentDay);
+        _hudGame.UpdateDayToDeadline(_playerData.deadlineDay - _currentDay);
         _hudGame.UpdateNumberDay(_currentDay);
         _hudGame.UpdateEnemyInformation(_countEnemy);
         _hudGame.UpdateWaveInfo(_playerData.numberWave);
@@ -84,7 +82,7 @@ public class Spawner : MonoBehaviour
     public void UpdateSpawn()
     {
         if (GameMenu.isPaused) return;
-        if (_currentDay <= _deadlineDay) return;
+        if (_currentDay < _playerData.deadlineDay) return;
 
         _currentTime += Time.deltaTime;
         _timeSpawn = _playerData.waveCycleTime - _currentTime;
@@ -103,6 +101,10 @@ public class Spawner : MonoBehaviour
             _hudGame.UpdateEnemyInformation(_countEnemy);
             _hudGame.UpdateWaveInfo(_playerData.numberWave);
 
+            /*
+                добавить что бы после каждой волны был день на подготовку и увеличить кол-во врагов
+             */
+
             _currentTime = 0;
         }
     }
@@ -119,17 +121,17 @@ public class Spawner : MonoBehaviour
     private void OnNewDay(int currentDay)
     {
         _currentDay = currentDay;
-        if (_currentDay == _deadlineDay)
+        if (_currentDay == _playerData.deadlineDay)
         {
             WaveCanvasVisible(true);
             _hudGame.HideTextDayToDeadline();
         }
 
-        if(_currentDay <= _deadlineDay)
-            _hudGame.UpdateDayToDeadline(_deadlineDay - _currentDay);
+        if(_currentDay <= _playerData.deadlineDay)
+            _hudGame.UpdateDayToDeadline(_playerData.deadlineDay - _currentDay);
 
-        _currentDay++;
         _hudGame.UpdateNumberDay(_currentDay);
+
     }
 
     private void WaveCanvasVisible(bool visible)

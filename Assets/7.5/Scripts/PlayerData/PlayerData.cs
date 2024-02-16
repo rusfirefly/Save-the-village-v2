@@ -45,6 +45,8 @@ public class PlayerData : ScriptableObject
     public int numberWave;
     public float waveCycleTime;
     public int countEnemyNextWave;
+    [Header("Кол-во дней до рейда врагов")]
+    public int deadlineDay;
 
     [Header("Условия победы (выжить в течении N дней)")]
     public int daysToSurvive;

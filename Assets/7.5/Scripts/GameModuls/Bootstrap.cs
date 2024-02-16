@@ -7,6 +7,7 @@ public class Bootstrap : MonoBehaviour
     [SerializeField] private HUDGame _hudSystem;
     [SerializeField] private GameManager _gameManager;
     [SerializeField] private GameMenu _gameMenuSystem;
+    [SerializeField] private DayAndNight _dayNight;
 
     private void Start()
     {
@@ -14,5 +15,6 @@ public class Bootstrap : MonoBehaviour
         _soundSystem.Initialize();
         _hudSystem.Initialize();
         _gameMenuSystem.Initialize(_tutorial);
+        _dayNight.Initialize();
     }
 }

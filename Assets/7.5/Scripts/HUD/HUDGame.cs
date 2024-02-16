@@ -49,7 +49,6 @@ public class HUDGame : MonoBehaviour
         Reload();
     }
 
-
     public void SetCycleWaveText(float time)
     {
         _timeSpan = new TimeSpan(0, 0, Mathf.RoundToInt(time));
