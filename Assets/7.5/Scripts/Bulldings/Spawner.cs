@@ -8,7 +8,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private GameObject[] _prefabEnemys;
     [SerializeField] private Transform _targetPosition;
     [SerializeField] private Transform _spawnPosition;
-    [SerializeField] private PlayerData _playerData;
+    [SerializeField] private GameSetup _gameSetup;
 
     [SerializeField] private HUDGame _hudGame;
 
@@ -38,7 +38,7 @@ public class Spawner : MonoBehaviour
     {
         Initialized();
         WaveCanvasVisible(true);
-        GameManager.ReloadAll += OnReloadAll;
+        GameHadler.ReloadAll += OnReloadAll;
         DayAndNight.NewDay += OnNewDay;
     }
     
@@ -50,68 +50,70 @@ public class Spawner : MonoBehaviour
     private void OnDestroy()
     {
         DayAndNight.NewDay -= OnNewDay;
-        GameManager.ReloadAll -= OnReloadAll;
+        GameHadler.ReloadAll -= OnReloadAll;
     }
 
     public void Initialized()
     {
         GetSoundComponent();
+        Reload();
         _randomEnemy = new Random();
         _randomPosition = new Random();
-        Reload();
         _indexEnemyRand = GetRandomEnemy();
         _hudGame.UpdateEnemyInformation(_countEnemy);
-        _hudGame.UpdateWaveInfo(_playerData.numberWave);
-        _hudGame.UpdateDayToDeadline(_playerData.deadlineDay);
+        _hudGame.UpdateWaveInfo(_gameSetup.numberWave);
+        _hudGame.UpdateDayToDeadline(_gameSetup.deadlineDay);
     }
 
     public void Reload()
     {
-        _countEnemy = 1;
-        _currentTime = 0;
-        _playerData.numberWave = 1;
-        _currentDay = 1;
+        SetDefaultValue();
 
         WaveCanvasVisible(false);
-        _hudGame.UpdateDayToDeadline(_playerData.deadlineDay - _currentDay);
+        _hudGame.UpdateDayToDeadline(_gameSetup.deadlineDay - _currentDay);
         _hudGame.UpdateNumberDay(_currentDay);
         _hudGame.UpdateEnemyInformation(_countEnemy);
-        _hudGame.UpdateWaveInfo(_playerData.numberWave);
+        _hudGame.UpdateWaveInfo(_gameSetup.numberWave);
     }
 
     public void UpdateSpawn()
     {
         if (GameMenu.isPaused) return;
-        if (_currentDay < _playerData.deadlineDay) return;
+        if (_currentDay < _gameSetup.deadlineDay) return;
 
         _currentTime += Time.deltaTime;
-        _timeSpawn = _playerData.waveCycleTime - _currentTime;
-
+        _timeSpawn = _gameSetup.waveCycleTime - _currentTime;
         _hudGame.SetCycleWaveText(_timeSpawn);
 
-        if (_currentTime >= _playerData.waveCycleTime)
+        if (_currentTime >= _gameSetup.waveCycleTime)
         {
             for (int i = 0; i < _countEnemy; i++)
                 SpawnEnemy();
 
-            _sound.PlaySound();
-            _countEnemy = _playerData.numberWave;
-            _playerData.numberWave++;
+            PlayeSoundAppearedEnemy();
+            _countEnemy++;
+            _gameSetup.numberWave++;
 
             _hudGame.UpdateEnemyInformation(_countEnemy);
-            _hudGame.UpdateWaveInfo(_playerData.numberWave);
-
-            /*
-                добавить что бы после каждой волны был день на подготовку и увеличить кол-во врагов
-             */
+            _hudGame.UpdateWaveInfo(_gameSetup.numberWave);
 
             _currentTime = 0;
         }
     }
 
+    private void PlayeSoundAppearedEnemy()=>_sound.PlaySound();
+
     private void OnReloadAll()
     {
         Reload();
+    }
+
+    private void SetDefaultValue()
+    {
+        _countEnemy = 1;
+        _currentTime = 0;
+        _gameSetup.numberWave = 1;
+        _currentDay = 1;
     }
 
     private int GetRandomEnemy() => _randomEnemy.Next(0, _prefabEnemys.Length);
@@ -121,14 +123,14 @@ public class Spawner : MonoBehaviour
     private void OnNewDay(int currentDay)
     {
         _currentDay = currentDay;
-        if (_currentDay == _playerData.deadlineDay)
+        if (_currentDay == _gameSetup.deadlineDay)
         {
             WaveCanvasVisible(true);
             _hudGame.HideTextDayToDeadline();
         }
 
-        if(_currentDay <= _playerData.deadlineDay)
-            _hudGame.UpdateDayToDeadline(_playerData.deadlineDay - _currentDay);
+        if(_currentDay <= _gameSetup.deadlineDay)
+            _hudGame.UpdateDayToDeadline(_gameSetup.deadlineDay - _currentDay);
 
         _hudGame.UpdateNumberDay(_currentDay);
 

@@ -25,13 +25,13 @@ public class DayAndNight : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameManager.ReloadAll -= OnReloadAll;
+        GameHadler.ReloadAll -= OnReloadAll;
     }
 
     public void Initialize()
     {
         Reload();
-        GameManager.ReloadAll += OnReloadAll;
+        GameHadler.ReloadAll += OnReloadAll;
         StartCoroutine(CylcletDayNight());
     }
 

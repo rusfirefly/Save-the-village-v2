@@ -67,15 +67,15 @@ public class Population
         WarriorHired = 0;
         ArcherHired = 0;
         WorkersCountTotal = 10;
-        WarriorsCountTotal = 10;
+        WarriorsCountTotal = 5;
         ArcherCountTotal = 1;
         EngineerCountTotal = 1;
     }
 
     public void UpPopulation()
     {
-        WarriorsCountTotal += 5;
-        WorkersCountTotal += 5;
+        WarriorsCountTotal += 2;
+        WorkersCountTotal += 2;
         ArcherCountTotal += 1;
     }
 }

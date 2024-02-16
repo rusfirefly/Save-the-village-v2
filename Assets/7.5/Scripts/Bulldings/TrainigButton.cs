@@ -17,7 +17,7 @@ public class TrainigButton : MonoBehaviour
     [SerializeField] private Text _priceText;
 
     [SerializeField] private Enums.UnitType _unitType;
-    [SerializeField] private PlayerData _playerData;
+    [SerializeField] private GameSetup _gameSetup;
     private SoundClip _sound;
     [SerializeField] private AudioClip _clipSoundEntityFull;
     [SerializeField] private AudioClip _audioNeedResources;
@@ -66,24 +66,24 @@ public class TrainigButton : MonoBehaviour
         switch (_unitType)
         {
             case Enums.UnitType.Gold:
-                trainingTimer = _playerData.goldWorkTrainingTimer;
-                trainigPrice = _playerData.goldUnitTrainigPrice;
+                trainingTimer = _gameSetup.goldWorkTrainingTimer;
+                trainigPrice = _gameSetup.goldUnitTrainigPrice;
                 break;
             case Enums.UnitType.Meat:
-                trainingTimer = _playerData.meatWorkTrainingTimer;
-                trainigPrice = _playerData.meatUnitTrainigPrice;
+                trainingTimer = _gameSetup.meatWorkTrainingTimer;
+                trainigPrice = _gameSetup.meatUnitTrainigPrice;
                 break;
             case Enums.UnitType.Wood:
-                trainingTimer = _playerData.woodWorkTrainingTimer;
-                trainigPrice = _playerData.woodUnitTrainigPrice;
+                trainingTimer = _gameSetup.woodWorkTrainingTimer;
+                trainigPrice = _gameSetup.woodUnitTrainigPrice;
                 break;
             case Enums.UnitType.Knight:
-                trainingTimer = _playerData.warriorTrainingTimer;
-                trainigPrice = _playerData.warriorTrainigPrice;
+                trainingTimer = _gameSetup.warriorTrainingTimer;
+                trainigPrice = _gameSetup.warriorTrainigPrice;
                 break;
             case Enums.UnitType.Archer:
-                trainingTimer = _playerData.archerTrainingTimer;
-                trainigPrice = _playerData.archerTrainigPrice;
+                trainingTimer = _gameSetup.archerTrainingTimer;
+                trainigPrice = _gameSetup.archerTrainigPrice;
                 break;
         }
     }

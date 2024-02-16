@@ -14,7 +14,7 @@ public class Mining : MonoBehaviour
     [SerializeField] private float _mineTimerCycle;
     [SerializeField] private int _countResources;
     [SerializeField] protected AudioClip _audioMiningFinish;
-    [SerializeField] private protected PlayerData _playerData;
+    [SerializeField] private protected GameSetup _gameSetup;
 
     protected SoundClip _soundClip; 
 
@@ -33,7 +33,7 @@ public class Mining : MonoBehaviour
         _positionText = _mineCountText.rectTransform.position.y;
         _soundClip = gameObject.GetComponent<SoundClip>();
 
-        GameManager.ReloadAll += OnReloadAll;
+        GameHadler.ReloadAll += OnReloadAll;
     }
 
     protected virtual void Update()
@@ -44,7 +44,7 @@ public class Mining : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameManager.ReloadAll -= OnReloadAll;
+        GameHadler.ReloadAll -= OnReloadAll;
     }
 
     public void Reload()

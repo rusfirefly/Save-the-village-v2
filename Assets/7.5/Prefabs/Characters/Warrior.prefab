@@ -649,10 +649,9 @@ MonoBehaviour:
   _distanceFindEntity: 2
   _baffAttack: 0
   _baffDefence: 0
-  _baffHealth: 0
   _needMeat: {fileID: 0}
   _eatBar: {fileID: 1611823265674687797}
-  _playerData: {fileID: 11400000, guid: 0fe396b4a36645042aba21e9fdf365bd, type: 2}
+  _gameSetup: {fileID: 11400000, guid: 0fe396b4a36645042aba21e9fdf365bd, type: 2}
   _eatUp: 5
   _eatUpCycle: 15
 --- !u!82 &7835849782962015609

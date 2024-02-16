@@ -12,7 +12,7 @@ public class Archer : Entity, IDamageable, IAttack, IMovable, IBuffable
     [SerializeField] private GameObject _arrowPrefab;
     [SerializeField] private SoundClip _needMeat;
     [SerializeField] private Image _eatBar;
-    [SerializeField] private PlayerData _playerData;
+    [SerializeField] private GameSetup _gameSetup;
     [SerializeField] private float _baffDefence;
     [SerializeField] private float _baffAttack;
     [SerializeField] private int _eatUp;
@@ -45,7 +45,7 @@ public class Archer : Entity, IDamageable, IAttack, IMovable, IBuffable
         _randomPosition = new Random();
 
         BuffSkill.EventBuff += OnEventBuff;
-        GameManager.ReloadAll += OnReloadAll;
+        GameHadler.ReloadAll += OnReloadAll;
     }
 
     private void Update()
@@ -64,7 +64,7 @@ public class Archer : Entity, IDamageable, IAttack, IMovable, IBuffable
     private void OnDestroy()
     {
         BuffSkill.EventBuff -= OnEventBuff;
-        GameManager.ReloadAll -= OnReloadAll;
+        GameHadler.ReloadAll -= OnReloadAll;
     }
     public void AddBuff(Buff buff)
     {
@@ -89,8 +89,8 @@ public class Archer : Entity, IDamageable, IAttack, IMovable, IBuffable
 
     private void SetStartValueEat()
     {
-        _eatUpCycle = _playerData.archerEatTimer;
-        _eatUp = _playerData.archerEatUpCycle;
+        _eatUpCycle = _gameSetup.archerEatTimer;
+        _eatUp = _gameSetup.archerEatUpCycle;
     }
 
     protected void DetectEnemy()

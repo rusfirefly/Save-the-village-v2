@@ -1,11 +1,7 @@
 using UnityEngine;
 
-/// <summary>
-/// для настройки...всё PUBLIC жуть
-/// </summary>
-
 [CreateAssetMenu]
-public class PlayerData : ScriptableObject
+public class GameSetup : ScriptableObject
 {
     [Header("Цена найма юнитов")]
     public int goldUnitTrainigPrice;

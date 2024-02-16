@@ -15,7 +15,7 @@ public class Miratorg : Mining
 
     private void Awake()
     {
-        SetCycleMining(_playerData.timeMeatMine);
+        SetCycleMining(_gameSetup.timeMeatMine);
     }
 
     protected override void Start()

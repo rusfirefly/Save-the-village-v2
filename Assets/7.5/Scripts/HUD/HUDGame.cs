@@ -14,7 +14,7 @@ public class HUDGame : MonoBehaviour
     [SerializeField] private Text _goldText;
     [SerializeField] private Text _meatText;
     [SerializeField] private Text _woodText;
-    [SerializeField] private PlayerData _playerData;
+    [SerializeField] private GameSetup _gameSetup;
 
 
     [SerializeField] private Text _cycleWaveText;
@@ -34,14 +34,14 @@ public class HUDGame : MonoBehaviour
         UpdatePopulationPanel();
         UpdateQustText();
 
-        GameManager.ReloadAll += OnReloadAll;
+        GameHadler.ReloadAll += OnReloadAll;
     }
 
     private void OnDestroy()
     {
         DestroyListerEvents();
 
-        GameManager.ReloadAll -= OnReloadAll;
+        GameHadler.ReloadAll -= OnReloadAll;
     }
 
     private void OnReloadAll()
@@ -88,7 +88,7 @@ public class HUDGame : MonoBehaviour
 
     private void UpdateQustText()
     {
-        _quesText.text = $"Задание:\n-выжить в течении {_playerData.daysToSurvive} д";
+        _quesText.text = $"Задание:\n-выжить в течении {_gameSetup.daysToSurvive} д";
     }
 
     private void CreateListerEvents()
@@ -133,23 +133,23 @@ public class HUDGame : MonoBehaviour
 
     private int GetMiningGoldPerCycly()
     {
-        return Population.CountGoldWorker * _playerData.goldMiningPerCycle;
+        return Population.CountGoldWorker * _gameSetup.goldMiningPerCycle;
     }
 
     private int GetMiningMeatPerCycly()
     {
-        return Population.CountMeatWorker * _playerData.meatMiningPerCycle;
+        return Population.CountMeatWorker * _gameSetup.meatMiningPerCycle;
     }
 
     private int GetMiningWoodPerCycly()
     {
-        return Population.CountWoodWorker * _playerData.woodMiningPerCycle;
+        return Population.CountWoodWorker * _gameSetup.woodMiningPerCycle;
     }
 
     private int GetMeatEatAllWarior()
     {
-        return (Population.WarriorsCount * _playerData.warriorEatUpCycle) +
-                (Population.ArcherCount * _playerData.archerEatUpCycle);
+        return (Population.WarriorsCount * _gameSetup.warriorEatUpCycle) +
+                (Population.ArcherCount * _gameSetup.archerEatUpCycle);
     }
 
 

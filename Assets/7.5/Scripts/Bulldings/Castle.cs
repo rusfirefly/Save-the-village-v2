@@ -20,9 +20,10 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     [SerializeField] private GameObject _repairBarPanel;
     [SerializeField] private Image _repairBar;
     [SerializeField] private Transform _positionArcher;
+    [SerializeField] private Transform _castlePoint;
     [SerializeField] private int _countWoodForRepairPrice = 100;
 
-    [SerializeField] private PlayerData _playerData;
+    [SerializeField] private GameSetup _gameSetup;
     private float _fullHealth;
 
     private SpriteRenderer _spriteRender;
@@ -52,7 +53,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 
         CreatePlayerBase();
 
-        GameManager.ReloadAll += OnReloadAll;
+        GameHadler.ReloadAll += OnReloadAll;
     }
 
     private void Update()
@@ -76,7 +77,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 
     private void OnDestroy()
     {
-        GameManager.ReloadAll -= OnReloadAll;
+        GameHadler.ReloadAll -= OnReloadAll;
     }
 
     public void Reload()
@@ -99,7 +100,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
 
     private void CreatePlayerBase()
     {
-        _playerBase = new PlayerBase(_playerData, initGoldCount: 12, initMeatCount: 0, initWoodCount: 0);
+        _playerBase = new PlayerBase(_gameSetup, initGoldCount: 12, initMeatCount: 0, initWoodCount: 0);
     }
 
     private void GetAnimation() => _animator ??= GetComponent<Animator>();
@@ -117,6 +118,11 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
     private void SetFullHealth() => _fullHealth = _health;
 
     private void SetCastleHealth()
+    {
+        _castleInfoText.text = $"Замок:\n{_health:F0}/{_fullHealth:F0}";
+    }
+
+    private void SetCastleHealthPercent()
     {
         _percentHealth = _health / _fullHealth * 100;
         _castleInfoText.text = $"Замок:\nHP:{_percentHealth:F0}%";
@@ -160,7 +166,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
         OnCastleAttaking();
         SetCastleHealth();
 
-        if (_percentHealth <= _minHeathOnFire && !_isFire)
+        if (_percentHealth <= _minHeathOnFire && !IsCastleInFire())
         {
             SetCastleFire(true);
             PlayeSoundCastleInFire();
@@ -169,13 +175,16 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
         IsGameOver();
     }
 
+
     public void SetTriggerAnimation(string animation) => _animator.SetTrigger(animation);
+
+    private bool IsCastleInFire() => _isFire;
 
     private void PlayeSoundCastleInFire()=> _soundCastle.PlaySoundCastleInFire();
 
     private void CastleBuff()
     {
-        if (Storage.Meat > 0)
+        if (Storage.Meat > GetAmountFoodEaten())
         {
             _buffSkill.EnableBuff();
             BuffShowInHud();
@@ -186,6 +195,9 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
             _buffSkill.BuffVisible(false);
         }
     }
+
+    private int GetAmountFoodEaten() =>
+        (Population.ArcherHired * _gameSetup.archerEatUpCycle) + (Population.WarriorHired * _gameSetup.warriorEatUpCycle);
 
     private void BuffShowInHud() => _buffSkill.BuffVisible(true);
 
@@ -235,7 +247,7 @@ public class Castle : MonoBehaviour, IDamageable, ISelecteble
             SetInAttack();
         }
 
-        Attacked?.Invoke(transform.position);
+        Attacked?.Invoke(_castlePoint.position);
     }
     
     private void PlaySoundCatleInFire()=> _soundCastle.PlayeSoundWarning();

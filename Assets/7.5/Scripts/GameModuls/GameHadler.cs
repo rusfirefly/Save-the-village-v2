@@ -2,13 +2,13 @@ using System;
 using UnityEngine;
 using static Enums;
 
-public class GameManager : MonoBehaviour
+public class GameHadler : MonoBehaviour
 {
     public static event Action ReloadAll;
 
     [SerializeField] private GameObject _trainigMessageText;
     [Header("Настройки для игры")]
-    [SerializeField] private PlayerData _playerData;
+    [SerializeField] private GameSetup _gameSetup;
 
     private int _enemiesDestroyed;
     private int _day;
@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour
     private void OnNewDay(int currentDay)
     {
         _day = currentDay;
-        if (currentDay == _playerData.daysToSurvive)
+        if (currentDay == _gameSetup.daysToSurvive)
             GameOver(GameOverType.Victory);
     }
 
@@ -68,7 +68,7 @@ public class GameManager : MonoBehaviour
 
         string statistic = $"Итоги игры:\n" +
                            $"Дней прошло: {_day}\n" +
-                           $"Волн пережито: {_playerData.numberWave}\n" +
+                           $"Волн пережито: {_gameSetup.numberWave}\n" +
                            $"Врагов уничтожено:{_enemiesDestroyed}\n" +
                            $"Нанято воинов: {Population.WarriorHired + Population.ArcherHired}\n" +
                            $"Воинов погибло:{Population.WarriorsCountDeath}\n" +

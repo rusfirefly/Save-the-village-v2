@@ -9,7 +9,7 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
 
     private void Start()
     {
-        GameManager.ReloadAll += OnReloadAll;
+        GameHadler.ReloadAll += OnReloadAll;
     }
 
     private void Update()
@@ -33,7 +33,7 @@ public class Enemy : Entity, IDamageable, IMovable, IAttack
 
     private void OnDestroy()
     {
-        GameManager.ReloadAll -= OnReloadAll;
+        GameHadler.ReloadAll -= OnReloadAll;
     }
 
     private void OnReloadAll()

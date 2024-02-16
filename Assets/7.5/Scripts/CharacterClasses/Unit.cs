@@ -12,7 +12,7 @@ public class Unit : MonoBehaviour
     {
         NewStartPosition(_startPosition);
 
-        GameManager.ReloadAll += OnReloadAll;
+        GameHadler.ReloadAll += OnReloadAll;
     }
 
     private void Start()
@@ -30,7 +30,7 @@ public class Unit : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameManager.ReloadAll -= OnReloadAll;
+        GameHadler.ReloadAll -= OnReloadAll;
     }
 
     private void InitAgent()

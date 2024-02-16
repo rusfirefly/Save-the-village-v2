@@ -73,7 +73,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 140257693
   m_SortingLayer: 7
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 1563000016, guid: 52e6cc9d84464504b93ffb285045dd12, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -210,7 +210,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 140257693
   m_SortingLayer: 7
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 1563000016, guid: 52e6cc9d84464504b93ffb285045dd12, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -316,7 +316,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 140257693
   m_SortingLayer: 7
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 1563000016, guid: 52e6cc9d84464504b93ffb285045dd12, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -462,7 +462,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\u0417\u0430\u043C\u043E\u043A \nHP:100%"
+  m_Text: "\u0417\u0430\u043C\u043E\u043A \n100/100"
 --- !u!1 &4698541124343378692
 GameObject:
   m_ObjectHideFlags: 0
@@ -597,6 +597,7 @@ GameObject:
   - component: {fileID: 1786811530}
   - component: {fileID: 1786811529}
   - component: {fileID: 1786811531}
+  - component: {fileID: 880368332}
   m_Layer: 7
   m_Name: Castle_Blue
   m_TagString: Castle
@@ -663,7 +664,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 140257693
   m_SortingLayer: 7
-  m_SortingOrder: 1
+  m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 4202a969ad036c84ab22d5410dde6e8b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -713,7 +714,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 337a6b4ce751ae147a7c3bd68e45d562, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _health: 10
+  _health: 1000
   _fire: {fileID: 1669251677}
   _castleInfoText: {fileID: 7332389160560974796}
   _repairPriceText: {fileID: 0}
@@ -723,7 +724,9 @@ MonoBehaviour:
   _repairBarPanel: {fileID: 4698541124343378692}
   _repairBar: {fileID: 8578076658120861725}
   _positionArcher: {fileID: 287505407690919510}
-  _countWoodForRepairPrice: 100
+  _castlePoint: {fileID: 289583909}
+  _countWoodForRepairPrice: 50
+  _gameSetup: {fileID: 11400000, guid: 0fe396b4a36645042aba21e9fdf365bd, type: 2}
 --- !u!95 &488292515
 Animator:
   serializedVersion: 5
@@ -855,7 +858,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _audioSource: {fileID: 1786811530}
   volume: 0.5
-  _clip: {fileID: 8300000, guid: 4dcdfdd1039d4cd4abd32a4bed6899bd, type: 3}
 --- !u!114 &1786811531
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -874,7 +876,22 @@ MonoBehaviour:
   _clipCastleRepair: {fileID: 8300000, guid: 2f4ce6b56d024db4c8ecd161b5aa3bde, type: 3}
   _clipCastleDestroyed: {fileID: 8300000, guid: 79088c2abe2057b41884d6e9f23937f4, type: 3}
   _clipWarning: {fileID: 8300000, guid: 573d8782dc1d23e44982b9d9bb9cc13f, type: 3}
-  _clipNeedWood: {fileID: 8300000, guid: 207b27b534dd36245ba997a9db5c489b, type: 3}
+  _clipNeedWood: {fileID: 8300000, guid: 89233cb9df8d24b4badb6110420a47ae, type: 3}
+--- !u!114 &880368332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5022541548910392344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15f7e1724e048eb47b8fcd7ce2a52623, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _canvasSkill: {fileID: 0}
+  _buffImage: {fileID: 0}
+  _textBuff: {fileID: 0}
 --- !u!1 &6294482789628678238
 GameObject:
   m_ObjectHideFlags: 0
@@ -914,7 +931,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 1.51}
+  m_AnchoredPosition: {x: 0, y: 1.75}
   m_SizeDelta: {x: 3.73, y: 1.61}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &2335548876782554983
@@ -936,7 +953,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 140257693
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_TargetDisplay: 0
 --- !u!114 &2972170259616446788
 MonoBehaviour:
@@ -1143,11 +1160,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5066209045387082398, guid: fd892a659e6da54488f0c2e7e9a19a3d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.029999971
+      value: 0.07
       objectReference: {fileID: 0}
     - target: {fileID: 5066209045387082398, guid: fd892a659e6da54488f0c2e7e9a19a3d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.19999984
+      value: 0.23
       objectReference: {fileID: 0}
     - target: {fileID: 5066209045387082398, guid: fd892a659e6da54488f0c2e7e9a19a3d, type: 3}
       propertyPath: m_LocalPosition.z

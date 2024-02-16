@@ -32,7 +32,7 @@ public class House : MonoBehaviour, ISelecteble
         GetSoundComponent();
         SetPriceText($"{_priceBuilding}");
 
-        GameManager.ReloadAll += OnReloadAll;
+        GameHadler.ReloadAll += OnReloadAll;
     }
 
     private void Update()
@@ -65,7 +65,7 @@ public class House : MonoBehaviour, ISelecteble
 
     private void OnDestroy()
     {
-        GameManager.ReloadAll -= OnReloadAll;
+        GameHadler.ReloadAll -= OnReloadAll;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

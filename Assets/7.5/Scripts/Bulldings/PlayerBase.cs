@@ -7,13 +7,13 @@ public class PlayerBase
 
     private Storage _storage;
     private Population _population;
-    private PlayerData _playerData;
+    private GameSetup _gameSetup;
 
-    public PlayerBase(PlayerData playerData, int initGoldCount, int initMeatCount, int initWoodCount)
+    public PlayerBase(GameSetup playerData, int initGoldCount, int initMeatCount, int initWoodCount)
     {
         _storage = new Storage(initGoldCount, initMeatCount, initWoodCount);
         _population = new Population();
-        _playerData = playerData;
+        _gameSetup = playerData;
 
         ReloadValue();
         CreateListenerEvents();
@@ -61,15 +61,15 @@ public class PlayerBase
         switch (tag)
         {
             case "GoldMine":
-                mining = _playerData.goldMiningPerCycle * Population.CountGoldWorker;
+                mining = _gameSetup.goldMiningPerCycle * Population.CountGoldWorker;
                 _storage.AddGold(mining);
                 break;
             case "MeatMine":
-                mining = _playerData.meatMiningPerCycle * Population.CountMeatWorker;
+                mining = _gameSetup.meatMiningPerCycle * Population.CountMeatWorker;
                 _storage.AddMeat(mining);
                 break;
             case "WoodMine":
-                mining = _playerData.woodMiningPerCycle * Population.CountWoodWorker;
+                mining = _gameSetup.woodMiningPerCycle * Population.CountWoodWorker;
                 _storage.AddWood(mining);
                 break;
         }
@@ -91,15 +91,15 @@ public class PlayerBase
         {
             case "GoldMine":
                 _population.AddOneGoldWorker();
-                StartMining(collider, _playerData.goldMiningPerCycle * Population.CountGoldWorker);
+                StartMining(collider, _gameSetup.goldMiningPerCycle * Population.CountGoldWorker);
                 break;
             case "MeatMine":
                 _population.AddOneMeatWorker();
-                StartMining(collider, _playerData.meatMiningPerCycle * Population.CountMeatWorker);
+                StartMining(collider, _gameSetup.meatMiningPerCycle * Population.CountMeatWorker);
                 break;
             case "WoodMine":
                 _population.AddOneWoodWorker();
-                StartMining(collider, _playerData.woodMiningPerCycle * Population.CountWoodWorker);
+                StartMining(collider, _gameSetup.woodMiningPerCycle * Population.CountWoodWorker);
                 break;
         }
 
@@ -139,11 +139,11 @@ public class PlayerBase
     {
         return type switch
         {
-            Enums.UnitType.Gold => _playerData.goldUnitTrainigPrice,
-            Enums.UnitType.Meat => _playerData.meatUnitTrainigPrice,
-            Enums.UnitType.Wood => _playerData.woodUnitTrainigPrice,
-            Enums.UnitType.Knight => _playerData.warriorTrainigPrice,
-            Enums.UnitType.Archer => _playerData.archerTrainigPrice,
+            Enums.UnitType.Gold => _gameSetup.goldUnitTrainigPrice,
+            Enums.UnitType.Meat => _gameSetup.meatUnitTrainigPrice,
+            Enums.UnitType.Wood => _gameSetup.woodUnitTrainigPrice,
+            Enums.UnitType.Knight => _gameSetup.warriorTrainigPrice,
+            Enums.UnitType.Archer => _gameSetup.archerTrainigPrice,
             _ => 0
         };
     }

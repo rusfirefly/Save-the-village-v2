@@ -10,30 +10,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2595a897449ace4daad0f0d6883732c, type: 3}
-  m_Name: PlayerData
+  m_Name: GameSetup
   m_EditorClassIdentifier: 
   goldUnitTrainigPrice: 4
   meatUnitTrainigPrice: 4
   woodUnitTrainigPrice: 4
-  warriorTrainigPrice: 1
-  archerTrainigPrice: 1
-  goldWorkTrainingTimer: 5
-  meatWorkTrainingTimer: 5
-  woodWorkTrainingTimer: 5
-  warriorTrainingTimer: 1
-  archerTrainingTimer: 1
+  warriorTrainigPrice: 15
+  archerTrainigPrice: 25
+  goldWorkTrainingTimer: 10
+  meatWorkTrainingTimer: 10
+  woodWorkTrainingTimer: 10
+  warriorTrainingTimer: 15
+  archerTrainingTimer: 20
   warriorEatTimer: 25
   archerEatTimer: 25
   warriorEatUpCycle: 4
   archerEatUpCycle: 4
-  goldMiningPerCycle: 2
+  goldMiningPerCycle: 4
   meatMiningPerCycle: 3
   woodMiningPerCycle: 2
-  timeGoldMine: 7
-  timeMeatMine: 7
-  timeWoodMine: 7
+  timeGoldMine: 15
+  timeMeatMine: 15
+  timeWoodMine: 15
   numberWave: 1
   waveCycleTime: 25
   countEnemyNextWave: 1
-  deadlineDay: 3
-  daysToSurvive: 100
+  deadlineDay: 4
+  daysToSurvive: 10

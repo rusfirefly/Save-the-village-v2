@@ -13,7 +13,7 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack, IBuffable
     [SerializeField] private SoundClip _needMeat;
 
     [SerializeField] private Image _eatBar;
-    [SerializeField] private PlayerData _playerData;
+    [SerializeField] private GameSetup _gameSetup;
 
     [SerializeField] private int _eatUp;
     [SerializeField] private float _eatUpCycle;
@@ -48,7 +48,7 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack, IBuffable
         _randomPosition = new Random();
         BuffSkill.EventBuff += OnEventBuff;
         Castle.Attacked += OnCastleAttakedEvent;
-        GameManager.ReloadAll += OnReloadAll;
+        GameHadler.ReloadAll += OnReloadAll;
     }
     
     protected override void OnDrawGizmos()
@@ -82,7 +82,7 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack, IBuffable
     {
         BuffSkill.EventBuff -= OnEventBuff;
         Castle.Attacked -= OnCastleAttakedEvent;
-        GameManager.ReloadAll -= OnReloadAll;
+        GameHadler.ReloadAll -= OnReloadAll;
     }
 
     private void OnReloadAll()
@@ -108,8 +108,8 @@ public class Warrior : Entity, IDamageable, IMovable, IAttack, IBuffable
 
     private void SetStartValueEat()
     {
-        _eatUpCycle = _playerData.warriorEatTimer;
-        _eatUp = _playerData.warriorEatUpCycle;
+        _eatUpCycle = _gameSetup.warriorEatTimer;
+        _eatUp = _gameSetup.warriorEatUpCycle;
     }
 
     private void DetectEntity()

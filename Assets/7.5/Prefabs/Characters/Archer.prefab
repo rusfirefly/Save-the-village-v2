@@ -348,7 +348,7 @@ MonoBehaviour:
   _arrowPrefab: {fileID: 8694111705678344236, guid: 2203ecd47f85758419258a93ae7690a9, type: 3}
   _needMeat: {fileID: 0}
   _eatBar: {fileID: 451317799697969381}
-  _playerData: {fileID: 11400000, guid: 0fe396b4a36645042aba21e9fdf365bd, type: 2}
+  _gameSetup: {fileID: 11400000, guid: 0fe396b4a36645042aba21e9fdf365bd, type: 2}
   _baffDefence: 0
   _baffAttack: 0
   _eatUp: 5

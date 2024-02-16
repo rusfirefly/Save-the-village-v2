@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Grid : MonoBehaviour
+public class ClickHadler : MonoBehaviour
 {
-    private GameManager _gameManager;
+    private GameHadler _gameHadler;
 
-    void Start()
+    public void Initialize(GameHadler gameHadler)
     {
-        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        _gameHadler = gameHadler;
     }
 
     void Update()
@@ -23,7 +23,7 @@ public class Grid : MonoBehaviour
             RaycastHit2D rayHit = Physics2D.Raycast(CurMousePos, Vector2.zero);
             if (rayHit.transform == null)
             {
-                _gameManager.DefaultStatePanel();
+                _gameHadler.DefaultStatePanel();
             }
         }
     }

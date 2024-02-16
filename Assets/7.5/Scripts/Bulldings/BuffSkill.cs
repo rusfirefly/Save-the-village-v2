@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public struct Buff
+public class Buff
 {
     public float Attack { get; private set; }
 
@@ -25,7 +25,7 @@ public class BuffSkill : MonoBehaviour
     [SerializeField] private Canvas _canvasSkill;
     [SerializeField] private Image _buffImage;
     [SerializeField] private Text _textBuff;
-    private Buff _eatBuff;
+    [SerializeField] private Buff _eatBuff;
     private int _percent=100; 
 
     private void Awake()
@@ -39,11 +39,6 @@ public class BuffSkill : MonoBehaviour
     private void UpdateTextSkill()
     {
         _textBuff.text = $"ÁÀÔÔ íàñûùåíèÿ\n+{_eatBuff.Health * _percent}% hp\n+{_eatBuff.Attack * _percent}% atk +{_eatBuff.Defence * _percent}% def";
-    }
-
-    private void OnValidate()
-    {
-        UpdateTextSkill();
     }
 
     public void BuffVisible(bool visible) => _canvasSkill.gameObject.SetActive(visible);

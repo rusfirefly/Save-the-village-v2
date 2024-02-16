@@ -17,7 +17,7 @@ public class WorkManEngineer : MonoBehaviour, IMovable
         InitAgent();
         CountWork++;
 
-        GameManager.ReloadAll += OnReloadAll;
+        GameHadler.ReloadAll += OnReloadAll;
 
         PopulationUpdate?.Invoke();
     }
@@ -46,7 +46,7 @@ public class WorkManEngineer : MonoBehaviour, IMovable
 
     private void OnDestroy()
     {
-        GameManager.ReloadAll -= OnReloadAll;
+        GameHadler.ReloadAll -= OnReloadAll;
     }
 
     private void OnReloadAll()

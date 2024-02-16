@@ -14,7 +14,6 @@ public class WarriorCamp : MonoBehaviour, ICamp, ISelecteble
     [SerializeField] private Material _outlineMaterial;
     [SerializeField] private Transform _targetPosition;
     [SerializeField] private Transform _archerPosition;
-    [SerializeField] private PlayerData _playerData;
   
     private SpriteRenderer _spriteRender;
     private Material _default;
